@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Tu incienso sagrado según el Templo de Jerusalén">
+<title>✦ Tu Incienso Sagrado — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">קטורת</div>
+  <h1>✦ Tu Incienso Sagrado ✦</h1>
+  <p>Los 11 ingredientes del Templo</p>
+  <span class="page-number">Extras · Incienso</span>
+</header>
+
+<section>
+  <h2>🕯️ El Ketoret</h2>
+  <p>El <strong>Ketoret (קטורת)</strong> era la mezcla de <strong>11 especias</strong>
+  que se quemaba en el Templo de Jerusalén. Cada una representa un aspecto
+  del alma y canaliza una bendición particular.</p>
+  <form id="incienso-form" autocomplete="off">
+    <div class="form-grid">
+      <div class="form-field full">
+        <label for="fecha">Fecha de nacimiento</label>
+        <input type="date" id="fecha" required>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1.2rem">
+      <button type="submit" class="btn">✦ Revelar mi Incienso ✦</button>
+    </div>
+  </form>
+</section>
+
+<div id="results" style="display:none"></div>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Incienso Sagrado</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const INCIENSOS = [
+  { n:'Bálsamo (Tzari)',      h:'צרי',   d:'Sanación, consuelo, aroma profundo.' },
+  { n:'Uña aromática (Tziporen)', h:'צפורן', d:'Protección, fuerza, defensa.' },
+  { n:'Gálbano (Chelbena)',   h:'חלבנה', d:'Intensidad, ferocidad, aroma fuerte.' },
+  { n:'Incienso blanco (Levona)', h:'לבונה', d:'Puretad, elevación, oración.' },
+  { n:'Mirra (Mor)',          h:'מור',   d:'Amargura sagrada, transformación.' },
+  { n:'Casia (Kiddá)',        h:'קדה',   d:'Corteza sagrada, integridad.' },
+  { n:'Nardo (Shibolet Nerd)',h:'שבולת נרד', d:'Fragancia, atracción, amor.' },
+  { n:'Azafrán (Karkom)',     h:'כרכום', d:'Alegría, color, vitalidad.' },
+  { n:'Costus (Kosht)',       h:'קושט',  d:'Raíz profunda, firmeza, base.' },
+  { n:'Canela (Kinamón)',     h:'קינמון', d:'Calor, pasión, expansión.' },
+  { n:'Amomo (Kilufá)',       h:'קלופה', d:'Fragancia final, cierre, bendición.' }
+];
+
+function reducir(n){
+  while(n > 9){
+    if([11,22,33].includes(n)) return n;
+    n = String(n).split('').reduce((a,b) => a + +b, 0);
+  }
+  return n;
+}
+
+document.getElementById('incienso-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const f = document.getElementById('fecha').value;
+  if(!f) return;
+  const d = new Date(f + 'T12:00:00');
+  const camino = reducir(d.getDate() + d.getMonth() + 1 + d.getFullYear());
+  const idx = (camino - 1) % INCIENSOS.length;
+  const inc = INCIENSOS[idx];
+
+  const results = document.getElementById('results');
+  results.style.display = 'block';
+  results.innerHTML = `
+    <section>
+      <h2>🕯️ Tu Incienso</h2>
+      <div class="equation">
+        <div class="big">${inc.n}</div>
+        <div class="heb">${inc.h}</div>
+      </div>
+      <p style="text-align:center;color:var(--text);font-size:.95rem;">
+        ${inc.d}
+      </p>
+    </section>
+    <section>
+      <h2>💡 Los 11 Inciensos</h2>
+      <table>
+        <thead><tr><th>Ingrediente</th><th>Hebreo</th><th>Significado</th></tr></thead>
+        <tbody>
+          ${INCIENSOS.map((i, k) => `
+            <tr style="${k === idx ? 'background:rgba(212,175,55,.15);' : ''}">
+              <td>${i.n}</td>
+              <td class="hebrew-inline">${i.h}</td>
+              <td>${i.d}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </section>
+    <section>
+      <h2>💫 Práctica</h2>
+      <p>Enciende una vela o incienso mientras meditas. Visualiza tu incienso
+      elevándose hacia el cielo como tu oración.</p>
+      <blockquote>"La ketoret detiene la peste." — Talmud, Shabat 89a</blockquote>
+    </section>
+  `;
+  results.scrollIntoView({ behavior:'smooth' });
+});
+</script>
+</body>
+</html>
