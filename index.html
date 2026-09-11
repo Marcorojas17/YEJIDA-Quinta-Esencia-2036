@@ -2,228 +2,28 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>✦ Yejidá — Geometría Sagrada del Alma ✦</title>
-<style>
-  :root{
-    --bg:#05060f;
-    --gold:#d4af37;
-    --gold2:#f7e08a;
-    --violet:#6c5ce7;
-    --cyan:#4fd1c5;
-    --text:#eceaf5;
-    --muted:#8d93ad;
-    --line:rgba(212,175,55,.28);
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  html,body{height:100%;}
-  body{
-    font-family:'Segoe UI',system-ui,sans-serif;
-    background:var(--bg);
-    color:var(--text);
-    line-height:1.7;
-    overflow-x:hidden;
-    min-height:100vh;
-  }
-  #sacred-bg{position:fixed;inset:0;z-index:0;
-    background:radial-gradient(circle at 50% 20%, #141a3a 0%, #05060f 55%, #02020a 100%);}
-  #sacred-bg canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.55;}
-  #sacred-bg::after{
-    content:"";position:absolute;inset:0;
-    background:
-      radial-gradient(circle at 15% 80%, rgba(108,92,231,.25), transparent 40%),
-      radial-gradient(circle at 85% 15%, rgba(79,209,197,.18), transparent 40%),
-      radial-gradient(circle at 50% 50%, rgba(212,175,55,.10), transparent 60%);
-    animation:breathe 12s ease-in-out infinite;pointer-events:none;
-  }
-  @keyframes breathe{0%,100%{opacity:.7;transform:scale(1);}50%{opacity:1;transform:scale(1.06);}}
-
-  .floating-letters{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden;}
-  .floating-letters span{
-    position:absolute;color:rgba(212,175,55,.18);
-    font-size:clamp(28px,5vw,64px);
-    font-family:'David','Times New Roman',serif;direction:rtl;
-    text-shadow:0 0 20px rgba(212,175,55,.35);
-    animation:drift linear infinite;user-select:none;
-  }
-  @keyframes drift{
-    0%{transform:translateY(110vh) rotate(0);opacity:0;}
-    10%{opacity:1;}90%{opacity:1;}
-    100%{transform:translateY(-20vh) rotate(360deg);opacity:0;}
-  }
-
-  .container{position:relative;z-index:2;max-width:1000px;margin:0 auto;padding:2.5rem 1.2rem 4rem;}
-
-  header{
-    text-align:center;padding:3rem 1.5rem 2.5rem;
-    border:1px solid var(--line);border-radius:20px;
-    background:linear-gradient(180deg, rgba(212,175,55,.07), rgba(108,92,231,.04)), rgba(10,12,30,.55);
-    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-    box-shadow:0 0 60px rgba(212,175,55,.15), inset 0 0 40px rgba(108,92,231,.08);
-    margin-bottom:2rem;position:relative;overflow:hidden;
-  }
-  header::before{
-    content:"";position:absolute;inset:-2px;
-    background:conic-gradient(from 0deg, transparent, rgba(212,175,55,.5), transparent 30%);
-    animation:spin 8s linear infinite;z-index:-1;border-radius:22px;opacity:.5;
-  }
-  @keyframes spin{to{transform:rotate(360deg);}}
-
-  .hebrew-main{
-    font-size:clamp(3rem,9vw,5.5rem);color:var(--gold2);direction:rtl;
-    font-family:'David','Times New Roman',serif;
-    text-shadow:0 0 20px rgba(212,175,55,.8),0 0 45px rgba(212,175,55,.45);
-    animation:pulse-glow 4s ease-in-out infinite;line-height:1.1;
-  }
-  @keyframes pulse-glow{
-    0%,100%{text-shadow:0 0 20px rgba(212,175,55,.8),0 0 45px rgba(212,175,55,.45);}
-    50%{text-shadow:0 0 32px rgba(247,224,138,1),0 0 70px rgba(212,175,55,.7);}
-  }
-  header h1{
-    font-size:clamp(1.05rem,2.6vw,1.6rem);color:var(--gold2);
-    letter-spacing:.35em;text-transform:uppercase;margin:.9rem 0 .5rem;font-weight:400;
-  }
-  header p{color:var(--muted);font-size:.95rem;letter-spacing:.1em;}
-  .sigil{display:inline-block;margin-top:1rem;font-size:1.6rem;color:var(--gold);animation:spin 20s linear infinite;}
-
-  section{
-    background:rgba(10,12,30,.55);border:1px solid var(--line);border-radius:16px;
-    padding:1.6rem 1.7rem;margin-bottom:1.6rem;
-    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-    box-shadow:0 8px 32px rgba(0,0,0,.4), inset 0 1px 0 rgba(212,175,55,.15);
-    transition:transform .4s, box-shadow .4s, border-color .4s;position:relative;
-  }
-  section::before{
-    content:"";position:absolute;top:0;left:0;right:0;height:1px;
-    background:linear-gradient(90deg, transparent, var(--gold), transparent);opacity:.5;
-  }
-  section:hover{
-    transform:translateY(-3px);
-    box-shadow:0 12px 48px rgba(212,175,55,.15), 0 0 30px rgba(108,92,231,.15);
-    border-color:rgba(212,175,55,.5);
-  }
-
-  h2{
-    color:var(--gold2);font-size:1.2rem;font-weight:500;letter-spacing:.15em;
-    text-transform:uppercase;margin-bottom:1.1rem;display:flex;align-items:center;gap:.7rem;
-  }
-  h2::before{
-    content:"";width:8px;height:8px;background:var(--gold);border-radius:50%;
-    box-shadow:0 0 12px var(--gold),0 0 24px var(--gold);flex-shrink:0;
-  }
-
-  table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.9rem;}
-  th,td{border:1px solid var(--line);padding:.7rem .9rem;text-align:left;vertical-align:top;}
-  th{background:rgba(212,175,55,.1);color:var(--gold2);font-weight:500;
-     letter-spacing:.08em;text-transform:uppercase;font-size:.78rem;}
-  tr:nth-child(even) td{background:rgba(255,255,255,.015);}
-  tr:hover td{background:rgba(212,175,55,.05);transition:background .3s;}
-
-  .hebrew-inline{
-    direction:rtl;color:var(--gold);font-family:'David','Times New Roman',serif;
-    font-weight:600;font-size:1.15rem;text-shadow:0 0 10px rgba(212,175,55,.5);
-  }
-
-  .equation{
-    text-align:center;padding:2rem 1.5rem;border:1px solid var(--gold);border-radius:14px;
-    background:radial-gradient(circle at 50% 50%, rgba(212,175,55,.12), transparent 70%), rgba(5,6,15,.7);
-    margin:1.5rem 0;box-shadow:0 0 40px rgba(212,175,55,.2);
-    position:relative;overflow:hidden;
-  }
-  .equation::before{
-    content:"";position:absolute;inset:0;
-    background:conic-gradient(from 0deg, transparent 0deg, rgba(212,175,55,.25) 90deg,
-      transparent 180deg, rgba(108,92,231,.2) 270deg, transparent 360deg);
-    animation:spin 12s linear infinite;opacity:.35;z-index:0;
-  }
-  .equation > *{position:relative;z-index:1;}
-  .equation .big{
-    font-size:clamp(.9rem,2.2vw,1.15rem);color:var(--gold2);
-    font-weight:600;letter-spacing:.12em;text-transform:uppercase;
-  }
-  .equation .heb{
-    font-size:clamp(1rem,2.5vw,1.35rem);direction:rtl;color:var(--gold);
-    margin-top:.8rem;font-family:'David','Times New Roman',serif;
-  }
-
-  /* ============ BOTÓN MÍSTICO ============ */
-  .cta-wrap{text-align:center;margin:2.5rem 0 1rem;}
-  .cta-portal{
-    position:relative;display:inline-block;
-    padding:1.1rem 2.8rem;
-    font-size:.95rem;
-    letter-spacing:.25em;
-    text-transform:uppercase;
-    color:var(--gold2);
-    text-decoration:none;
-    border:1px solid var(--gold);
-    border-radius:60px;
-    background:linear-gradient(135deg, rgba(212,175,55,.12), rgba(108,92,231,.12));
-    backdrop-filter:blur(10px);
-    transition:all .5s cubic-bezier(.2,.9,.3,1.2);
-    overflow:hidden;
-    box-shadow:
-      0 0 25px rgba(212,175,55,.35),
-      inset 0 0 20px rgba(212,175,55,.08);
-    isolation:isolate;
-  }
-  .cta-portal::before{
-    content:"";position:absolute;inset:-2px;border-radius:60px;
-    background:conic-gradient(from 0deg, var(--gold), var(--violet), var(--cyan), var(--gold));
-    z-index:-2;animation:spin 6s linear infinite;opacity:.75;
-  }
-  .cta-portal::after{
-    content:"";position:absolute;inset:0;border-radius:60px;
-    background:linear-gradient(135deg, rgba(10,12,30,.95), rgba(10,12,30,.85));
-    z-index:-1;transition:opacity .5s;
-  }
-  .cta-portal:hover{
-    color:#fff;
-    letter-spacing:.35em;
-    transform:translateY(-3px) scale(1.04);
-    box-shadow:0 0 45px rgba(212,175,55,.7), 0 0 80px rgba(108,92,231,.4);
-  }
-  .cta-portal:hover::after{opacity:.55;}
-  .cta-portal .arrow{
-    display:inline-block;margin-left:.7rem;
-    transition:transform .4s ease;
-  }
-  .cta-portal:hover .arrow{transform:translateX(6px) rotate(0deg);}
-
-  .cta-sub{
-    margin-top:1rem;color:var(--muted);font-size:.8rem;
-    letter-spacing:.2em;text-transform:uppercase;
-  }
-
-  footer{
-    text-align:center;color:var(--muted);font-size:.82rem;
-    margin-top:2.5rem;padding:1.5rem 1rem;border-top:1px solid var(--line);letter-spacing:.08em;
-  }
-  footer .sigil-row{color:var(--gold);font-size:1.2rem;margin-bottom:.6rem;letter-spacing:1rem;
-    animation:glow-text 5s ease-in-out infinite;}
-  @keyframes glow-text{0%,100%{opacity:.6;}50%{opacity:1;text-shadow:0 0 20px var(--gold);}}
-  .tag{
-    display:inline-block;background:rgba(108,92,231,.18);border:1px solid var(--violet);
-    color:#c3bcff;border-radius:20px;padding:.25rem .85rem;font-size:.75rem;
-    letter-spacing:.1em;margin:.15rem;
-  }
-
-  ::-webkit-scrollbar{width:10px;}
-  ::-webkit-scrollbar-track{background:var(--bg);}
-  ::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--gold),var(--violet));border-radius:5px;}
-
-  @media(max-width:600px){
-    th,td{font-size:.78rem;padding:.5rem;}
-    section{padding:1.2rem;}
-    header h1{letter-spacing:.2em;}
-    .cta-portal{padding:.9rem 1.8rem;font-size:.8rem;}
-  }
-</style>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>✦ Yejidá — La Quinta Esencia del Alma ✦</title>
+<link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body data-page="1">
 
 <div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
 <div class="floating-letters" id="floaters"></div>
+
+<nav class="pager">
+  <a href="index.html" class="pager-btn prev disabled">← Anterior</a>
+  <div class="pager-dots">
+    <a href="index.html" class="dot" title="1. Introducción"></a>
+    <a href="niveles.html" class="dot" title="2. Niveles"></a>
+    <a href="yhvh.html" class="dot" title="3. YHVH"></a>
+    <a href="profecia.html" class="dot" title="4. Profecía"></a>
+    <a href="meditacion.html" class="dot" title="5. Meditación"></a>
+    <a href="terminologia.html" class="dot" title="6. Terminología"></a>
+    <a href="sintesis.html" class="dot" title="7. Síntesis"></a>
+  </div>
+  <a href="niveles.html" class="pager-btn next">Siguiente →</a>
+</nav>
 
 <div class="container">
 
@@ -243,180 +43,29 @@
   </section>
 
   <section>
-    <h2>🔯 Los Cinco Niveles del Alma</h2>
-    <table>
-      <thead><tr><th>Nivel</th><th>Hebreo</th><th>Significado</th><th>Función</th></tr></thead>
-      <tbody>
-        <tr><td>Nefesh</td><td class="hebrew-inline">נפש</td><td>Alma / Vitalidad</td><td>Facultades naturales y físicas</td></tr>
-        <tr><td>Ruaj</td><td class="hebrew-inline">רוח</td><td>Espíritu / Viento</td><td>Facultades emocionales</td></tr>
-        <tr><td>Neshamá</td><td class="hebrew-inline">נשמה</td><td>Aliento / Alma</td><td>Facultades mentales e intelectuales</td></tr>
-        <tr><td>Jaiá</td><td class="hebrew-inline">חיה</td><td>Vida</td><td>Facultades supra-racionales</td></tr>
-        <tr><td>Yejidá</td><td class="hebrew-inline">יחידה</td><td>Unicidad</td><td>Unidad absoluta con Dios</td></tr>
-      </tbody>
-    </table>
+    <h2>✦ El Viaje de Siete Portales</h2>
+    <p>Este recorrido te llevará a través de <strong>siete portales</strong> que revelan
+    los misterios de Yejidá, desde los niveles básicos del alma hasta la Unidad Absoluta.
+    Usa los botones <strong>← Anterior</strong> y <strong>Siguiente →</strong> para navegar.</p>
+    <ul>
+      <li><strong>Portal 2</strong> — Los Cinco Niveles del Alma</li>
+      <li><strong>Portal 3</strong> — El Nombre de Dios (YHVH)</li>
+      <li><strong>Portal 4</strong> — Profecía y Mashiaj</li>
+      <li><strong>Portal 5</strong> — Meditación Cabalística</li>
+      <li><strong>Portal 6</strong> — Terminología Esencial</li>
+      <li><strong>Portal 7</strong> — Síntesis Final</li>
+    </ul>
   </section>
-
-  <section>
-    <h2>💡 La Ecuación de la Kabaláh</h2>
-    <div class="equation">
-      <div class="big">Yejidá = Kéter = Ápice del Yud = Luz Infinita</div>
-      <div class="heb">יחידה = כתר = קוצו של יוד = מקור האור אין סוף</div>
-    </div>
-  </section>
-
-  <!-- ============ BOTÓN QUE SALTA A LA OTRA PÁGINA ============ -->
-  <div class="cta-wrap">
-    <a href="profecia.html" class="cta-portal">
-      Entrar al Portal <span class="arrow">✦ →</span>
-    </a>
-    <p class="cta-sub">Profecía · Meditación · Mashiaj</p>
-  </div>
 
   <footer>
     <div class="sigil-row">✡ ✦ ☰ ✦ ✡</div>
-    <div>
-      <span class="tag">Kabaláh</span>
-      <span class="tag">Yejidá</span>
-      <span class="tag">Adam Kadmon</span>
-      <span class="tag">Kéter</span>
-      <span class="tag">YHVH</span>
-    </div>
-    <p>Proyecto Yejidá · Geometría Sagrada del Alma</p>
+    <span class="tag">Kabaláh</span>
+    <span class="tag">Yejidá</span>
+    <span class="tag">Kéter</span>
+    <p>Proyecto Yejidá · Portal 1 de 7</p>
   </footer>
 
 </div>
-
-<script>
-(function(){
-  const canvas = document.getElementById('geo-canvas');
-  const ctx = canvas.getContext('2d');
-  let W,H,cx,cy,dpr;
-  function resize(){
-    dpr = window.devicePixelRatio || 1;
-    W = canvas.clientWidth; H = canvas.clientHeight;
-    canvas.width = W*dpr; canvas.height = H*dpr;
-    ctx.setTransform(dpr,0,0,dpr,0,0);
-    cx = W/2; cy = H/2;
-  }
-  window.addEventListener('resize', resize); resize();
-
-  const particles = [];
-  for(let i=0;i<90;i++){
-    particles.push({
-      x:Math.random()*W, y:Math.random()*H,
-      r:Math.random()*1.6+0.4,
-      vx:(Math.random()-.5)*.25, vy:(Math.random()-.5)*.25,
-      a:Math.random()*.6+.2
-    });
-  }
-  function drawCircle(x,y,r){
-    ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);
-    ctx.strokeStyle='rgba(212,175,55,0.13)';ctx.lineWidth=.7;ctx.stroke();
-  }
-  function drawFlowerOfLife(t){
-    const baseR = Math.min(W,H)*0.13;
-    ctx.save();ctx.translate(cx,cy);ctx.rotate(t*0.00008);
-    for(let layer=0;layer<=2;layer++){
-      const ringCount = layer===0?1:layer*6;
-      const radius = baseR*layer;
-      if(layer===0){drawCircle(0,0,baseR*0.6);}
-      else{
-        for(let i=0;i<ringCount;i++){
-          const a=(Math.PI*2/ringCount)*i;
-          drawCircle(Math.cos(a)*radius, Math.sin(a)*radius, baseR*0.6);
-        }
-      }
-    }
-    ctx.restore();
-  }
-  function drawMetatron(t){
-    const R = Math.min(W,H)*0.22;
-    ctx.save();ctx.translate(cx,cy);ctx.rotate(t*0.00015);
-    const pts=[{x:0,y:0}];
-    for(let i=0;i<6;i++){
-      const a=(Math.PI/3)*i-Math.PI/2;
-      pts.push({x:Math.cos(a)*R, y:Math.sin(a)*R});
-      pts.push({x:Math.cos(a)*R*2, y:Math.sin(a)*R*2});
-    }
-    ctx.strokeStyle='rgba(108,92,231,0.10)';ctx.lineWidth=.5;
-    for(let i=0;i<pts.length;i++)
-      for(let j=i+1;j<pts.length;j++){
-        ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.stroke();
-      }
-    ctx.strokeStyle='rgba(79,209,197,0.14)';ctx.lineWidth=.6;
-    pts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,R*0.55,0,Math.PI*2);ctx.stroke();});
-    ctx.restore();
-  }
-  const sefirot=[
-    {y:-1.00,x:0},{y:-0.72,x:-0.35},{y:-0.72,x:0.35},
-    {y:-0.30,x:-0.42},{y:-0.30,x:0.42},{y:0.05,x:0},
-    {y:0.42,x:-0.42},{y:0.42,x:0.42},{y:0.72,x:0},{y:1.05,x:0}
-  ];
-  const paths=[[0,1],[0,2],[0,5],[0,6],[0,7],[1,2],[1,3],[1,5],[2,4],[2,5],
-    [3,4],[3,5],[3,6],[4,5],[4,7],[5,6],[5,7],[5,8],[6,8],[7,8],[8,9]];
-  function drawTree(t){
-    const S = Math.min(W,H)*0.16;
-    const pulse = 0.5+0.5*Math.sin(t*0.0015);
-    ctx.save();ctx.translate(cx,cy+20);
-    ctx.strokeStyle='rgba(212,175,55,0.18)';ctx.lineWidth=.8;
-    paths.forEach(([a,b])=>{
-      ctx.beginPath();ctx.moveTo(sefirot[a].x*S,sefirot[a].y*S);
-      ctx.lineTo(sefirot[b].x*S,sefirot[b].y*S);ctx.stroke();
-    });
-    sefirot.forEach((s,i)=>{
-      const x=s.x*S,y=s.y*S,isK=i===0,r=isK?5+pulse*3:3;
-      const g=ctx.createRadialGradient(x,y,0,x,y,r*6);
-      if(isK){g.addColorStop(0,'rgba(247,224,138,0.55)');g.addColorStop(1,'rgba(247,224,138,0)');}
-      else{g.addColorStop(0,'rgba(212,175,55,0.30)');g.addColorStop(1,'rgba(212,175,55,0)');}
-      ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r*6,0,Math.PI*2);ctx.fill();
-      ctx.fillStyle=isK?'#f7e08a':'#d4af37';
-      ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();
-    });
-    ctx.restore();
-  }
-  function drawRing(t){
-    const R=Math.min(W,H)*0.42;
-    ctx.save();ctx.translate(cx,cy);ctx.rotate(-t*0.0001);
-    ctx.strokeStyle='rgba(212,175,55,0.10)';ctx.lineWidth=.6;
-    ctx.beginPath();ctx.arc(0,0,R,0,Math.PI*2);ctx.stroke();
-    for(let i=0;i<12;i++){
-      const a=(Math.PI*2/12)*i;
-      ctx.beginPath();
-      ctx.moveTo(Math.cos(a)*R,Math.sin(a)*R);
-      ctx.lineTo(Math.cos(a)*(R+8),Math.sin(a)*(R+8));
-      ctx.stroke();
-    }
-    ctx.restore();
-  }
-  function drawParticles(){
-    particles.forEach(p=>{
-      p.x+=p.vx;p.y+=p.vy;
-      if(p.x<0)p.x=W;if(p.x>W)p.x=0;
-      if(p.y<0)p.y=H;if(p.y>H)p.y=0;
-      ctx.fillStyle=`rgba(247,224,138,${p.a})`;
-      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();
-    });
-  }
-  function loop(t){
-    ctx.clearRect(0,0,W,H);
-    drawRing(t);drawFlowerOfLife(t);drawMetatron(t);drawTree(t);drawParticles();
-    requestAnimationFrame(loop);
-  }
-  requestAnimationFrame(loop);
-
-  const letters=['י','ה','ו','ה','א','ח','ד','כ','ת','ר','נ','פ','ש','מ'];
-  const cont=document.getElementById('floaters');
-  for(let i=0;i<14;i++){
-    const el=document.createElement('span');
-    el.textContent=letters[Math.floor(Math.random()*letters.length)];
-    el.style.left=Math.random()*100+'%';
-    el.style.fontSize=(28+Math.random()*50)+'px';
-    el.style.animationDuration=(18+Math.random()*22)+'s';
-    el.style.animationDelay=(-Math.random()*30)+'s';
-    el.style.opacity=(0.06+Math.random()*0.16).toFixed(2);
-    cont.appendChild(el);
-  }
-})();
-</script>
+<script src="script.js"></script>
 </body>
 </html>
