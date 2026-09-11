@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Las 10 Sefirot: el Árbol de la Vida cabalístico">
+<title>✦ Las 10 Sefirot — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+  .tree-svg{width:100%;max-width:500px;margin:1rem auto;display:block;}
+  .sefira-node{cursor:pointer;transition:all .3s;}
+  .sefira-node circle{fill:rgba(212,175,55,.15);stroke:var(--gold);
+    stroke-width:2;transition:all .3s;}
+  .sefira-node:hover circle{fill:rgba(212,175,55,.4);stroke-width:3;
+    filter:drop-shadow(0 0 12px var(--gold));}
+  .sefira-node text{fill:var(--gold2);font-size:11px;
+    font-family:var(--font-heb);text-anchor:middle;
+    pointer-events:none;font-weight:600;}
+  .sefira-node .num{fill:var(--gold);font-size:8px;
+    font-family:var(--font-mono);}
+  .sefira-path{stroke:rgba(212,175,55,.3);stroke-width:1;fill:none;}
+</style>
+</head>
+<body>
+
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+
+<main id="main" class="container" role="main">
+
+  <header class="page-header">
+    <div class="hebrew-title">ספירות</div>
+    <h1>✦ Las 10 Sefirot ✦</h1>
+    <p>El Árbol de la Vida · Etz Jaim</p>
+    <span class="page-number">Portal 03 de 20</span>
+  </header>
+
+  <section>
+    <h2>🌳 El Árbol de la Vida</h2>
+    <p>Las <strong>10 Sefirot</strong> son las emanaciones divinas a través de las cuales
+    Dios crea y sostiene el universo. Haz clic en cada una para explorar.</p>
+
+    <svg class="tree-svg" viewBox="0 0 200 320" role="img" aria-label="Árbol de la Vida cabalístico">
+      <g class="sefira-path">
+        <line x1="100" y1="30" x2="60"  y2="80"/>
+        <line x1="100" y1="30" x2="140" y2="80"/>
+        <line x1="100" y1="30" x2="100" y2="140"/>
+        <line x1="100" y1="30" x2="40"  y2="140"/>
+        <line x1="100" y1="30" x2="160" y2="140"/>
+        <line x1="60"  y1="80" x2="140" y2="80"/>
+        <line x1="60"  y1="80" x2="40"  y2="140"/>
+        <line x1="60"  y1="80" x2="100" y2="140"/>
+        <line x1="140" y1="80" x2="160" y2="140"/>
+        <line x1="140" y1="80" x2="100" y2="140"/>
+        <line x1="40"  y1="140" x2="160" y2="140"/>
+        <line x1="40"  y1="140" x2="100" y2="140"/>
+        <line x1="160" y1="140" x2="100" y2="140"/>
+        <line x1="40"  y1="140" x2="40"  y2="210"/>
+        <line x1="160" y1="140" x2="160" y2="210"/>
+        <line x1="100" y1="140" x2="40"  y2="210"/>
+        <line x1="100" y1="140" x2="160" y2="210"/>
+        <line x1="100" y1="140" x2="100" y2="210"/>
+        <line x1="40"  y1="210" x2="100" y2="210"/>
+        <line x1="160" y1="210" x2="100" y2="210"/>
+        <line x1="100" y1="210" x2="100" y2="270"/>
+      </g>
+      <g id="sefirot-g"></g>
+    </svg>
+  </section>
+
+  <section id="detalle-sefira">
+    <h2>📖 Detalle</h2>
+    <p id="sefira-info">Haz clic en una Sefirá del Árbol para ver su información.</p>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Portal 03 de 20</p>
+</footer>
+
+<script src="../shared.js"></script>
+<script>
+const SEFIROT = [
+  { n:'Kéter',   heb:'כתר', y:30,  x:100, sign:'Corona', desc:'La fuente de todo. Voluntad divina primordial. Corresponde a Yejidá.' },
+  { n:'Jojmá',   heb:'חכמה', y:80,  x:60,  sign:'Sabiduría', desc:'La chispa creativa. Sabiduría intuitiva, revelación.' },
+  { n:'Biná',    heb:'בינה', y:80,  x:140, sign:'Entendimiento', desc:'El intelecto, la comprensión. Corresponde a Neshamá.' },
+  { n:'Jesed',   heb:'חסד', y:140, x:40,  sign:'Misericordia', desc:'Amor incondicional, bondad, expansión.' },
+  { n:'Guevurá', heb:'גבורה', y:140, x:160, sign:'Rigor', desc:'Justicia, límite, disciplina, contracción.' },
+  { n:'Tiféret', heb:'תפארת', y:140, x:100, sign:'Belleza', desc:'Armonía, equilibrio, compasión. Corazón del Árbol.' },
+  { n:'Netzaj',  heb:'נצח', y:210, x:40,  sign:'Victoria', desc:'Eternidad, resistencia, victoria sobre la oscuridad.' },
+  { n:'Hod',     heb:'הוד', y:210, x:160, sign:'Esplendor', desc:'Gratitud, humildad, reconocimiento.' },
+  { n:'Yesod',   heb:'יסוד', y:210, x:100, sign:'Fundamento', desc:'Conexión, canal hacia Maljut. Corresponde a Yejidá en acción.' },
+  { n:'Maljut',  heb:'מלכות', y:270, x:100, sign:'Reino', desc:'El mundo manifiesto. La Shejiná. Corresponde a Nefesh.' }
+];
+
+document.addEventListener('DOMContentLoaded', () => {
+  const g = document.getElementById('sefirot-g');
+  SEFIROT.forEach((s, i) => {
+    const node = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    node.setAttribute('class', 'sefira-node');
+    node.setAttribute('tabindex', '0');
+    node.setAttribute('role', 'button');
+    node.setAttribute('aria-label', s.n);
+    node.innerHTML = `
+      <circle cx="${s.x}" cy="${s.y}" r="18"/>
+      <text x="${s.x}" y="${s.y+4}">${s.heb}</text>
+      <text x="${s.x}" y="${s.y+32}" class="num" style="font-size:9px;fill:#8d93ad">${s.n}</text>
+    `;
+    const show = () => {
+      document.getElementById('sefira-info').innerHTML = `
+        <strong style="color:var(--gold2);font-size:1.2rem">${s.n} (${s.heb})</strong><br>
+        <em style="color:var(--violet2)">${s.sign}</em><br><br>
+        ${s.desc}
+      `;
+    };
+    node.addEventListener('click', show);
+    node.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); show(); }
+    });
+    g.appendChild(node);
+  });
+
+  const pager = Yejida.buildPager(3);
+  if(pager) document.getElementById('main').appendChild(pager);
+});
+</script>
+</body>
+</html>
