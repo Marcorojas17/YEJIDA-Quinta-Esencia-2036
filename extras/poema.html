@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Poema cabalístico generado desde tu nombre y fecha">
+<title>✦ Tu Poema Sagrado — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.poema{text-align:center;padding:2.5rem 1.5rem;
+  background:radial-gradient(circle, rgba(212,175,55,.12), transparent 70%),
+  rgba(5,6,15,.7);border:2px solid var(--gold);border-radius:20px;
+  margin:1.5rem 0;box-shadow:0 0 50px rgba(212,175,55,.3);
+  font-style:italic;line-height:2;font-size:1.05rem;color:var(--text);}
+.poema .versiculo{margin:.4rem 0;}
+.poema .heb{font-family:var(--font-heb);direction:rtl;
+  color:var(--gold2);font-size:1.2rem;font-style:normal;
+  margin-top:1.5rem;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">שיר</div>
+  <h1>✦ Tu Poema Sagrado ✦</h1>
+  <p>Un poema generado desde tu alma</p>
+  <span class="page-number">Extras · Poema</span>
+</header>
+
+<section>
+  <h2>🎭 Poesía Cabalística</h2>
+  <p>Tu poema sagrado se genera combinando tu nombre, tu Camino de Vida y
+  los arquetipos de tu alma. Cada poema es único e irrepetible.</p>
+  <form id="poema-form" autocomplete="off">
+    <div class="form-grid">
+      <div class="form-field full">
+        <label for="nombre">Tu nombre</label>
+        <input type="text" id="nombre" required>
+      </div>
+      <div class="form-field full">
+        <label for="fecha">Fecha de nacimiento</label>
+        <input type="date" id="fecha" required>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1.2rem">
+      <button type="submit" class="btn">✦ Generar Poema ✦</button>
+    </div>
+  </form>
+</section>
+
+<div id="results" style="display:none"></div>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Poema Sagrado</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const VERSOS_POR_CAMINO = {
+  1:['Caminas primero donde nadie ha pisado','Abres senderos con tu voluntad','En tu pecho arde el fuego del comienzo'],
+  2:['Eres puente entre mundos separados','Tu sensibilidad es tu poder','En tus manos se unen los opuestos'],
+  3:['Tu voz es un río de luz que fluye','Nombras lo que estaba dormido','En tus palabras despierta el mundo'],
+  4:['Construyes con paciencia y firmeza','En tus cimientos descansa el porvenir','Tu obra perdura más allá del tiempo'],
+  5:['Vuelas libre sobre las convenciones','En tu búsqueda se revela lo infinito','Tu alma no conoce cadenas'],
+  6:['Sanan tus manos lo que estaba roto','Tu amor abraza lo que otros rechazan','En tu hogar descansa la Shejiná'],
+  7:['Buscas la verdad en el silencio','En tu interior habita el misterio','Tu sabiduría es un faro en la noche'],
+  8:['Tienes el poder de transformar el mundo','En tus decisiones vibra la justicia','Tu abundancia es un canal de bendición'],
+  9:['Abrazas a todos sin distinción','En tu compasión se refleja el Infinito','Tu corazón es casa de todos'],
+  11:['Ves lo que otros aún no pueden ver','En tus visiones late el futuro','Eres luz que guía a las naciones'],
+  22:['Construyes sueños en realidad concreta','En tus manos se materializa la promesa','Eres arquitecto del mundo venidero'],
+  33:['Amas sin condiciones ni reservas','En tu presencia se sanan las almas','Eres reflejo del amor universal']
+};
+
+const CIERRES = [
+  'Recuerda: eres chispa del Infinito.',
+  'Recuerda: nunca estuviste separado.',
+  'Recuerda: la parte contiene el todo.',
+  'Recuerda: Yejidá habita en ti.',
+  'Recuerda: todo es Uno.'
+];
+
+function reducir(n){
+  while(n > 9){
+    if([11,22,33].includes(n)) return n;
+    n = String(n).split('').reduce((a,b) => a + +b, 0);
+  }
+  return n;
+}
+
+document.getElementById('poema-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const nombre = document.getElementById('nombre').value.trim();
+  const f = document.getElementById('fecha').value;
+  if(!nombre || !f) return;
+  const d = new Date(f + 'T12:00:00');
+  const camino = reducir(d.getDate() + d.getMonth() + 1 + d.getFullYear());
+  const versos = VERSOS_POR_CAMINO[camino] || VERSOS_POR_CAMINO[1];
+  const cierre = CIERRES[camino % CIERRES.length];
+
+  const results = document.getElementById('results');
+  results.style.display = 'block';
+  results.innerHTML = `
+    <section>
+      <h2>🎭 Tu Poema</h2>
+      <div class="poema">
+        <div style="color:var(--gold2);font-style:normal;font-size:1.2rem;
+          margin-bottom:1.5rem;letter-spacing:.15em;">${nombre}</div>
+        ${versos.map(v => `<div class="versiculo">${v}</div>`).join('')}
+        <div style="margin-top:1.5rem;color:var(--muted);">—</div>
+        <div style="margin-top:1rem;color:var(--gold2);">${cierre}</div>
+        <div class="heb">יחידה</div>
+      </div>
+    </section>
+    <section>
+      <h2>💡 Sobre tu Poema</h2>
+      <p>Tu Camino de Vida es <strong>${camino}</strong>. Los versos de tu
+      poema reflejan la vibración particular de tu alma en este ciclo.</p>
+      <blockquote>"El poema es el alma hablando en su propio idioma."</blockquote>
+    </section>
+    <section style="text-align:center;">
+      <button id="descargar-poema" class="btn">📥 Descargar Poema</button>
+    </section>
+  `;
+  results.scrollIntoView({ behavior:'smooth' });
+
+  document.getElementById('descargar-poema').addEventListener('click', () => {
+    const texto = `${nombre}\n\n${versos.join('\n')}\n\n${cierre}\n\n— Yejidá`;
+    const blob = new Blob([texto], { type:'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `poema-${nombre.replace(/\s+/g,'-').toLowerCase()}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+});
+</script>
+</body>
+</html>
