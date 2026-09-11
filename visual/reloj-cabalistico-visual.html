@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Reloj cabalístico visual: las 12 horas y las Sefirot en el cielo">
+<title>✦ Reloj Cabalístico Visual — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.cielo-cabal{width:100%;max-width:600px;margin:2rem auto;position:relative;
+  aspect-ratio:1;border:1px solid var(--line);border-radius:50%;
+  background:radial-gradient(circle at 50% 50%,
+    rgba(108,92,231,.15), transparent 60%), rgba(5,6,15,.7);
+  box-shadow:0 0 60px rgba(212,175,55,.3) inset,
+    0 0 40px rgba(108,92,231,.4);}
+.cielo-cabal svg{position:absolute;inset:0;width:100%;height:100%;}
+.cielo-cabal .hora-mark{stroke:rgba(212,175,55,.2);stroke-width:1;}
+.cielo-cabal .hora-mark.major{stroke:var(--gold);stroke-width:2;}
+.cielo-cabal .hora-num{fill:var(--muted);font-size:11px;font-family:monospace;
+  text-anchor:middle;font-weight:600;}
+.cielo-cabal .sef-dot{fill:var(--gold2);
+  filter:drop-shadow(0 0 10px var(--gold));}
+.cielo-cabal .sef-label{fill:var(--gold);font-size:10px;font-family:var(--font-heb);
+  text-anchor:middle;font-weight:600;}
+.cielo-cabal .planeta{fill:var(--cyan);font-size:14px;text-anchor:middle;}
+.cielo-cabal .sol{fill:var(--gold2);filter:drop-shadow(0 0 15px var(--gold));}
+.cielo-cabal .luna{fill:#e0e0f0;filter:drop-shadow(0 0 10px #e0e0f0);}
+.cielo-cabal .mano{stroke:var(--gold2);stroke-width:2;stroke-linecap:round;}
+.cielo-cabal .centro{fill:var(--gold2);filter:drop-shadow(0 0 15px var(--gold));}
+.hora-actual-display{text-align:center;margin-top:1.5rem;
+  padding:1.5rem;background:rgba(5,6,15,.6);border:1px solid var(--line);
+  border-radius:12px;}
+.hora-actual-display .reloj-tiempo{font-family:var(--font-mono);
+  font-size:2rem;color:var(--gold2);letter-spacing:.15em;
+  text-shadow:0 0 20px rgba(212,175,55,.8);}
+.hora-actual-display .planeta-actual{font-size:1.1rem;color:var(--cyan);
+  margin-top:.5rem;letter-spacing:.1em;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">שעון השמים</div>
+  <h1>✦ Reloj Cabalístico Visual ✦</h1>
+  <p>Las 12 horas · Las Sefirot · Los planetas</p>
+  <span class="page-number">Visualización · Reloj</span>
+</header>
+
+<section>
+  <h2>🕐 El Cielo Sagrado</h2>
+  <p>Cada hora del día tiene un <strong>planeta regente</strong> y una
+  <strong>Sefirá correspondiente</strong>. La manecilla señala la hora actual
+  en el cielo cabalístico.</p>
+
+  <div class="cielo-cabal">
+    <svg viewBox="0 0 500 500" role="img" aria-label="Reloj cabalístico">
+      <g transform="translate(250,250)">
+        <g id="marcas"></g>
+        <g id="sefirot"></g>
+        <g id="planetas"></g>
+        <line id="mano" class="mano" x1="0" y1="0" x2="0" y2="-180"/>
+        <circle class="centro" cx="0" cy="0" r="6"/>
+      </g>
+    </svg>
+  </div>
+
+  <div class="hora-actual-display">
+    <div class="reloj-tiempo" id="tiempo">--:--:--</div>
+    <div class="planeta-actual" id="planeta">Calculando...</div>
+    <div id="sefira-actual" style="color:var(--gold2);margin-top:.4rem;"></div>
+  </div>
+</section>
+
+<section>
+  <h2>📊 Tabla de las 12 Horas</h2>
+  <table>
+    <thead><tr><th>Hora</th><th>Planeta</th><th>Sefirá</th><th>Energía</th></tr></thead>
+    <tbody id="tabla"></tbody>
+  </table>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Reloj Cabalístico Visual</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const HORAS = [
+  { h:1,  p:'Saturno',  sym:'♄', sef:'Kéter',   heb:'כתר',  desc:'Voluntad, inicio' },
+  { h:2,  p:'Júpiter',  sym:'♃', sef:'Jojmá',   heb:'חכמה', desc:'Sabiduría, expansión' },
+  { h:3,  p:'Marte',    sym:'♂', sef:'Biná',    heb:'בינה', desc:'Entendimiento' },
+  { h:4,  p:'Sol',      sym:'☉', sef:'Jesed',   heb:'חסד',  desc:'Misericordia' },
+  { h:5,  p:'Venus',    sym:'♀', sef:'Guevurá', heb:'גבורה', desc:'Rigor, justicia' },
+  { h:6,  p:'Mercurio', sym:'☿', sef:'Tiféret', heb:'תפארת', desc:'Belleza, armonía' },
+  { h:7,  p:'Luna',     sym:'☾', sef:'Netzaj',  heb:'נצח',  desc:'Victoria' },
+  { h:8,  p:'Saturno',  sym:'♄', sef:'Hod',     heb:'הוד',  desc:'Esplendor' },
+  { h:9,  p:'Júpiter',  sym:'♃', sef:'Yesod',   heb:'יסוד', desc:'Fundamento' },
+  { h:10, p:'Marte',    sym:'♂', sef:'Maljut',  heb:'מלכות', desc:'Reino' },
+  { h:11, p:'Sol',      sym:'☉', sef:'Kéter',   heb:'כתר',  desc:'Retorno' },
+  { h:12, p:'Venus',    sym:'♀', sef:'Maljut',  heb:'מלכות', desc:'Cierre' }
+];
+
+document.addEventListener('DOMContentLoaded', () => {
+  const marcasG = document.getElementById('marcas');
+  const sefG = document.getElementById('sefirot');
+  const planG = document.getElementById('planetas');
+  const R_EXTERIOR = 220, R_PLANETAS = 180, R_SEFIROT = 130;
+
+  // Marcas de las horas
+  HORAS.forEach((h, i) => {
+    const a = (Math.PI * 2 / 12) * i - Math.PI / 2;
+    const x1 = Math.cos(a) * R_EXTERIOR;
+    const y1 = Math.sin(a) * R_EXTERIOR;
+    const x2 = Math.cos(a) * (R_EXTERIOR - 15);
+    const y2 = Math.sin(a) * (R_EXTERIOR - 15);
+    const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    l.setAttribute('x1', x1); l.setAttribute('y1', y1);
+    l.setAttribute('x2', x2); l.setAttribute('y2', y2);
+    l.setAttribute('class', i % 3 === 0 ? 'hora-mark major' : 'hora-mark');
+    marcasG.appendChild(l);
+
+    const num = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    num.setAttribute('x', Math.cos(a) * (R_EXTERIOR - 30));
+    num.setAttribute('y', Math.sin(a) * (R_EXTERIOR - 30) + 4);
+    num.setAttribute('class', 'hora-num');
+    num.textContent = h.h;
+    marcasG.appendChild(num);
+
+    // Símbolo del planeta
+    const pl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    pl.setAttribute('x', Math.cos(a) * R_PLANETAS);
+    pl.setAttribute('y', Math.sin(a) * R_PLANETAS + 5);
+    pl.setAttribute('class', 'planeta');
+    pl.textContent = h.sym;
+    planG.appendChild(pl);
+
+    // Nombre de la Sefirá
+    const sf = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    sf.setAttribute('x', Math.cos(a) * R_SEFIROT);
+    sf.setAttribute('y', Math.sin(a) * R_SEFIROT + 4);
+    sf.setAttribute('class', 'sef-label');
+    sf.textContent = h.heb;
+    sefG.appendChild(sf);
+  });
+
+  // Tabla
+  const tbody = document.getElementById('tabla');
+  HORAS.forEach(h => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${h.h}</td><td>${h.sym} ${h.p}</td>
+      <td>${h.sef}</td><td>${h.desc}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  // Actualizar reloj
+  function tick(){
+    const now = new Date();
+    const hora = now.getHours();
+    const min = now.getMinutes();
+    const seg = now.getSeconds();
+
+    document.getElementById('tiempo').textContent =
+      `${String(hora).padStart(2,'0')}:${String(min).padStart(2,'0')}:${String(seg).padStart(2,'0')}`;
+
+    // Posición de la manecilla
+    const h12 = hora % 12;
+    const a = (Math.PI * 2 / 12) * h12 + (Math.PI * 2 / 12) * (min / 60) - Math.PI / 2;
+    const x = Math.cos(a) * 180;
+    const y = Math.sin(a) * 180;
+    document.getElementById('mano').setAttribute('x2', x);
+    document.getElementById('mano').setAttribute('y2', y);
+
+    // Planeta actual
+    const idx = h12;
+    const hData = HORAS[idx];
+    document.getElementById('planeta').innerHTML =
+      `${hData.sym} ${hData.p}`;
+    document.getElementById('sefira-actual').innerHTML =
+      `${hData.heb} · ${hData.sef} · ${hData.desc}`;
+  }
+  tick();
+  setInterval(tick, 1000);
+});
+</script>
+</body>
+</html>
