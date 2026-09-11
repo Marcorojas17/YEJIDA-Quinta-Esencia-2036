@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Los cinco niveles del alma: Nefesh, Ruaj, Neshamá, Jaiá, Yejidá">
+<title>✦ Los Cinco Niveles del Alma — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+</head>
+<body>
+
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+
+<main id="main" class="container" role="main">
+
+  <header class="page-header">
+    <div class="hebrew-title">נפש · רוח · נשמה · חיה · יחידה</div>
+    <h1>✦ Los Cinco Niveles del Alma ✦</h1>
+    <p>De la vitalidad física a la Unidad Absoluta</p>
+    <span class="page-number">Portal 02 de 20</span>
+  </header>
+
+  <div id="toc-slot"></div>
+
+  <section id="tabla">
+    <h2>🔯 Tabla de los Cinco Niveles</h2>
+    <table>
+      <thead><tr><th>Nivel</th><th>Hebreo</th><th>Significado</th><th>Función</th></tr></thead>
+      <tbody>
+        <tr><td>Nefesh</td><td class="hebrew-inline">נפש</td><td>Alma / Vitalidad</td><td>Facultades naturales y físicas</td></tr>
+        <tr><td>Ruaj</td><td class="hebrew-inline">רוח</td><td>Espíritu / Viento</td><td>Facultades emocionales</td></tr>
+        <tr><td>Neshamá</td><td class="hebrew-inline">נשמה</td><td>Aliento / Alma</td><td>Facultades mentales</td></tr>
+        <tr><td>Jaiá</td><td class="hebrew-inline">חיה</td><td>Vida</td><td>Facultades supra-racionales</td></tr>
+        <tr><td>Yejidá</td><td class="hebrew-inline">יחידה</td><td>Unicidad</td><td>Unidad absoluta con Dios</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="ascenso">
+    <h2>🌱 Ascenso Nivel por Nivel</h2>
+    <div class="nivel-card">
+      <p><span class="num">1</span><strong>Nefesh (נפש)</strong> — Vitalidad biológica, motor de la vida física. Base corporal.</p>
+    </div>
+    <div class="nivel-card">
+      <p><span class="num">2</span><strong>Ruaj (רוח)</strong> — Emociones, sentimientos, purificación emocional.</p>
+    </div>
+    <div class="nivel-card">
+      <p><span class="num">3</span><strong>Neshamá (נשמה)</strong> — Intelecto, estudio y comprensión de la Torá.</p>
+    </div>
+    <div class="nivel-card">
+      <p><span class="num">4</span><strong>Jaiá (חיה)</strong> — Voluntad supra-racional. "Cerebros de Jayá" como antesala profética.</p>
+    </div>
+    <div class="nivel-card">
+      <p><span class="num">5</span><strong>Yejidá (יחידה)</strong> — Unidad absoluta. La chispa divina unida permanentemente a Dios.</p>
+    </div>
+  </section>
+
+  <section id="ecuacion">
+    <h2>💡 La Ecuación</h2>
+    <div class="equation">
+      <div class="big">Yejidá = Kéter = Ápice del Yud = Luz Infinita</div>
+      <div class="heb">יחידה = כתר = קוצו של יוד = מקור האור אין סוף</div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Portal 02 de 20</p>
+</footer>
+
+<script src="../shared.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const pager = Yejida.buildPager(2);
+    if(pager) document.getElementById('main').appendChild(pager);
+    const toc = Yejida.buildTOC(document.getElementById('main'));
+    if(toc) document.getElementById('toc-slot').appendChild(toc);
+  });
+</script>
+</body>
+</html>
