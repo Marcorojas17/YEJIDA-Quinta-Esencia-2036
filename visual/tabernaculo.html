@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="El Tabernáculo (Mishkán): estructura sagrada y correspondencias cabalísticas">
+<title>✦ El Tabernáculo — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.tabernaculo-svg{width:100%;max-width:600px;margin:2rem auto;display:block;
+  filter:drop-shadow(0 0 30px rgba(212,175,55,.4));}
+.tabernaculo-svg .zona{fill:rgba(212,175,55,.06);stroke:var(--gold);
+  stroke-width:2;cursor:pointer;transition:all .4s;}
+.tabernaculo-svg .zona:hover{fill:rgba(212,175,55,.2);
+  filter:drop-shadow(0 0 15px var(--gold));}
+.tabernaculo-svg .objeto{fill:rgba(108,92,231,.3);stroke:var(--violet);
+  stroke-width:1.5;cursor:pointer;transition:all .4s;}
+.tabernaculo-svg .objeto:hover{fill:rgba(108,92,231,.6);
+  filter:drop-shadow(0 0 12px var(--violet));}
+.tabernaculo-svg .label{fill:var(--muted);font-size:10px;text-anchor:middle;
+  font-family:monospace;pointer-events:none;}
+.tabernaculo-svg .heb{fill:var(--gold2);font-size:13px;
+  font-family:var(--font-heb);text-anchor:middle;font-weight:600;
+  pointer-events:none;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">משכן</div>
+  <h1>✦ El Tabernáculo ✦</h1>
+  <p>El Mishkán · Estructura sagrada del desierto</p>
+  <span class="page-number">Visualización · Templo</span>
+</header>
+
+<section>
+  <h2>⛺ El Mishkán</h2>
+  <p>El <strong>Tabernáculo (Mishkán)</strong> fue la morada portátil de la
+  Presencia divina durante el éxodo por el desierto. Su estructura de
+  <strong>tres zonas</strong> corresponde a los <strong>tres mundos superiores</strong>
+  de la Kabaláh.</p>
+
+  <svg class="tabernaculo-svg" viewBox="0 0 500 400" role="img"
+    aria-label="Estructura del Tabernáculo">
+    <g id="tab-g" transform="translate(50,50)"></g>
+  </svg>
+
+  <div id="info-tab" style="margin-top:1.5rem;padding:1.5rem;
+    background:rgba(5,6,15,.5);border:1px solid var(--line);border-radius:12px;
+    min-height:80px;">
+    <p style="color:var(--muted);text-align:center;">
+      Haz clic en cada zona u objeto sagrado.
+    </p>
+  </div>
+</section>
+
+<section>
+  <h2>🔯 Las 3 Zonas Sagradas</h2>
+  <table>
+    <thead><tr><th>Zona</th><th>Hebreo</th><th>Mundo</th><th>Acceso</th></tr></thead>
+    <tbody>
+      <tr><td>Atrio Exterior</td><td class="hebrew-inline">חצר</td><td>Asiá</td><td>Todos</td></tr>
+      <tr><td>Lugar Santo</td><td class="hebrew-inline">קודש</td><td>Yetzirá</td><td>Sacerdotes</td></tr>
+      <tr><td>Santo de los Santos</td><td class="hebrew-inline">קודש הקודשים</td><td>Briá</td><td>Solo Sumo Sacerdote</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>✨ Los Objetos Sagrados</h2>
+  <table>
+    <thead><tr><th>Objeto</th><th>Hebreo</th><th>Sefirá</th><th>Significado</th></tr></thead>
+    <tbody>
+      <tr><td>Arca de la Alianza</td><td class="hebrew-inline">ארון</td><td>Maljut</td><td>La Presencia divina</td></tr>
+      <tr><td>Menorá</td><td class="hebrew-inline">מנורה</td><td>Jojmá</td><td>La luz de la sabiduría</td></tr>
+      <tr><td>Mesa de los Panes</td><td class="hebrew-inline">שולחן</td><td>Jesed</td><td>Abundancia y sustento</td></tr>
+      <tr><td>Altar del Incienso</td><td class="hebrew-inline">מזבח הקטורת</td><td>Tiféret</td><td>Oración y conexión</td></tr>
+      <tr><td>Altar de Holocaustos</td><td class="hebrew-inline">מזבח העולה</td><td>Guevurá</td><td>Sacrificio y entrega</td></tr>
+      <tr><td>Kiyor (lavamanos)</td><td class="hebrew-inline">כיור</td><td>Yesod</td><td>Purificación</td></tr>
+    </tbody>
+  </table>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Tabernáculo</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const g = document.getElementById('tab-g');
+  const info = document.getElementById('info-tab');
+
+  // Zona exterior (Atrio)
+  const atrio = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  atrio.setAttribute('x', 0); atrio.setAttribute('y', 0);
+  atrio.setAttribute('width', 400); atrio.setAttribute('height', 300);
+  atrio.setAttribute('class', 'zona');
+  atrio.setAttribute('tabindex', '0');
+  atrio.addEventListener('click', () => show({
+    n:'Atrio Exterior', heb:'חצר', m:'Asiá',
+    d:'Lugar donde el pueblo ofrecía sacrificios. Corresponde al mundo de la acción.'
+  }));
+  g.appendChild(atrio);
+
+  // Lugar Santo
+  const santo = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  santo.setAttribute('x', 100); santo.setAttribute('y', 60);
+  santo.setAttribute('width', 200); santo.setAttribute('height', 180);
+  santo.setAttribute('class', 'zona');
+  santo.setAttribute('tabindex', '0');
+  santo.addEventListener('click', () => show({
+    n:'Lugar Santo', heb:'קודש', m:'Yetzirá',
+    d:'Contenía la Menorá, la Mesa y el Altar del Incienso. Solo accedían los sacerdotes.'
+  }));
+  g.appendChild(santo);
+
+  // Santo de los Santos
+  const santos = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  santos.setAttribute('x', 150); santos.setAttribute('y', 120);
+  santos.setAttribute('width', 100); santos.setAttribute('height', 120);
+  santos.setAttribute('fill', 'rgba(212,175,55,.15)');
+  santos.setAttribute('stroke', 'var(--gold2)');
+  santos.setAttribute('stroke-width', '2');
+  santos.setAttribute('class', 'zona');
+  santos.setAttribute('tabindex', '0');
+  santos.addEventListener('click', () => show({
+    n:'Santo de los Santos', heb:'קודש הקודשים', m:'Briá',
+    d:'Donde residía el Arca de la Alianza. Solo el Sumo Sacerdote entraba, una vez al año (Yom Kipur).'
+  }));
+  g.appendChild(santos);
+
+  // Objetos
+  const objetos = [
+    { n:'Arca', heb:'ארון', x:200, y:200, sef:'Maljut', d:'Contenía las Tablas de la Ley, el maná y la vara de Aarón.' },
+    { n:'Menorá', heb:'מנורה', x:120, y:130, sef:'Jojmá', d:'Candelabro de 7 brazos. Luz de la sabiduría.' },
+    { n:'Mesa', heb:'שולחן', x:280, y:130, sef:'Jesed', d:'Con 12 panes de proposición. Abundancia.' },
+    { n:'Incienso', heb:'מזבח', x:200, y:100, sef:'Tiféret', d:'Altar del incienso. Oración y conexión.' },
+    { n:'Altar', heb:'מזבח', x:200, y:250, sef:'Guevurá', d:'Altar de los holocaustos. Sacrificio.' }
+  ];
+
+  objetos.forEach(o => {
+    const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    c.setAttribute('cx', o.x); c.setAttribute('cy', o.y);
+    c.setAttribute('r', 12);
+    c.setAttribute('class', 'objeto');
+    c.setAttribute('tabindex', '0');
+    c.setAttribute('aria-label', o.n);
+    c.addEventListener('click', () => show({
+      n:o.n, heb:o.heb, m:o.sef, d:o.d
+    }));
+    g.appendChild(c);
+  });
+
+  // Etiquetas
+  const labels = [
+    { t:'Atrio', x:50, y:290 },
+    { t:'Lugar Santo', x:200, y:290 },
+    { t:'Santo de los Santos', x:200, y:310 }
+  ];
+  labels.forEach(l => {
+    const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    t.setAttribute('x', l.x); t.setAttribute('y', l.y);
+    t.setAttribute('class', 'label');
+    t.textContent = l.t;
+    g.appendChild(t);
+  });
+
+  function show(o){
+    info.innerHTML = `
+      <h3 style="color:var(--gold2);font-size:1.2rem;text-align:center;">
+        ${o.n} · <span class="hebrew-inline">${o.heb}</span>
+      </h3>
+      <p style="text-align:center;color:var(--cyan);margin-top:.5rem;">
+        ${o.m}
+      </p>
+      <p style="text-align:center;color:var(--text);margin-top:.7rem;">
+        ${o.d}
+      </p>
+    `;
+  }
+});
+</script>
+</body>
+</html>
