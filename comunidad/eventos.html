@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Eventos de la comunidad Yejidá: clases, retiros, webinars">
+<title>✦ Eventos — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.evento{display:grid;grid-template-columns:90px 1fr auto;gap:1.2rem;
+  align-items:center;padding:1.2rem;background:rgba(10,12,30,.6);
+  border:1px solid var(--line);border-radius:12px;margin-bottom:.8rem;
+  transition:all .3s;}
+.evento:hover{border-color:var(--gold);transform:translateX(4px);}
+.evento .fecha-box{text-align:center;padding:.6rem;background:rgba(212,175,55,.1);
+  border:1px solid var(--line);border-radius:10px;}
+.evento .fecha-box .mes{color:var(--gold);font-size:.75rem;
+  letter-spacing:.15em;text-transform:uppercase;}
+.evento .fecha-box .dia{color:var(--gold2);font-size:1.8rem;font-weight:700;
+  line-height:1;margin-top:.2rem;}
+.evento .info h3{color:var(--gold2);font-size:1.05rem;margin-bottom:.3rem;}
+.evento .info .tipo{display:inline-block;background:rgba(108,92,231,.2);
+  color:var(--violet2);padding:.15rem .6rem;border-radius:20px;
+  font-size:.7rem;margin-right:.5rem;}
+.evento .info p{color:var(--muted);font-size:.85rem;margin:.3rem 0 0;}
+.evento .accion{padding:.6rem 1.2rem;border:1px solid var(--gold);
+  border-radius:30px;background:rgba(212,175,55,.1);color:var(--gold2);
+  text-decoration:none;font-size:.8rem;letter-spacing:.08em;
+  text-transform:uppercase;transition:all .3s;white-space:nowrap;
+  cursor:pointer;font-family:inherit;}
+.evento .accion:hover{background:rgba(212,175,55,.25);
+  box-shadow:0 0 20px rgba(212,175,55,.4);}
+.evento .accion.registrado{border-color:var(--success);color:var(--success);
+  background:rgba(74,222,128,.1);}
+@media(max-width:600px){
+  .evento{grid-template-columns:1fr;text-align:center;}
+  .evento .fecha-box{width:80px;margin:0 auto;}
+}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">אירועים</div>
+  <h1>✦ Eventos ✦</h1>
+  <p>Clases · Retiros · Webinars</p>
+  <span class="page-number">Comunidad · Eventos</span>
+</header>
+
+<section>
+  <h2>📅 Próximos Eventos</h2>
+  <div id="eventos"></div>
+</section>
+
+<section>
+  <h2>💡 Tipos de Eventos</h2>
+  <table>
+    <thead><tr><th>Tipo</th><th>Descripción</th><th>Frecuencia</th></tr></thead>
+    <tbody>
+      <tr><td>📚 Clase magistral</td><td>Sesión profunda sobre un tema específico.</td><td>Mensual</td></tr>
+      <tr><td>🎓 Curso corto</td><td>4-6 sesiones sobre un módulo.</td><td>Trimestral</td></tr>
+      <tr><td>🧘 Retiro virtual</td><td>Un día completo de práctica.</td><td>Semestral</td></tr>
+      <tr><td>💬 Charla abierta</td><td>Conversación con preguntas del público.</td><td>Semanal</td></tr>
+      <tr><td>🌍 Encuentro anual</td><td>Retiro presencial comunitario.</td><td>Anual</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>📍 Sobre los Eventos</h2>
+  <div class="notice">
+    <strong>Modalidad:</strong> Todos los eventos son virtuales por ahora,
+    transmitidos en vivo por Zoom o YouTube. Los enlaces se envían por
+    correo a los registrados.
+  </div>
+  <p style="color:var(--muted);font-size:.85rem;text-align:center;margin-top:1rem;">
+    ¿Quieres que anunciemos tu evento? Escríbenos a través de
+    <a href="contribuir.html" style="color:var(--gold2);">Contribuir</a>.
+  </p>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Eventos</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const EVENTOS = [
+  { dia:15, mes:'ENE', titulo:'Introducción a la Kabaláh', tipo:'charla',
+    desc:'Charla abierta para principiantes. Preguntas al final.', fecha:'2026-01-15' },
+  { dia:22, mes:'ENE', titulo:'Clase magistral: Las 10 Sefirot', tipo:'clase',
+    desc:'Recorrido profundo por el Árbol de la Vida.', fecha:'2026-01-22' },
+  { dia:05, mes:'FEB', titulo:'Webinar: Meditación con Letras', tipo:'webinar',
+    desc:'Práctica guiada de otiot y yijudim.', fecha:'2026-02-05' },
+  { dia:20, mes:'FEB', titulo:'Retiro virtual: Shabat', tipo:'retiro',
+    desc:'Un día completo de práctica y estudio.', fecha:'2026-02-20' },
+  { dia:10, mes:'MAR', titulo:'Curso corto: Tzimtzum y Creación', tipo:'curso',
+    desc:'4 sesiones sobre la Kabaláh luriana.', fecha:'2026-03-10' },
+  { dia:25, mes:'MAR', titulo:'Encuentro de primavera', tipo:'anual',
+    desc:'Celebración de Pésaj comunitario.', fecha:'2026-03-25' }
+];
+
+const KEY = 'yejida_eventos_registrados';
+
+function cargarRegistrados(){
+  try{ return JSON.parse(localStorage.getItem(KEY) || '[]'); }
+  catch(e){ return []; }
+}
+
+function render(){
+  const reg = cargarRegistrados();
+  document.getElementById('eventos').innerHTML = EVENTOS.map((e, i) => {
+    const registrado = reg.includes(i);
+    return `
+      <div class="evento">
+        <div class="fecha-box">
+          <div class="mes">${e.mes}</div>
+          <div class="dia">${e.dia}</div>
+        </div>
+        <div class="info">
+          <h3>${e.titulo}</h3>
+          <div><span class="tipo">${e.tipo}</span></div>
+          <p>${e.desc}</p>
+        </div>
+        <button class="accion ${registrado ? 'registrado' : ''}" data-i="${i}">
+          ${registrado ? '✓ Registrado' : 'Registrarme'}
+        </button>
+      </div>
+    `;
+  }).join('');
+
+  document.querySelectorAll('.accion').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const i = parseInt(btn.dataset.i);
+      let reg = cargarRegistrados();
+      if(reg.includes(i)){
+        reg = reg.filter(x => x !== i);
+      } else {
+        reg.push(i);
+      }
+      localStorage.setItem(KEY, JSON.stringify(reg));
+      render();
+    });
+  });
+}
+
+render();
+</script>
+</body>
+</html>
