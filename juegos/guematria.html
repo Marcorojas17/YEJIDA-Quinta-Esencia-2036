@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Juego: adivina el valor numérico de la palabra hebrea">
+<title>✦ Adivina la Guematria — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.palabra-card{text-align:center;padding:2rem;
+  background:radial-gradient(circle, rgba(212,175,55,.15), transparent 70%),
+  rgba(5,6,15,.7);border:2px solid var(--gold);border-radius:20px;
+  margin:1.5rem 0;box-shadow:0 0 50px rgba(212,175,55,.3);}
+.palabra-card .heb{font-size:4rem;color:var(--gold2);
+  font-family:var(--font-heb);direction:rtl;
+  text-shadow:0 0 30px rgba(212,175,55,.8);line-height:1.2;}
+.palabra-card .translit{color:var(--cyan);margin-top:.5rem;
+  font-size:1rem;letter-spacing:.15em;}
+.opciones-guem{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));
+  gap:.7rem;margin-top:1rem;}
+.opcion-guem{padding:1rem;background:rgba(10,12,30,.7);
+  border:1px solid var(--line);border-radius:10px;color:var(--text);
+  font-family:var(--font-mono);font-size:1.1rem;cursor:pointer;
+  transition:all .3s;font-weight:700;}
+.opcion-guem:hover{border-color:var(--gold);background:rgba(212,175,55,.1);}
+.opcion-guem.correcta{border-color:var(--success);background:rgba(74,222,128,.2);
+  color:var(--success);}
+.opcion-guem.incorrecta{border-color:var(--danger);background:rgba(255,107,107,.2);
+  color:var(--danger);}
+.opcion-guem:disabled{cursor:default;}
+.stats-juego{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;
+  margin:1rem 0;}
+.stat{text-align:center;padding:.6rem 1.2rem;background:rgba(10,12,30,.6);
+  border:1px solid var(--line);border-radius:10px;min-width:100px;}
+.stat .num{color:var(--gold2);font-size:1.3rem;font-family:var(--font-mono);}
+.stat .lbl{color:var(--muted);font-size:.7rem;letter-spacing:.15em;
+  text-transform:uppercase;}
+.feedback{text-align:center;font-size:1.1rem;margin-top:1rem;min-height:1.5em;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">נחש</div>
+  <h1>✦ Adivina la Guematria ✦</h1>
+  <p>¿Cuál es el valor numérico de la palabra?</p>
+  <span class="page-number">Juegos · Quiz</span>
+</header>
+
+<section>
+  <div class="stats-juego">
+    <div class="stat"><div class="num" id="ronda">1/10</div><div class="lbl">Ronda</div></div>
+    <div class="stat"><div class="num" id="aciertos">0</div><div class="lbl">Aciertos</div></div>
+    <div class="stat"><div class="num" id="puntaje">0</div><div class="lbl">Puntaje</div></div>
+  </div>
+
+  <div class="palabra-card">
+    <div class="heb" id="palabra">—</div>
+    <div class="translit" id="translit"></div>
+  </div>
+
+  <div class="opciones-guem" id="opciones"></div>
+  <div class="feedback" id="feedback"></div>
+
+  <div style="text-align:center;margin-top:1.5rem;">
+    <button id="reiniciar" class="btn">🔄 Nuevo Juego</button>
+  </div>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Adivina la Guematria</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const PALABRAS = [
+  { h:'שלום', t:'Shalom', v:376 },
+  { h:'אהבה', t:'Ahavá', v:13 },
+  { h:'אמת', t:'Emet', v:441 },
+  { h:'אור', t:'Or', v:207 },
+  { h:'חיים', t:'Jaim', v:68 },
+  { h:'תורה', t:'Torá', v:611 },
+  { h:'משיח', t:'Mashiaj', v:358 },
+  { h:'שדי', t:'Shadai', v:314 },
+  { h:'אחד', t:'Ejad', v:13 },
+  { h:'יחידה', t:'Yejidá', v:37 },
+  { h:'כתר', t:'Kéter', v:620 },
+  { h:'חכמה', t:'Jojmá', v:73 },
+  { h:'בינה', t:'Biná', v:67 },
+  { h:'תפארת', t:'Tiféret', v:1081 },
+  { h:'מלכות', t:'Maljut', v:496 }
+];
+
+const GEM = { 'א':1,'ב':2,'ג':3,'ד':4,'ה':5,'ו':6,'ז':7,'ח':8,'ט':9,
+  'י':10,'כ':20,'ל':30,'מ':40,'נ':50,'ס':60,'ע':70,'פ':80,'צ':90,
+  'ק':100,'ר':200,'ש':300,'ת':400,
+  'ך':20,'ם':40,'ן':50,'ף':80,'ץ':90 };
+
+const TOTAL_RONDAS = 10;
+let ronda = 0;
+let aciertos = 0;
+let puntaje = 0;
+let disponibles = [];
+
+function iniciar(){
+  ronda = 0;
+  aciertos = 0;
+  puntaje = 0;
+  disponibles = [...PALABRAS].sort(() => Math.random() - 0.5);
+  siguienteRonda();
+}
+
+function siguienteRonda(){
+  if(ronda >= TOTAL_RONDAS || disponibles.length === 0){
+    finalizar();
+    return;
+  }
+  const p = disponibles.pop();
+  document.getElementById('palabra').textContent = p.h;
+  document.getElementById('translit').textContent = p.t;
+  document.getElementById('ronda').textContent = `${ronda + 1}/${TOTAL_RONDAS}`;
+  document.getElementById('feedback').textContent = '';
+
+  // 4 opciones: la correcta + 3 distractores
+  const opciones = new Set([p.v]);
+  while(opciones.size < 4){
+    const diff = Math.floor(Math.random() * 200) - 100;
+    const val = Math.max(1, p.v + diff);
+    if(val !== p.v) opciones.add(val);
+  }
+  const ops = [...opciones].sort(() => Math.random() - 0.5);
+  document.getElementById('opciones').innerHTML = ops.map(v => `
+    <button class="opcion-guem" data-v="${v}">${v}</button>
+  `).join('');
+  document.querySelectorAll('.opcion-guem').forEach(btn => {
+    btn.addEventListener('click', () => responder(parseInt(btn.dataset.v), p));
+  });
+}
+
+function responder(valor, p){
+  const btns = document.querySelectorAll('.opcion-guem');
+  btns.forEach(b => {
+    b.disabled = true;
+    if(parseInt(b.dataset.v) === p.v) b.classList.add('correcta');
+    else if(parseInt(b.dataset.v) === valor) b.classList.add('incorrecta');
+  });
+  if(valor === p.v){
+    aciertos++;
+    puntaje += 15;
+    document.getElementById('feedback').innerHTML =
+      '<span style="color:var(--success);">✓ ¡Correcto!</span>';
+  } else {
+    document.getElementById('feedback').innerHTML =
+      `<span style="color:var(--danger);">✗ Era ${p.v}</span>`;
+  }
+  document.getElementById('aciertos').textContent = aciertos;
+  document.getElementById('puntaje').textContent = puntaje;
+  setTimeout(() => {
+    ronda++;
+    siguienteRonda();
+  }, 1400);
+}
+
+function finalizar(){
+  const rango = aciertos >= 9 ? '✦ Maestro de Guematria ✦' :
+    aciertos >= 7 ? '✦ Experto ✦' :
+    aciertos >= 5 ? '◈ Buen nivel ◈' : '⚠️ Sigue practicando';
+  document.getElementById('palabra').textContent = '☰';
+  document.getElementById('translit').textContent = '';
+  document.getElementById('opciones').innerHTML = `
+    <div style="grid-column:1/-1;text-align:center;padding:2rem;
+      background:radial-gradient(circle, rgba(212,175,55,.15), transparent 70%),
+      rgba(5,6,15,.7);border:2px solid var(--gold);border-radius:16px;">
+      <div style="font-size:2.5rem;color:var(--gold2);
+        font-family:var(--font-mono);">${aciertos}/${TOTAL_RONDAS}</div>
+      <div style="color:var(--gold2);font-size:1.2rem;margin:1rem 0;">${rango}</div>
+      <div style="color:var(--muted);">Puntaje: ${puntaje}</div>
+    </div>
+  `;
+  document.getElementById('feedback').textContent = '';
+}
+
+document.getElementById('reiniciar').addEventListener('click', iniciar);
+iniciar();
+</script>
+</body>
+</html>
