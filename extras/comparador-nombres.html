@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Comparador de nombres: descubre la compatibilidad cabalística entre dos nombres">
+<title>✦ Comparador de Nombres — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.compat-bar{height:30px;background:rgba(212,175,55,.15);
+  border-radius:15px;overflow:hidden;margin:1rem 0;border:1px solid var(--line);}
+.compat-bar > div{height:100%;background:linear-gradient(90deg,var(--gold),var(--violet));
+  display:flex;align-items:center;justify-content:center;
+  color:var(--bg);font-weight:700;font-family:var(--font-mono);
+  transition:width 1s cubic-bezier(.4,0,.2,1);}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">השוואה</div>
+  <h1>✦ Comparador de Nombres ✦</h1>
+  <p>Compatibilidad cabalística entre dos nombres</p>
+  <span class="page-number">Extras · Comparador</span>
+</header>
+
+<section>
+  <h2>🔤 Ingresa dos nombres</h2>
+  <form id="comp-form" autocomplete="off">
+    <div class="form-grid">
+      <div class="form-field full">
+        <label for="n1">Nombre 1</label>
+        <input type="text" id="n1" placeholder="Ej: Ana" required>
+      </div>
+      <div class="form-field full">
+        <label for="n2">Nombre 2</label>
+        <input type="text" id="n2" placeholder="Ej: Carlos" required>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1.2rem">
+      <button type="submit" class="btn">✦ Comparar Nombres ✦</button>
+    </div>
+  </form>
+</section>
+
+<div id="results" style="display:none"></div>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Comparador de Nombres</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const PYT = {a:1,b:2,c:3,d:4,e:5,f:6,g:7,h:8,i:9,j:1,k:2,l:3,m:4,n:5,o:6,
+  p:7,q:8,r:9,s:1,t:2,u:3,v:4,w:5,x:6,y:7,z:8};
+const VOC = 'aeiou';
+const HEB = {1:'א',2:'ב',3:'ג',4:'ד',5:'ה',6:'ו',7:'ז',8:'ח',9:'ט',
+  11:'כ',22:'ל',33:'מ'};
+const SIGNIF = {
+  1:{n:'Líder',d:'Individualista, pionero, independiente.'},
+  2:{n:'Diplomático',d:'Sensible, cooperativo, unificador.'},
+  3:{n:'Expresivo',d:'Creativo, alegre, comunicativo.'},
+  4:{n:'Constructor',d:'Estable, trabajador, fiable.'},
+  5:{n:'Libre',d:'Aventurero, dinámico, curioso.'},
+  6:{n:'Protector',d:'Cuidador, hogareño, responsable.'},
+  7:{n:'Sabio',d:'Analítico, introspectivo, espiritual.'},
+  8:{n:'Poderoso',d:'Ambicioso, organizado, ejecutivo.'},
+  9:{n:'Humanitario',d:'Compasivo, universal, servicial.'},
+  11:{n:'Visionario',d:'Intuitivo, inspirador, maestro.'},
+  22:{n:'Arquitecto',d:'Constructor de sueños, maestro.'},
+  33:{n:'Maestro',d:'Compasivo, amor universal, maestro.'}
+};
+
+function reducir(n){
+  while(n > 9){
+    if([11,22,33].includes(n)) return n;
+    n = String(n).split('').reduce((a,b) => a + +b, 0);
+  }
+  return n;
+}
+function clean(s){
+  return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z]/g,'');
+}
+function sumName(name, filter){
+  let t = 0;
+  for(const ch of clean(name)){
+    if(filter === 'v' && !VOC.includes(ch)) continue;
+    if(filter === 'c' && VOC.includes(ch)) continue;
+    if(PYT[ch]) t += PYT[ch];
+  }
+  return t;
+}
+
+document.getElementById('comp-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const n1 = document.getElementById('n1').value.trim();
+  const n2 = document.getElementById('n2').value.trim();
+  if(!n1 || !n2) return;
+
+  const exp1 = reducir(sumName(n1));
+  const exp2 = reducir(sumName(n2));
+  const alma1 = reducir(sumName(n1, 'v'));
+  const alma2 = reducir(sumName(n2, 'v'));
+
+  const total = reducir(exp1 + exp2);
+  const diff = Math.abs(exp1 - exp2);
+
+  // Compatibilidad global
+  let compat = 60;
+  if(exp1 === exp2) compat = 90;
+  else if([11,22,33].includes(total)) compat = 88;
+  else if(diff <= 2) compat = 80;
+  else if(diff <= 4) compat = 65;
+  else compat = Math.max(40, 80 - diff * 5);
+
+  const compatAlma = (alma1 === alma2) ? 90 : Math.max(50, 90 - Math.abs(alma1 - alma2) * 6);
+  const compatFinal = Math.round((compat * 0.6 + compatAlma * 0.4));
+
+  const results = document.getElementById('results');
+  results.style.display = 'block';
+  results.innerHTML = `
+    <section>
+      <h2>💫 Compatibilidad de Nombres</h2>
+      <div class="compat-bar">
+        <div style="width:${compatFinal}%">${compatFinal}%</div>
+      </div>
+      <p style="text-align:center;color:var(--gold2);font-size:1.1rem;margin-top:1rem;">
+        ${compatFinal >= 85 ? '✦ Unión excepcional ✦' :
+          compatFinal >= 70 ? '✦ Buena compatibilidad ✦' :
+          compatFinal >= 55 ? '◈ Compatibilidad con desafíos ◈' :
+          '⚠️ Polos que requieren trabajo'}
+      </p>
+    </section>
+    <section>
+      <h2>📊 Análisis de Cada Nombre</h2>
+      <div class="result-grid">
+        <div class="result-card">
+          <div class="label">${n1}</div>
+          <div class="value">${exp1}<span class="hebrew-letter">${HEB[exp1]}</span></div>
+          <div class="name">${SIGNIF[exp1]?.n}</div>
+          <div class="desc">${SIGNIF[exp1]?.d}</div>
+          <div class="desc" style="color:var(--cyan);margin-top:.5rem;">
+            Alma: ${alma1} ${HEB[alma1]}
+          </div>
+        </div>
+        <div class="result-card">
+          <div class="label">${n2}</div>
+          <div class="value">${exp2}<span class="hebrew-letter">${HEB[exp2]}</span></div>
+          <div class="name">${SIGNIF[exp2]?.n}</div>
+          <div class="desc">${SIGNIF[exp2]?.d}</div>
+          <div class="desc" style="color:var(--cyan);margin-top:.5rem;">
+            Alma: ${alma2} ${HEB[alma2]}
+          </div>
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2>🔍 Análisis Detallado</h2>
+      <table>
+        <thead><tr><th>Área</th><th>Valor</th><th>Interpretación</th></tr></thead>
+        <tbody>
+          <tr><td>Expresión combinada</td><td>${total} ${HEB[total]}</td>
+            <td>${SIGNIF[total]?.n}</td></tr>
+          <tr><td>Diferencia de expresión</td><td>${diff}</td>
+            <td>${diff === 0 ? 'Almas gemelas numerológicas' :
+              diff <= 2 ? 'Estilos muy similares' :
+              diff <= 4 ? 'Complementarios' : 'Polos opuestos'}</td></tr>
+          <tr><td>Almas (vocales)</td><td>${alma1} vs ${alma2}</td>
+            <td>${compatAlma}%</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <section>
+      <h2>💡 Reflexión</h2>
+      <div class="equation">
+        <div class="big">${compatFinal >= 75 ? 'Unidad en la diversidad' : 'Los opuestos se atraen'}</div>
+        <div class="heb">${compatFinal >= 75 ? 'אחדות' : 'ניגודים'}</div>
+      </div>
+      <p style="text-align:center;color:var(--muted);font-size:.9rem;">
+        La compatibilidad de nombres es solo un indicador. El verdadero vínculo
+        se construye con presencia, respeto y amor.
+      </p>
+    </section>
+  `;
+  results.scrollIntoView({ behavior:'smooth' });
+});
+</script>
+</body>
+</html>
