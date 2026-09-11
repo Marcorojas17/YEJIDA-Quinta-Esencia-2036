@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Generador de Yijudim: unificaciones sagradas personalizadas">
+<title>✦ Yijudim — Unificaciones — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">ייחודים</div>
+  <h1>✦ Yijudim ✦</h1>
+  <p>Unificaciones sagradas personalizadas</p>
+  <span class="page-number">Herramienta · Yijudim</span>
+</header>
+
+<section>
+  <h2>🔯 ¿Qué es un Yijud?</h2>
+  <p><strong>Yijud (ייחוד)</strong> significa <em>"unificación"</em>. Es una
+  <strong>combinación meditativa de letras divinas</strong> que une aspectos
+  separados de la realidad, atrayendo bendición al mundo.</p>
+  <p>En la práctica, el yijud se recita con <strong>kavaná</strong> (intención)
+  para corregir un aspecto específico del alma.</p>
+</section>
+
+<section>
+  <h2>🜁 Genera tu Yijud</h2>
+  <form id="yijud-form" autocomplete="off">
+    <div class="form-grid">
+      <div class="form-field full">
+        <label for="nombre">Tu nombre</label>
+        <input type="text" id="nombre" required>
+      </div>
+      <div class="form-field full">
+        <label for="tema">Tema a unificar</label>
+        <select id="tema">
+          <option value="amor">Amor y relaciones</option>
+          <option value="parnasá">Sustento y trabajo</option>
+          <option value="salud">Salud y sanación</option>
+          <option value="sabiduria">Sabiduría y estudio</option>
+          <option value="proteccion">Protección</option>
+          <option value="shalom">Paz interior</option>
+          <option value="teshuvá">Retorno espiritual</option>
+          <option value="unidad">Unidad con Dios</option>
+        </select>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1.2rem">
+      <button type="submit" class="btn">✦ Generar Yijud ✦</button>
+    </div>
+  </form>
+</section>
+
+<div id="results" style="display:none"></div>
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Yijudim</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const TEMAS = {
+  amor: {
+    nombre: 'Amor y Relaciones',
+    sefirot: ['Jesed', 'Tiféret'],
+    letras: ['ד','ו','ד'],
+    nombreDivino: 'אל',
+    meditacion: 'Unir la misericordia (Jesed) con la belleza (Tiféret) para atraer amor puro.',
+    versiculo: 'אני לדודי ודודי לי',
+    versiculoEsp: 'Yo soy para mi amado y mi amado es para mí. (Cantar 6:3)'
+  },
+  parnasá: {
+    nombre: 'Sustento y Trabajo',
+    sefirot: ['Biná', 'Maljut'],
+    letras: ['פ','ר','נ','ס','ה'],
+    nombreDivino: 'שדי',
+    meditacion: 'Unir el entendimiento (Biná) con el reino (Maljut) para atraer sustento.',
+    versiculo: 'פותח את ידך ומשביע לכל חי רצון',
+    versiculoEsp: 'Abres Tu mano y sacias a todo viviente. (Salmo 145:16)'
+  },
+  salud: {
+    nombre: 'Salud y Sanación',
+    sefirot: ['Jojmá', 'Tiféret'],
+    letras: ['ר','פ','א'],
+    nombreDivino: 'יהוה רפא',
+    meditacion: 'Unir la sabiduría (Jojmá) con la belleza (Tiféret) para sanar.',
+    versiculo: 'רפאני יהוה וארפא',
+    versiculoEsp: 'Sáname, Eterno, y seré sanado. (Jeremías 17:14)'
+  },
+  sabiduria: {
+    nombre: 'Sabiduría y Estudio',
+    sefirot: ['Jojmá', 'Biná'],
+    letras: ['ח','כ','מ','ה'],
+    nombreDivino: 'יהוה',
+    meditacion: 'Unir sabiduría (Jojmá) y entendimiento (Biná) para recibir revelación.',
+    versiculo: 'חכמה ובינה ודעת',
+    versiculoEsp: 'Sabiduría, entendimiento y conocimiento.'
+  },
+  proteccion: {
+    nombre: 'Protección',
+    sefirot: ['Guevurá', 'Maljut'],
+    letras: ['ש','מ','ר'],
+    nombreDivino: 'צבאות',
+    meditacion: 'Unir el rigor (Guevurá) con el reino (Maljut) para protegerse.',
+    versiculo: 'שומר ישראל לא ינום ולא יישן',
+    versiculoEsp: 'El Guardián de Israel no duerme ni dormita. (Salmo 121:4)'
+  },
+  shalom: {
+    nombre: 'Paz Interior',
+    sefirot: ['Tiféret', 'Yesod'],
+    letras: ['ש','ל','ו','ם'],
+    nombreDivino: 'שלום',
+    meditacion: 'Unir la belleza (Tiféret) con el fundamento (Yesod) para anclar la paz.',
+    versiculo: 'יהוה עוז לעמו יתן יהוה יברך את עמו בשלום',
+    versiculoEsp: 'El Eterno dará fuerza a Su pueblo, bendecirá a Su pueblo con paz. (Salmo 29:11)'
+  },
+  teshuvá: {
+    nombre: 'Retorno Espiritual',
+    sefirot: ['Biná', 'Tiféret'],
+    letras: ['ת','ש','ו','ב','ה'],
+    nombreDivino: 'הרחמן',
+    meditacion: 'Unir el entendimiento (Biná) con la belleza (Tiféret) para retornar.',
+    versiculo: 'השיבנו יהוה אליך ונשובה',
+    versiculoEsp: 'Haznos volver a Ti, Eterno, y volveremos. (Lamentaciones 5:21)'
+  },
+  unidad: {
+    nombre: 'Unidad con Dios',
+    sefirot: ['Kéter', 'Yejidá'],
+    letras: ['א','ח','ד'],
+    nombreDivino: 'אחד',
+    meditacion: 'Unir la Corona (Kéter) con Yejidá para experimentar la Unidad.',
+    versiculo: 'שמע ישראל יהוה אלהינו יהוה אחד',
+    versiculoEsp: 'Escucha Israel: el Eterno es nuestro Dios, el Eterno es Uno. (Deut 6:4)'
+  }
+};
+
+function reducir(n){
+  while(n > 9){
+    if([11,22,33].includes(n)) return n;
+    n = String(n).split('').reduce((a,b) => a + +b, 0);
+  }
+  return n;
+}
+
+document.getElementById('yijud-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const nombre = document.getElementById('nombre').value.trim();
+  const tema = document.getElementById('tema').value;
+  if(!nombre) return alert('Escribe tu nombre.');
+
+  const t = TEMAS[tema];
+  const valorLetras = t.letras.reduce((sum, l) =>
+    sum + ({'א':1,'ב':2,'ג':3,'ד':4,'ה':5,'ו':6,'ז':7,'ח':8,'ט':9,
+      'י':10,'כ':20,'ל':30,'מ':40,'נ':50,'ס':60,'ע':70,'פ':80,'צ':90,
+      'ק':100,'ר':200,'ש':300,'ת':400}[l] || 0), 0);
+  const reducido = reducir(valorLetras);
+
+  const results = document.getElementById('results');
+  results.style.display = 'block';
+  results.innerHTML = `
+    <section>
+      <h2>✦ Tu Yijud ✦</h2>
+      <div class="equation">
+        <div class="big">${t.nombre}</div>
+        <div class="heb" style="font-size:2.2rem;letter-spacing:.5rem;">
+          ${t.letras.join('')}
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>🔯 Cómo Meditar</h2>
+      <div class="nivel-card">
+        <p><span class="num">1</span><strong>Siéntate</strong> en un lugar tranquilo, espalda recta.</p>
+      </div>
+      <div class="nivel-card">
+        <p><span class="num">2</span><strong>Respira</strong> profundamente 3 veces.</p>
+      </div>
+      <div class="nivel-card">
+        <p><span class="num">3</span><strong>Visualiza</strong> las letras <span class="hebrew-inline">${t.letras.join('')}</span> frente a ti, brillando en oro.</p>
+      </div>
+      <div class="nivel-card">
+        <p><span class="num">4</span><strong>Recita</strong> el Nombre Divino: <span class="hebrew-inline">${t.nombreDivino}</span>.</p>
+      </div>
+      <div class="nivel-card">
+        <p><span class="num">5</span><strong>Contempla</strong> el versículo: ${t.versiculoEsp}</p>
+      </div>
+      <div class="nivel-card">
+        <p><span class="num">6</span><strong>Permanece</strong> en silencio 5-10 minutos.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>📖 El Versículo</h2>
+      <div class="equation">
+        <div class="heb" style="font-size:1.4rem;line-height:1.9;">
+          ${t.versiculo}
+        </div>
+      </div>
+      <blockquote>${t.versiculoEsp}</blockquote>
+    </section>
+
+    <section>
+      <h2>💡 La Meditación</h2>
+      <p>${t.meditacion}</p>
+      <table>
+        <tbody>
+          <tr><td><strong>Sefirot</strong></td><td>${t.sefirot.join(' + ')}</td></tr>
+          <tr><td><strong>Letras</strong></td><td class="hebrew-inline">${t.letras.join('')}</td></tr>
+          <tr><td><strong>Nombre Divino</strong></td><td class="hebrew-inline">${t.nombreDivino}</td></tr>
+          <tr><td><strong>Valor total</strong></td><td>${valorLetras} (reducido: ${reducido})</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>💫 Tu Yijud Personal</h2>
+      <p style="text-align:center;">
+        <strong>${nombre}</strong>, practica este yijud durante
+        <strong>7 días</strong> con kavaná para atraer la bendición de
+        <strong>${t.nombre.toLowerCase()}</strong>.
+      </p>
+    </section>
+  `;
+  results.scrollIntoView({ behavior:'smooth' });
+});
+</script>
+</body>
+</html>
