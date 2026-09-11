@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Generador de sigilo personal: tu sello sagrado único">
+<title>✦ Tu Sigilo Sagrado — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.sigil-container{display:flex;justify-content:center;margin:1.5rem 0;}
+.sigil-svg{width:280px;height:280px;filter:drop-shadow(0 0 30px rgba(212,175,55,.5));}
+.sigil-svg line,.sigil-svg circle,.sigil-svg path{transition:all .5s;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">חותם</div>
+  <h1>✦ Tu Sigilo Sagrado ✦</h1>
+  <p>Sello personal único · Geometría sagrada</p>
+  <span class="page-number">Herramienta · Sigilo</span>
+</header>
+
+<section>
+  <h2>🔯 ¿Qué es un Sigilo?</h2>
+  <p>Un <strong>sigilo (חותם, jotam)</strong> es un <em>sello mágico</em> que
+  condensa la esencia de un nombre o intención en una forma geométrica.
+  En la tradición cabalística, los sigilos se construyen trazando líneas
+  entre los números de las letras en una <strong>rueda de 9 números</strong>
+  (el Kamea de 3×3).</p>
+</section>
+
+<section>
+  <h2>🜁 Tu Nombre</h2>
+  <form id="sigil-form" autocomplete="off">
+    <div class="form-grid">
+      <div class="form-field full">
+        <label for="nombre">Nombre completo</label>
+        <input type="text" id="nombre" placeholder="Ej: María García" required>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1.2rem">
+      <button type="submit" class="btn">✦ Generar mi Sigilo ✦</button>
+    </div>
+  </form>
+</section>
+
+<div id="results" style="display:none"></div>
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Sigilo</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const PYT = {a:1,b:2,c:3,d:4,e:5,f:6,g:7,h:8,i:9,j:1,k:2,l:3,m:4,n:5,o:6,
+  p:7,q:8,r:9,s:1,t:2,u:3,v:4,w:5,x:6,y:7,z:8};
+// Posiciones en el kamea 3x3 (cuadrado mágico de Saturno)
+const KAMEA = {
+  1:[50,160], 2:[140,160], 3:[230,160],
+  4:[50,90],  5:[140,90],  6:[230,90],
+  7:[50,20],  8:[140,20],  9:[230,20]
+};
+
+function clean(s){
+  return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z]/g,'');
+}
+
+document.getElementById('sigil-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const nombre = document.getElementById('nombre').value.trim();
+  if(!nombre) return alert('Escribe tu nombre.');
+
+  const c = clean(nombre);
+  const numeros = [];
+  for(const ch of c){
+    if(PYT[ch]) numeros.push(PYT[ch]);
+  }
+  if(numeros.length < 2) return alert('El nombre es demasiado corto.');
+
+  // Reducir a un patrón único (hasta 9 puntos)
+  const puntos = [];
+  let ultimo = null;
+  for(const n of numeros){
+    if(n !== ultimo){ puntos.push(n); ultimo = n; }
+    if(puntos.length >= 9) break;
+  }
+  // Cerrar el sigilo volviendo al inicio
+  puntos.push(puntos[0]);
+
+  // Generar SVG
+  const lineas = [];
+  for(let i = 0; i < puntos.length - 1; i++){
+    const a = KAMEA[puntos[i]], b = KAMEA[puntos[i+1]];
+    if(a && b){
+      lineas.push(`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}"
+        stroke="url(#gradSigil)" stroke-width="2.5" stroke-linecap="round"/>`);
+    }
+  }
+
+  const circulos = Object.entries(KAMEA).map(([n, pos]) => `
+    <circle cx="${pos[0]}" cy="${pos[1]}" r="6"
+      fill="rgba(212,175,55,.3)" stroke="var(--gold)" stroke-width="1.5"/>
+    <text x="${pos[0]}" y="${pos[1]+4}" font-size="10" fill="var(--gold2)"
+      text-anchor="middle" font-family="monospace">${n}</text>
+  `).join('');
+
+  const results = document.getElementById('results');
+  results.style.display = 'block';
+  results.innerHTML = `
+    <section>
+      <h2>✦ Tu Sigilo Personal ✦</h2>
+      <div class="sigil-container">
+        <svg class="sigil-svg" viewBox="0 0 280 280" role="img"
+          aria-label="Sigilo personal de ${nombre}">
+          <defs>
+            <linearGradient id="gradSigil" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#d4af37"/>
+              <stop offset="50%" stop-color="#f7e08a"/>
+              <stop offset="100%" stop-color="#6c5ce7"/>
+            </linearGradient>
+            <radialGradient id="haloSigil">
+              <stop offset="0%" stop-color="rgba(212,175,55,.15)"/>
+              <stop offset="100%" stop-color="transparent"/>
+            </radialGradient>
+          </defs>
+          <circle cx="140" cy="140" r="135" fill="url(#haloSigil)"/>
+          <circle cx="140" cy="140" r="130" fill="none"
+            stroke="rgba(212,175,55,.3)" stroke-width="1"/>
+          <circle cx="140" cy="140" r="120" fill="none"
+            stroke="rgba(108,92,231,.2)" stroke-width=".5"
+            stroke-dasharray="3 5"/>
+          ${circulos}
+          ${lineas.join('')}
+        </svg>
+      </div>
+      <p style="text-align:center;color:var(--muted);font-size:.85rem;">
+        Sello de <strong>${nombre}</strong> · ${puntos.length - 1} trazos únicos
+      </p>
+    </section>
+
+    <section>
+      <h2>📖 Cómo Usar tu Sigilo</h2>
+      <ul>
+        <li><strong>Contemplación</strong> — Míralo en silencio durante 3-5 minutos.</li>
+        <li><strong>Visualización</strong> — Ciérralo en los ojos y recréalo mentalmente.</li>
+        <li><strong>Meditación</strong> — Úsalo como objeto de concentración.</li>
+        <li><strong>Diario</strong> — Dibújalo cada mañana como acto de conexión.</li>
+        <li><strong>Sello</strong> — Puedes usarlo como firma personal sagrada.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>🔢 Tu Patrón Numérico</h2>
+      <p style="font-family:var(--font-mono);color:var(--cyan);text-align:center;
+        font-size:1.1rem;letter-spacing:.3rem;">
+        ${puntos.join(' → ')}
+      </p>
+      <p style="text-align:center;color:var(--muted);font-size:.85rem;">
+        Este es el camino que recorre tu sigilo sobre el Kamea de Saturno.
+      </p>
+    </section>
+
+    <section>
+      <h2>💾 Descargar</h2>
+      <div style="text-align:center;">
+        <button id="download-svg" class="btn">📥 Descargar SVG</button>
+      </div>
+    </section>
+  `;
+  results.scrollIntoView({ behavior:'smooth' });
+
+  document.getElementById('download-svg').addEventListener('click', () => {
+    const svg = results.querySelector('.sigil-svg');
+    const data = new XMLSerializer().serializeToString(svg);
+    const blob = new Blob([data], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `sigilo-${clean(nombre)}.svg`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+});
+</script>
+</body>
+</html>
