@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="La Merkavá: el Carro celestial de Ezequiel">
+<title>✦ La Merkavá — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.merkava-svg{width:100%;max-width:600px;margin:2rem auto;display:block;
+  filter:drop-shadow(0 0 40px rgba(108,92,231,.5));}
+.merkava-svg .wheel{fill:none;stroke:var(--gold);stroke-width:2;
+  transition:all .4s;}
+.merkava-svg .wheel-spoke{stroke:rgba(212,175,55,.5);stroke-width:1;}
+.merkava-svg .angel{fill:rgba(108,92,231,.15);stroke:var(--violet);
+  stroke-width:2;cursor:pointer;transition:all .4s;}
+.merkava-svg .angel:hover{fill:rgba(108,92,231,.4);
+  filter:drop-shadow(0 0 15px var(--violet));}
+.merkava-svg .angel-label{fill:var(--gold2);font-size:11px;text-anchor:middle;
+  font-family:var(--font-heb);pointer-events:none;font-weight:600;}
+.merkava-svg .center-eye{fill:var(--gold2);opacity:.8;
+  animation:pulse-glow 3s ease-in-out infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.spinning{animation:spin 40s linear infinite;transform-origin:center;
+  transform-box:fill-box;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">מרכבה</div>
+  <h1>✦ La Merkavá ✦</h1>
+  <p>El Carro celestial de Ezequiel</p>
+  <span class="page-number">Visualización · Merkavá</span>
+</header>
+
+<section>
+  <h2>🔥 La Visión del Carro</h2>
+  <p>La <strong>Merkavá (מרכבה)</strong> — el "Carro" — es la visión profética
+  de Ezequiel (capítulo 1) donde contempla el <strong>trono divino</strong>
+  sobre cuatro ruedas, llevado por cuatro seres vivientes
+  (<strong>Jayot HaKodesh</strong>).</p>
+
+  <svg class="merkava-svg" viewBox="0 0 500 500" role="img"
+    aria-label="La Merkavá con las cuatro ruedas y los cuatro ángeles">
+    <g id="merkava-g" transform="translate(250,250)"></g>
+  </svg>
+
+  <div id="info-merkava" style="margin-top:1.5rem;padding:1.5rem;
+    background:rgba(5,6,15,.5);border:1px solid var(--line);border-radius:12px;
+    min-height:80px;">
+    <p style="color:var(--muted);text-align:center;">
+      Haz clic en cada ángel del carro.
+    </p>
+  </div>
+</section>
+
+<section>
+  <h2>👁️ Los Cuatro Seres Vivientes</h2>
+  <table>
+    <thead><tr><th>Ángel</th><th>Rostro</th><th>Signo</th><th>Dirección</th></tr></thead>
+    <tbody>
+      <tr><td>Miguel</td><td>León</td><td>Leo</td><td>Sur (Jesed)</td></tr>
+      <tr><td>Gabriel</td><td>Águila</td><td>Escorpio</td><td>Norte (Guevurá)</td></tr>
+      <tr><td>Rafael</td><td>Buey</td><td>Tauro</td><td>Este (Tiféret)</td></tr>
+      <tr><td>Uriel</td><td>Hombre</td><td>Acuario</td><td>Oeste (Maljut)</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>💡 Significado</h2>
+  <p>La Merkavá representa la <strong>estructura de la creación</strong>:
+  el trono divino (Kéter), las ruedas (los mundos girando), y los cuatro
+  seres (los arcángeles que sostienen el orden). Meditar en ella es la
+  práctica suprema de la Kabaláh temprana (<em>Maasé Merkavá</em>).</p>
+  <div class="equation">
+    <div class="big">El Carro es el alma · El trono es Dios</div>
+    <div class="heb">המרכבה היא הנשמה · הכסא הוא יהוה</div>
+  </div>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · La Merkavá</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const ANGELES = [
+  { n:'Miguel',  heb:'מיכאל',  rostro:'León',    dir:'Sur',   sefira:'Jesed',   desc:'Arcángel de la misericordia y protección.', ang: 90 },
+  { n:'Gabriel', heb:'גבריאל', rostro:'Águila',  dir:'Norte', sefira:'Guevurá', desc:'Arcángel del poder y el juicio.', ang: 270 },
+  { n:'Rafael',  heb:'רפאל',   rostro:'Buey',    dir:'Este',  sefira:'Tiféret', desc:'Arcángel de la sanación y la luz.', ang: 0 },
+  { n:'Uriel',   heb:'אוריאל', rostro:'Hombre',  dir:'Oeste', sefira:'Maljut',  desc:'Arcángel de la sabiduría y el fuego divino.', ang: 180 }
+];
+
+document.addEventListener('DOMContentLoaded', () => {
+  const g = document.getElementById('merkava-g');
+  const info = document.getElementById('info-merkava');
+
+  // Rueda central
+  const R = 80;
+  const ruedaG = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  ruedaG.setAttribute('class', 'spinning');
+  const rueda = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  rueda.setAttribute('r', R);
+  rueda.setAttribute('class', 'wheel');
+  ruedaG.appendChild(rueda);
+
+  // Radios de la rueda
+  for(let i = 0; i < 12; i++){
+    const a = (Math.PI * 2 / 12) * i;
+    const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    l.setAttribute('x1', 0); l.setAttribute('y1', 0);
+    l.setAttribute('x2', Math.cos(a) * R);
+    l.setAttribute('y2', Math.sin(a) * R);
+    l.setAttribute('class', 'wheel-spoke');
+    ruedaG.appendChild(l);
+  }
+
+  // Rueda interna
+  const inner = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  inner.setAttribute('r', R * 0.4);
+  inner.setAttribute('fill', 'none');
+  inner.setAttribute('stroke', 'rgba(212,175,55,.5)');
+  inner.setAttribute('stroke-width', '1');
+  ruedaG.appendChild(inner);
+
+  g.appendChild(ruedaG);
+
+  // Ojo central (trono)
+  const eye = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  eye.setAttribute('r', 15);
+  eye.setAttribute('class', 'center-eye');
+  g.appendChild(eye);
+
+  // Los 4 ángeles alrededor
+  ANGELES.forEach(a => {
+    const rad = a.ang * Math.PI / 180;
+    const x = Math.cos(rad) * 180;
+    const y = Math.sin(rad) * 180;
+
+    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circle.setAttribute('cx', x); circle.setAttribute('cy', y);
+    circle.setAttribute('r', 40);
+    circle.setAttribute('class', 'angel');
+    circle.setAttribute('tabindex', '0');
+    circle.setAttribute('role', 'button');
+    circle.setAttribute('aria-label', a.n);
+    circle.addEventListener('click', () => show(a));
+    circle.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); show(a); }
+    });
+    g.appendChild(circle);
+
+    const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    label.setAttribute('x', x); label.setAttribute('y', y + 5);
+    label.setAttribute('class', 'angel-label');
+    label.textContent = a.heb;
+    g.appendChild(label);
+  });
+
+  function show(a){
+    info.innerHTML = `
+      <h3 style="color:var(--gold2);font-size:1.2rem;text-align:center;">
+        ${a.n} · <span class="hebrew-inline">${a.heb}</span>
+      </h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+        gap:.8rem;margin-top:1rem;text-align:center;">
+        <div><span style="color:var(--muted);font-size:.72rem;">ROSTRO</span><br>
+          <span style="color:var(--gold2);font-weight:600;">${a.rostro}</span></div>
+        <div><span style="color:var(--muted);font-size:.72rem;">DIRECCIÓN</span><br>
+          <span style="color:var(--gold2);font-weight:600;">${a.dir}</span></div>
+        <div><span style="color:var(--muted);font-size:.72rem;">SEFIRÁ</span><br>
+          <span style="color:var(--cyan);font-weight:600;">${a.sefira}</span></div>
+      </div>
+      <p style="margin-top:1rem;text-align:center;color:var(--text);">
+        ${a.desc}
+      </p>
+    `;
+  }
+});
+</script>
+</body>
+</html>
