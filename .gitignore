@@ -1,0 +1,45 @@
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Node (si se usa)
+node_modules/
+npm-debug.log*
+yarn-error.log*
+package-lock.json
+
+# Build
+dist/
+build/
+.cache/
+
+# Logs
+*.log
+logs/
+
+# Variables de entorno
+.env
+.env.local
+.env.*.local
+
+# Archivos temporales
+*.tmp
+*.bak
+.temp/
+
+# Certificados locales
+*.pem
+*.key
+*.crt
+
+# Archivos de usuario
+user-data/
+private/
