@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Las horas planetarias del día y su significado cabalístico">
+<title>✦ Hora Planetaria — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">שעה פלנטרית</div>
+  <h1>✦ Hora Planetaria ✦</h1>
+  <p>El planeta que rige este momento</p>
+  <span class="page-number">Extras · Horas</span>
+</header>
+
+<section>
+  <h2>🕐 La Hora Actual</h2>
+  <div id="hora-actual" class="equation">
+    <div class="big" id="hora-titulo">Calculando...</div>
+    <div class="heb" id="hora-heb"></div>
+  </div>
+
+  <div class="result-grid" id="hora-detalles"></div>
+</section>
+
+<section>
+  <h2>📊 Las 24 Horas del Día</h2>
+  <p>El día comienza al amanecer. Cada hora está regida por un planeta
+  siguiendo el orden caldeo: Saturno → Júpiter → Marte → Sol → Venus →
+  Mercurio → Luna.</p>
+  <table>
+    <thead><tr><th>Hora</th><th>Planeta</th><th>Energía</th></tr></thead>
+    <tbody id="tabla-horas"></tbody>
+  </table>
+</section>
+
+<section>
+  <h2>💡 Cómo Usar las Horas</h2>
+  <ul>
+    <li><strong>Hora del Sol</strong> — Inicia proyectos, habla con líderes.</li>
+    <li><strong>Hora de la Luna</strong> — Medita, cuida de otros, descansa.</li>
+    <li><strong>Hora de Mercurio</strong> — Comunica, estudia, negocia.</li>
+    <li><strong>Hora de Venus</strong> — Ama, crea arte, socializa.</li>
+    <li><strong>Hora de Marte</strong> — Actúa, defiende, compite.</li>
+    <li><strong>Hora de Júpiter</strong> — Expande, aprende, bendice.</li>
+    <li><strong>Hora de Saturno</strong> — Ordena, disciplina, reflexiona.</li>
+  </ul>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Hora Planetaria</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const ORDEN = [
+  { p:'Saturno', sym:'♄', sef:'Biná',    heb:'בינה',  d:'Disciplina, límite, reflexión' },
+  { p:'Júpiter', sym:'♃', sef:'Jesed',   heb:'חסד',   d:'Expansión, aprendizaje, bendición' },
+  { p:'Marte',   sym:'♂', sef:'Guevurá', heb:'גבורה', d:'Acción, coraje, defensa' },
+  { p:'Sol',     sym:'☉', sef:'Tiféret', heb:'תפארת', d:'Luz, liderazgo, autoridad' },
+  { p:'Venus',   sym:'♀', sef:'Netzaj',  heb:'נצח',   d:'Amor, belleza, creación' },
+  { p:'Mercurio',sym:'☿', sef:'Hod',     heb:'הוד',   d:'Comunicación, estudio, negociación' },
+  { p:'Luna',    sym:'☾', sef:'Yesod',   heb:'יסוד',  d:'Intuición, emoción, cuidado' }
+];
+
+function horaPlanetaria(){
+  const now = new Date();
+  const hora = now.getHours();
+  // Índice en el orden caldeo
+  const idx = hora % 7;
+  return ORDEN[idx];
+}
+
+function actualizar(){
+  const h = horaPlanetaria();
+  document.getElementById('hora-titulo').textContent = `${h.sym} ${h.p}`;
+  document.getElementById('hora-heb').textContent = h.heb;
+  document.getElementById('hora-detalles').innerHTML = `
+    <div class="result-card">
+      <div class="label">Planeta</div>
+      <div class="value">${h.sym}</div>
+      <div class="name">${h.p}</div>
+    </div>
+    <div class="result-card">
+      <div class="label">Sefirá</div>
+      <div class="value" style="font-size:1.3rem;">${h.sef}</div>
+      <div class="name hebrew-inline">${h.heb}</div>
+    </div>
+    <div class="result-card" style="grid-column:1/-1;">
+      <div class="label">Energía</div>
+      <div class="desc" style="font-size:.95rem;">${h.d}</div>
+    </div>
+  `;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const tbody = document.getElementById('tabla-horas');
+  for(let i = 0; i < 24; i++){
+    const h = ORDEN[i % 7];
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${String(i).padStart(2,'0')}:00</td>
+      <td>${h.sym} ${h.p}</td><td>${h.d}</td>`;
+    tbody.appendChild(tr);
+  }
+  actualizar();
+  setInterval(actualizar, 60000);
+});
+</script>
+</body>
+</html>
