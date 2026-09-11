@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Tu ángel guardián personal según la tradición cabalística">
+<title>✦ Tu Ángel Guardián — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.angel-card{text-align:center;padding:2.5rem 1.5rem;
+  background:radial-gradient(circle, rgba(79,209,197,.15), transparent 70%),
+  rgba(5,6,15,.7);border:2px solid var(--cyan);border-radius:20px;
+  margin:1.5rem 0;box-shadow:0 0 60px rgba(79,209,197,.4);}
+.angel-card .simbolo{font-size:5rem;color:var(--cyan);
+  text-shadow:0 0 40px var(--cyan);}
+.angel-card .nombre{color:var(--gold2);font-size:1.6rem;
+  letter-spacing:.15em;margin:.5rem 0;}
+.angel-card .heb{color:var(--gold);font-family:var(--font-heb);
+  font-size:1.4rem;direction:rtl;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">מלאך שומר</div>
+  <h1>✦ Tu Ángel Guardián ✦</h1>
+  <p>El guardián que te acompaña</p>
+  <span class="page-number">Extras · Ángel</span>
+</header>
+
+<section>
+  <h2>👼 ¿Quién te Guarda?</h2>
+  <p>Según la tradición, cada persona tiene un <strong>ángel guardián</strong>
+  personal que la acompaña desde el nacimiento. Este ángel se revela según
+  el mes de nacimiento.</p>
+  <form id="angel-form" autocomplete="off">
+    <div class="form-grid">
+      <div class="form-field full">
+        <label for="fecha">Fecha de nacimiento</label>
+        <input type="date" id="fecha" required>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1.2rem">
+      <button type="submit" class="btn">✦ Revelar mi Ángel ✦</button>
+    </div>
+  </form>
+</section>
+
+<div id="results" style="display:none"></div>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Ángel Guardián</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const ANGELES = {
+  1:{ n:'Gabriel',     h:'גבריאל',  d:'Ángel de la fuerza y el anuncio. Te protege con poder.' },
+  2:{ n:'Rafael',      h:'רפאל',    d:'Ángel de la sanación.
