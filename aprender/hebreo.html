@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Hebreo bíblico básico: alfabeto, vocales, lectura">
+<title>✦ Hebreo Bíblico — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.abecedario{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));
+  gap:.6rem;margin:1.5rem 0;}
+.letra-card{border:1px solid var(--line);border-radius:10px;padding:.9rem .5rem;
+  text-align:center;background:rgba(10,12,30,.6);transition:all .3s;cursor:pointer;}
+.letra-card:hover{border-color:var(--gold);background:rgba(212,175,55,.08);
+  transform:translateY(-3px);}
+.letra-card .letra{font-size:2.2rem;color:var(--gold2);
+  font-family:var(--font-heb);line-height:1;direction:rtl;}
+.letra-card .nombre{font-size:.75rem;color:var(--muted);margin-top:.4rem;
+  letter-spacing:.08em;}
+.letra-card .valor{font-size:.65rem;color:var(--cyan);font-family:var(--font-mono);}
+.pistas{background:rgba(5,6,15,.5);padding:1rem;border-radius:10px;
+  margin:1rem 0;border-left:3px solid var(--gold);font-size:.9rem;}
+.pistas ul{margin-left:1.2rem;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">עברית</div>
+  <h1>✦ Hebreo Bíblico ✦</h1>
+  <p>Alfabeto · Vocales · Lectura</p>
+  <span class="page-number">Aprender · Hebreo</span>
+</header>
+
+<section>
+  <h2>📖 El Alfabeto Hebreo</h2>
+  <p>El hebreo tiene <strong>22 letras consonantes</strong> y se escribe
+  <strong>de derecha a izquierda</strong>. Las 5 letras finales (kaf, mem, nun,
+  pe, tzadi) tienen forma especial al final de la palabra.</p>
+  <p><strong>Haz clic</strong> en cada letra para ver su valor numérico.</p>
+
+  <div class="abecedario" id="abecedario"></div>
+</section>
+
+<section>
+  <h2>🔤 Sistema de Vocales (Nikud)</h2>
+  <p>El hebreo bíblico se escribe con <strong>signos vocálicos</strong> debajo
+  o encima de las letras, llamados <em>nikud</em>. Los principales son:</p>
+  <table>
+    <thead><tr><th>Signo</th><th>Sonido</th><th>Nombre</th></tr></thead>
+    <tbody>
+      <tr><td style="font-size:1.4rem;">בַ</td><td>a</td><td>Patáj</td></tr>
+      <tr><td style="font-size:1.4rem;">בֶ</td><td>e</td><td>Segol</td></tr>
+      <tr><td style="font-size:1.4rem;">בִ</td><td>i</td><td>Jirik</td></tr>
+      <tr><td style="font-size:1.4rem;">בֹ</td><td>o</td><td>Jolam</td></tr>
+      <tr><td style="font-size:1.4rem;">בֻ</td><td>u</td><td>Kubutz</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>💡 Cómo Leer</h2>
+  <div class="pistas">
+    <ul>
+      <li><strong>Dirección:</strong> de derecha a izquierda.</li>
+      <li><strong>Vocales:</strong> debajo/encima de las consonantes.</li>
+      <li><strong>Daguesh:</strong> el punto dentro de una letra cambia su sonido.</li>
+      <li><strong>Letras finales:</strong> 5 letras cambian de forma al final.</li>
+      <li><strong>Sin vocales:</strong> el hebreo moderno moderno apenas usa nikud.</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h2>🔤 Palabras Esenciales</h2>
+  <table>
+    <thead><tr><th>Hebreo</th><th>Translit.</th><th>Español</th></tr></thead>
+    <tbody>
+      <tr><td class="hebrew-inline">שלום</td><td>Shalom</td><td>Paz, hola, adiós</td></tr>
+      <tr><td class="hebrew-inline">תודה</td><td>Todá</td><td>Gracias</td></tr>
+      <tr><td class="hebrew-inline">אהבה</td><td>Ahavá</td><td>Amor</td></tr>
+      <tr><td class="hebrew-inline">אור</td><td>Or</td><td>Luz</td></tr>
+      <tr><td class="hebrew-inline">חיים</td><td>Jaim</td><td>Vida</td></tr>
+      <tr><td class="hebrew-inline">אמת</td><td>Emet</td><td>Verdad</td></tr>
+      <tr><td class="hebrew-inline">שמים</td><td>Shamáim</td><td>Cielos</td></tr>
+      <tr><td class="hebrew-inline">ארץ</td><td>Eretz</td><td>Tierra</td></tr>
+      <tr><td class="hebrew-inline">אדם</td><td>Adam</td><td>Ser humano</td></tr>
+      <tr><td class="hebrew-inline">אלהים</td><td>Elohim</td><td>Dios</td></tr>
+    </tbody>
+  </table>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Hebreo Bíblico</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const LETRAS = [
+  ['א','Alef',1],['ב','Bet',2],['ג','Guimel',3],['ד','Dalet',4],
+  ['ה','He',5],['ו','Vav',6],['ז','Zayin',7],['ח','Jet',8],
+  ['ט','Tet',9],['י','Yud',10],['כ','Kaf',20],['ל','Lamed',30],
+  ['מ','Mem',40],['נ','Nun',50],['ס','Samej',60],['ע','Ayin',70],
+  ['פ','Pe',80],['צ','Tzadi',90],['ק','Kuf',100],['ר','Resh',200],
+  ['ש','Shin',300],['ת','Tav',400]
+];
+
+document.addEventListener('DOMContentLoaded', () => {
+  const cont = document.getElementById('abecedario');
+  LETRAS.forEach(([l, n, v]) => {
+    const card = document.createElement('div');
+    card.className = 'letra-card';
+    card.setAttribute('role', 'button');
+    card.setAttribute('tabindex', '0');
+    card.innerHTML = `
+      <div class="letra">${l}</div>
+      <div class="nombre">${n}</div>
+      <div class="valor">${v}</div>
+    `;
+    cont.appendChild(card);
+  });
+});
+</script>
+</body>
+</html>
