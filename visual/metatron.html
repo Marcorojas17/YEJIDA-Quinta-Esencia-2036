@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Cubo de Metatrón: los 13 círculos y los 5 sólidos platónicos">
+<title>✦ Cubo de Metatrón — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.metatron{width:100%;max-width:520px;margin:2rem auto;display:block;
+  filter:drop-shadow(0 0 40px rgba(108,92,231,.5));}
+.metatron line{stroke:rgba(108,92,231,.4);stroke-width:.8;}
+.metatron .node{fill:none;stroke:var(--gold);stroke-width:1.5;transition:all .4s;}
+.metatron .node:hover{stroke:var(--gold2);stroke-width:2.5;
+  filter:drop-shadow(0 0 15px var(--gold));}
+.metatron .node-center{fill:rgba(212,175,55,.2);stroke:var(--gold2);stroke-width:2;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">קוביית מטטרון</div>
+  <h1>✦ Cubo de Metatrón ✦</h1>
+  <p>Los 13 círculos · Los 5 sólidos platónicos</p>
+  <span class="page-number">Visualización · Geometría Sagrada</span>
+</header>
+
+<section>
+  <h2>🔯 El Cubo Sagrado</h2>
+  <p>El <strong>Cubo de Metatrón</strong> se forma trazando líneas entre los
+  <strong>13 centros</strong> de la Flor de la Vida. Contiene en su interior
+  los <strong>5 sólidos platónicos</strong>: tetraedro, cubo, octaedro,
+  dodecaedro e icosaedro.</p>
+
+  <svg class="metatron" id="metatron-svg" viewBox="0 0 400 400" role="img"
+    aria-label="Cubo de Metatrón">
+    <g id="metatron-lines"></g>
+    <g id="metatron-nodes"></g>
+  </svg>
+</section>
+
+<section>
+  <h2>🌐 Los 5 Sólidos Platónicos</h2>
+  <table>
+    <thead><tr><th>Sólido</th><th>Caras</th><th>Elemento</th><th>Sefirá</th></tr></thead>
+    <tbody>
+      <tr><td>Tetraedro</td><td>4</td><td>Fuego</td><td>Guevurá</td></tr>
+      <tr><td>Cubo / Hexaedro</td><td>6</td><td>Tierra</td><td>Maljut</td></tr>
+      <tr><td>Octaedro</td><td>8</td><td>Aire</td><td>Tiféret</td></tr>
+      <tr><td>Dodecaedro</td><td>12</td><td>Éter / Vacío</td><td>Kéter</td></tr>
+      <tr><td>Icosaedro</td><td>20</td><td>Agua</td><td>Jesed</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>💡 Significado</h2>
+  <p>El Cubo de Metatrón es considerado un <strong>mapa de la creación</strong>.
+  En él se contienen todas las formas geométricas fundamentales que estructuran
+  el universo. La tradición dice que <strong>Metatrón</strong>, el ángel más
+  cercano a Dios, lo custodia.</p>
+  <div class="equation">
+    <div class="big">13 círculos → Toda la geometría sagrada</div>
+    <div class="heb">י"ג עיגולים → כל הגאומטריה הקדושה</div>
+  </div>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Cubo de Metatrón</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const cx = 200, cy = 200, r = 40;
+  const puntos = [{ x:cx, y:cy }];
+
+  // 6 puntos del hexágono interior
+  for(let i = 0; i < 6; i++){
+    const a = (Math.PI / 3) * i;
+    puntos.push({ x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r });
+  }
+
+  // 6 puntos del hexágono exterior
+  for(let i = 0; i < 6; i++){
+    const a = (Math.PI / 3) * i;
+    puntos.push({ x: cx + Math.cos(a) * r * 2, y: cy + Math.sin(a) * r * 2 });
+  }
+
+  // Líneas conectando todos los puntos
+  const linesG = document.getElementById('metatron-lines');
+  for(let i = 0; i < puntos.length; i++){
+    for(let j = i + 1; j < puntos.length; j++){
+      const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      l.setAttribute('x1', puntos[i].x);
+      l.setAttribute('y1', puntos[i].y);
+      l.setAttribute('x2', puntos[j].x);
+      l.setAttribute('y2', puntos[j].y);
+      linesG.appendChild(l);
+    }
+  }
+
+  // Nodos (círculos)
+  const nodesG = document.getElementById('metatron-nodes');
+  puntos.forEach((p, i) => {
+    const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    c.setAttribute('cx', p.x); c.setAttribute('cy', p.y);
+    c.setAttribute('r', r * 0.6);
+    c.setAttribute('class', i === 0 ? 'node-center' : 'node');
+    c.setAttribute('tabindex', '0');
+    c.setAttribute('aria-label', i === 0 ? 'Centro' : `Nodo ${i}`);
+    nodesG.appendChild(c);
+  });
+});
+</script>
+</body>
+</html>
