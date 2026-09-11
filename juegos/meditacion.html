@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Juego de atención: sigue las letras hebreas que aparecen y desaparecen">
+<title>✦ Atención Sagrada — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.area-juego{position:relative;height:400px;background:
+  radial-gradient(circle at 50% 50%, rgba(108,92,231,.1), transparent 70%),
+  rgba(5,6,15,.7);border:2px solid var(--line);border-radius:16px;
+  margin:1.5rem 0;overflow:hidden;cursor:crosshair;}
+.letra-target{position:absolute;font-size:2.2rem;color:var(--gold2);
+  font-family:var(--font-heb);direction:rtl;
+  text-shadow:0 0 20px rgba(212,175,55,.9);
+  animation:aparecer 3s ease-in-out forwards;
+  cursor:pointer;user-select:none;padding:.5rem;
+  transition:transform .2s;}
+.letra-target:hover{transform:scale(1.2);}
+.letra-target.clickeada{animation:pop .3s forwards;pointer-events:none;
+  color:var(--success);}
+@keyframes aparecer{
+  0%{opacity:0;transform:scale(.3);}
+  20%{opacity:1;transform:scale(1);}
+  80%{opacity:1;transform:scale(1);}
+  100%{opacity:0;transform:scale(1.3);}
+}
+@keyframes pop{
+  0%{transform:scale(1);opacity:1;}
+  100%{transform:scale(2);opacity:0;}
+}
+.stats-juego{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+.stat{text-align:center;padding:.6rem 1.2rem;background:rgba(10,12,30,.6);
+  border:1px solid var(--line);border-radius:10px;min-width:100px;}
+.stat .num{color:var(--gold2);font-size:1.3rem;font-family:var(--font-mono);}
+.stat .lbl{color:var(--muted);font-size:.7rem;letter-spacing:.15em;
+  text-transform:uppercase;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">קשב</div>
+  <h1>✦ Atención Sagrada ✦</h1>
+  <p>Apunta las letras hebreas antes de que desaparezcan</p>
+  <span class="page-number">Juegos · Atención</span>
+</header>
+
+<section>
+  <div class="stats-juego">
+    <div class="stat"><div class="num" id="aciertos">0</div><div class="lbl">Aciertos</div></div>
+    <div class="stat"><div class="num" id="perdidos">0</div><div class="lbl">Perdidos</div></div>
+    <div class="stat"><div class="num" id="tiempo">60s</div><div class="lbl">Tiempo</div></div>
+  </div>
+
+  <div class="area-juego" id="area"></div>
+
+  <div style="text-align:center;margin-top:1rem;">
+    <button id="iniciar" class="btn">✦ Iniciar Juego ✦</button>
+    <button id="detener" class="btn btn-danger" style="display:none;">⏸️ Detener</button>
+  </div>
+</section>
+
+<section>
+  <h2>💡 Cómo Jugar</h2>
+  <ul>
+    <li>Aparecerán letras hebreas flotando en el área de juego.</li>
+    <li>Haz clic en cada una antes de que desaparezca.</li>
+    <li>Cada acierto suma 5 puntos.</li>
+    <li>Tienes 60 segundos para atrapar todas las que puedas.</li>
+    <li>Practica la atención plena mientras juegas.</li>
+  </ul>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Atención Sagrada</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const LETRAS = ['א','ב','ג','ד','ה','ו','ז','ח','ט','י','כ','ל','מ','נ','ס','ע','פ','צ','ק','ר','ש','ת'];
+let aciertos = 0;
+let perdidos = 0;
+let puntaje = 0;
+let tiempo = 60;
+let activo = false;
+let spawnId = null;
+let timerId = null;
+
+function spawn(){
+  if(!activo) return;
+  const area = document.getElementById('area');
+  const letra = document.createElement('div');
+  letra.className = 'letra-target';
+  letra.textContent = LETRAS[Math.floor(Math.random() * LETRAS.length)];
+
+  // Posición aleatoria dentro del área
+  const rect = area.getBoundingClientRect();
+  const maxX = rect.width - 60;
+  const maxY = rect.height - 60;
+  letra.style.left = Math.random() * maxX + 'px';
+  letra.style.top = Math.random() * maxY + 'px';
+
+  let clickeada = false;
+  letra.addEventListener('click', () => {
+    if(clickeada) return;
+    clickeada = true;
+    aciertos++;
+    puntaje += 5;
+    document.getElementById('aciertos').textContent = aciertos;
+    letra.classList.add('clickeada');
+    setTimeout(() => letra.remove(), 300);
+  });
+
+  letra.addEventListener('animationend', () => {
+    if(!clickeada && letra.parentNode){
+      perdidos++;
+      document.getElementById('perdidos').textContent = perdidos;
+      letra.remove();
+    }
+  });
+
+  area.appendChild(letra);
+  // Próxima letra en 500-900ms
+  const next = 500 + Math.random() * 400;
+  spawnId = setTimeout(spawn, next);
+}
+
+function iniciar(){
+  activo = true;
+  aciertos = 0;
+  perdidos = 0;
+  puntaje = 0;
+  tiempo = 60;
+  document.getElementById('aciertos').textContent = 0;
+  document.getElementById('perdidos').textContent = 0;
+  document.getElementById('tiempo').textContent = '60s';
+  document.getElementById('iniciar').style.display = 'none';
+  document.getElementById('detener').style.display = 'inline-block';
+  document.getElementById('area').innerHTML = '';
+
+  spawn();
+  timerId = setInterval(() => {
+    tiempo--;
+    document.getElementById('tiempo').textContent = tiempo + 's';
+    if(tiempo <= 0) detener();
+  }, 1000);
+}
+
+function detener(){
+  activo = false;
+  clearTimeout(spawnId);
+  clearInterval(timerId);
+  document.getElementById('iniciar').style.display = 'inline-block';
+  document.getElementById('detener').style.display = 'none';
+  document.getElementById('area').innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:center;
+      height:100%;flex-direction:column;gap:1rem;">
+      <div style="font-size:3rem;color:var(--gold2);font-family:var(--font-mono);">
+        ${puntaje}
+      </div>
+      <div style="color:var(--gold2);font-size:1.2rem;">✦ Puntaje Final ✦</div>
+      <div style="color:var(--muted);">
+        Aciertos: ${aciertos} · Perdidos: ${perdidos}
+      </div>
+      <div style="color:var(--muted);font-size:.85rem;">
+        ${aciertos >= 30 ? 'Atención excepcional.' :
+          aciertos >= 20 ? 'Excelente concentración.' :
+          aciertos >= 10 ? 'Buen nivel.' : 'Sigue practicando.'}
+      </div>
+    </div>
+  `;
+}
+
+document.getElementById('iniciar').addEventListener('click', iniciar);
+document.getElementById('detener').addEventListener('click', detener);
+</script>
+</body>
+</html>
