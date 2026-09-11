@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Los Tefilín: filacterias sagradas y su significado cabalístico">
+<title>✦ Los Tefilín — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.tefilin-vis{display:grid;grid-template-columns:1fr 1fr;gap:1rem;
+  margin:1.5rem 0;}
+@media(max-width:600px){.tefilin-vis{grid-template-columns:1fr;}}
+.tefilin-item{border:2px solid var(--line);border-radius:16px;
+  padding:1.5rem;text-align:center;background:rgba(10,12,30,.6);
+  transition:all .4s;cursor:pointer;}
+.tefilin-item:hover{border-color:var(--gold);
+  box-shadow:0 0 25px rgba(212,175,55,.4);}
+.tefilin-item .caja{width:80px;height:80px;margin:0 auto 1rem;
+  background:linear-gradient(135deg, var(--gold3), var(--gold));
+  border-radius:10px;position:relative;
+  box-shadow:0 0 25px rgba(212,175,55,.6);}
+.tefilin-item .caja::before{content:"";position:absolute;inset:8px;
+  border:1px solid rgba(5,6,15,.4);border-radius:6px;}
+.tefilin-item .caja.sel{width:70px;height:60px;margin-bottom:1rem;}
+.tefilin-item h3{color:var(--gold2);font-size:1rem;letter-spacing:.1em;
+  margin-bottom:.3rem;}
+.tefilin-item p{color:var(--muted);font-size:.85rem;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">תפילין</div>
+  <h1>✦ Los Tefilín ✦</h1>
+  <p>Filacterias sagradas</p>
+  <span class="page-number">Práctica · Mitzvá</span>
+</header>
+
+<section>
+  <h2>📜 ¿Qué son los Tefilín?</h2>
+  <p>Los <strong>Tefilín (תפילין)</strong> son dos cajas de cuero que contienen
+  pergaminos con textos de la Torá (Éxodo 13:1-10, 11-16; Deuteronomio 6:4-9,
+  11:13-21). Se colocan:
+  </p>
+  <ul>
+    <li><strong>Shel Yad</strong> — En el brazo izquierdo, sobre el corazón.</li>
+    <li><strong>Shel Rosh</strong> — En la cabeza, sobre la frente.</li>
+  </ul>
+  <p>Se usan durante la oración matutina (Shajarit) en días laborables.</p>
+</section>
+
+<section>
+  <h2>🔯 Los Dos Tefilín</h2>
+  <div class="tefilin-vis">
+    <div class="tefilin-item">
+      <div class="caja"></div>
+      <h3>Shel Yad · של יד</h3>
+      <p>Brazo izquierdo, sobre el corazón</p>
+    </div>
+    <div class="tefilin-item">
+      <div class="caja sel"></div>
+      <h3>Shel Rosh · של ראש</h3>
+      <p>Cabeza, sobre la frente</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>💡 Significado Cabalístico</h2>
+  <table>
+    <thead><tr><th>Tefilín</th><th>Parte del cuerpo</th><th>Sefirá</th><th>Nivel del alma</th></tr></thead>
+    <tbody>
+      <tr><td>Shel Yad</td><td>Brazo / corazón</td><td>Tiféret</td><td>Ruaj (emociones)</td></tr>
+      <tr><td>Shel Rosh</td><td>Cabeza / frente</td><td>Biná / Jojmá</td><td>Neshamá (intelecto)</td></tr>
+    </tbody>
+  </table>
+  <div class="equation">
+    <div class="big">Unir corazón y mente · Emoción y razón</div>
+    <div class="heb">לאחד לב ומוח · רגש ושכל</div>
+  </div>
+</section>
+
+<section>
+  <h2>🎯 La Bendición</h2>
+  <div class="equation">
+    <div class="heb" style="font-size:1.2rem;line-height:1.9;">
+      בָּרוּךְ אַתָּה יְהוָה אֱלֹהֵינוּ מֶלֶךְ הָעוֹלָם<br>
+      אֲשֶׁר קִדְּשָׁנוּ בְּמִצְוֹתָיו וְצִוָּנוּ לְהָנִיחַ תְּפִלִּין
+    </div>
+    <div class="big" style="margin-top:1rem;font-size:.9rem;">
+      Baruj atá Adonai Eloheinu mélej haolam,<br>
+      asher kideshanu bemitzvotav vetzivanu lehaníaj tefilín.
+    </div>
+    <div style="color:var(--text);margin-top:.8rem;font-style:italic;">
+      "Bendito eres Tú, Eterno nuestro Dios, Rey del universo,<br>
+      que nos santificaste con Sus mandamientos y nos ordenó colocar los tefilín."
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>🕐 Práctica Diaria</h2>
+  <ol>
+    <li>Al despertar, después de Modeh Aní y la purificación.</li>
+    <li>Coloca primero el Shel Yad (brazo).</li>
+    <li>Aprieta las correas en espiral 7 veces (siete vueltas).</li>
+    <li>Coloca el Shel Rosh (cabeza).</li>
+    <li>Recita las bendiciones correspondientes.</li>
+    <li>Reza con kavaná, sintiendo la conexión.</li>
+    <li>Retíralos al terminar la oración (algunos los usan todo el día).</li>
+  </ol>
+  <div class="equation">
+    <div class="big">Tefilín = Conexión entre el cielo y la tierra</div>
+    <div class="heb">תפילין = חיבור בין שמים וארץ</div>
+  </div>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Tefilín</p>
+</footer>
+<script src="../shared.js"></script>
+</body>
+</html>
