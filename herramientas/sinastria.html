@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Sinastría: compatibilidad numerológica y astrológica entre dos personas">
+<title>✦ Sinastría — Compatibilidad — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.compat-circle{width:180px;height:180px;margin:2rem auto;position:relative;display:flex;
+  align-items:center;justify-content:center;}
+.compat-circle svg{position:absolute;inset:0;transform:rotate(-90deg);}
+.compat-circle .bg{fill:none;stroke:rgba(212,175,55,.15);stroke-width:8;}
+.compat-circle .fg{fill:none;stroke:url(#grad);stroke-width:8;stroke-linecap:round;
+  transition:stroke-dashoffset 1.5s ease;}
+.compat-circle .pct{font-size:2.5rem;color:var(--gold2);font-weight:700;
+  text-shadow:0 0 25px rgba(212,175,55,.7);z-index:1;}
+.personas-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0;}
+@media(max-width:600px){.personas-grid{grid-template-columns:1fr;}}
+.persona-card{border:1px solid var(--line);border-radius:12px;padding:1rem;
+  background:rgba(10,12,30,.6);}
+.persona-card h4{color:var(--gold2);font-size:.95rem;margin-bottom:.6rem;}
+.mini-row{display:flex;justify-content:space-between;font-size:.82rem;padding:.3rem 0;
+  border-bottom:1px solid var(--line-soft);}
+.mini-row:last-child{border:none;}
+.mini-row .k{color:var(--muted);}
+.mini-row .v{color:var(--gold2);font-weight:600;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">זיווג</div>
+  <h1>✦ Sinastría ✦</h1>
+  <p>Compatibilidad numerológica y astrológica</p>
+  <span class="page-number">Herramienta · Compatibilidad</span>
+</header>
+
+<section>
+  <h2>👥 Dos Personas</h2>
+  <form id="syn-form" autocomplete="off">
+    <div class="personas-grid">
+      <div class="persona-card">
+        <h4>✦ Persona 1</h4>
+        <div class="form-field">
+          <label for="nombre1">Nombre</label>
+          <input type="text" id="nombre1" required>
+        </div>
+        <div class="form-field" style="margin-top:.6rem">
+          <label for="fecha1">Fecha de nacimiento</label>
+          <input type="date" id="fecha1" required>
+        </div>
+      </div>
+      <div class="persona-card">
+        <h4>✦ Persona 2</h4>
+        <div class="form-field">
+          <label for="nombre2">Nombre</label>
+          <input type="text" id="nombre2" required>
+        </div>
+        <div class="form-field" style="margin-top:.6rem">
+          <label for="fecha2">Fecha de nacimiento</label>
+          <input type="date" id="fecha2" required>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1.2rem">
+      <button type="submit" class="btn">✦ Calcular Compatibilidad ✦</button>
+    </div>
+  </form>
+</section>
+
+<div id="results" style="display:none"></div>
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Sinastría</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const PYT = {a:1,b:2,c:3,d:4,e:5,f:6,g:7,h:8,i:9,j:1,k:2,l:3,m:4,n:5,o:6,
+  p:7,q:8,r:9,s:1,t:2,u:3,v:4,w:5,x:6,y:7,z:8};
+const VOC = 'aeiou';
+const SIGNS = ['Aries','Tauro','Géminis','Cáncer','Leo','Virgo','Libra',
+  'Escorpio','Sagitario','Capricornio','Acuario','Piscis'];
+const SIGN_SYMBOL = ['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
+const ELEMENTS = ['Fuego','Tierra','Aire','Agua','Fuego','Tierra','Aire','Agua',
+  'Fuego','Tierra','Aire','Agua'];
+
+function reduce(n){
+  while(n > 9){
+    if([11,22,33].includes(n)) return n;
+    n = String(n).split('').reduce((a,b) => a + +b, 0);
+  }
+  return n;
+}
+function clean(s){
+  return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z]/g,'');
+}
+function sumName(name){
+  let t = 0;
+  for(const ch of clean(name)) if(PYT[ch]) t += PYT[ch];
+  return t;
+}
+function caminoVida(fecha){
+  const d = new Date(fecha + 'T12:00:00');
+  return reduce(d.getDate() + d.getMonth() + 1 + d.getFullYear());
+}
+function sunSign(fecha){
+  const d = new Date(fecha + 'T12:00:00');
+  const m = d.getMonth() + 1, day = d.getDate();
+  const ranges = [[3,21],[4,20],[5,21],[6,21],[7,23],[8,23],[9,23],[10,23],
+    [11,22],[12,22],[1,20],[2,19]];
+  for(let i = 0; i < 12; i++){
+    const [fm, fd] = ranges[i];
+    const nextIdx = (i + 1) % 12;
+    const [nm, nd] = ranges[nextIdx];
+    if(fm <= nm ? (m === fm && day >= fd) : (m === fm && day >= fd) || (m === nm && day < nd)){
+      return { name: SIGNS[i], symbol: SIGN_SYMBOL[i], element: ELEMENTS[i] };
+    }
+  }
+  return { name: 'Aries', symbol: '♈', element: 'Fuego' };
+}
+
+// Compatibilidad elemental
+const COMPAT_EL = {
+  'Fuego-Fuego': 85, 'Fuego-Aire': 95, 'Fuego-Tierra': 55, 'Fuego-Agua': 60,
+  'Tierra-Tierra': 85, 'Tierra-Aire': 50, 'Tierra-Agua': 90,
+  'Aire-Aire': 80, 'Aire-Agua': 55, 'Agua-Agua': 88
+};
+function compatElemental(e1, e2){
+  const key1 = `${e1}-${e2}`, key2 = `${e2}-${e1}`;
+  return COMPAT_EL[key1] || COMPAT_EL[key2] || 70;
+}
+// Compatibilidad numérica
+function compatNumerica(n1, n2){
+  const diff = Math.abs(n1 - n2);
+  const suma = reduce(n1 + n2);
+  // Números iguales: alta; suma 11/22/33: muy alta; otros: variable
+  let base = 70;
+  if(n1 === n2) base = 90;
+  else if([11,22,33].includes(suma)) base = 88;
+  else base = Math.max(40, 90 - diff * 6);
+  return base;
+}
+
+document.getElementById('syn-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const n1 = document.getElementById('nombre1').value.trim();
+  const f1 = document.getElementById('fecha1').value;
+  const n2 = document.getElementById('nombre2').value.trim();
+  const f2 = document.getElementById('fecha2').value;
+  if(!n1 || !f1 || !n2 || !f2) return alert('Completa los 4 campos.');
+
+  const cv1 = caminoVida(f1), cv2 = caminoVida(f2);
+  const exp1 = reduce(sumName(n1)), exp2 = reduce(sumName(n2));
+  const sun1 = sunSign(f1), sun2 = sunSign(f2);
+
+  const compatNum = compatNumerica(cv1, cv2);
+  const compatAstro = compatElemental(sun1.element, sun2.element);
+  const compatExp = compatNumerica(exp1, exp2);
+  const total = Math.round((compatNum * 0.4 + compatAstro * 0.4 + compatExp * 0.2));
+
+  const circ = 2 * Math.PI * 80;
+  const offset = circ * (1 - total / 100);
+
+  const results = document.getElementById('results');
+  results.style.display = 'block';
+  results.innerHTML = `
+    <section>
+      <h2>💫 Compatibilidad Global</h2>
+      <div class="compat-circle">
+        <svg viewBox="0 0 180 180" aria-hidden="true">
+          <defs>
+            <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#d4af37"/>
+              <stop offset="50%" stop-color="#6c5ce7"/>
+              <stop offset="100%" stop-color="#4fd1c5"/>
+            </linearGradient>
+          </defs>
+          <circle class="bg" cx="90" cy="90" r="80"/>
+          <circle class="fg" cx="90" cy="90" r="80"
+            stroke-dasharray="${circ}"
+            stroke-dashoffset="${offset}"/>
+        </svg>
+        <div class="pct">${total}%</div>
+      </div>
+      <p style="text-align:center;color:var(--muted);font-size:.9rem;">
+        ${total >= 85 ? '🌟 Unión excepcional' :
+          total >= 70 ? '✦ Buena compatibilidad' :
+          total >= 55 ? '◈ Compatibilidad con desafíos' :
+          '⚠️ Polos opuestos que requieren trabajo'}
+      </p>
+    </section>
+
+    <section>
+      <h2>👤 Detalles Comparados</h2>
+      <div class="personas-grid">
+        <div class="persona-card">
+          <h4>${n1}</h4>
+          <div class="mini-row"><span class="k">Camino de Vida</span><span class="v">${cv1}</span></div>
+          <div class="mini-row"><span class="k">Expresión</span><span class="v">${exp1}</span></div>
+          <div class="mini-row"><span class="k">Sol</span><span class="v">${sun1.symbol} ${sun1.name}</span></div>
+          <div class="mini-row"><span class="k">Elemento</span><span class="v">${sun1.element}</span></div>
+        </div>
+        <div class="persona-card">
+          <h4>${n2}</h4>
+          <div class="mini-row"><span class="k">Camino de Vida</span><span class="v">${cv2}</span></div>
+          <div class="mini-row"><span class="k">Expresión</span><span class="v">${exp2}</span></div>
+          <div class="mini-row"><span class="k">Sol</span><span class="v">${sun2.symbol} ${sun2.name}</span></div>
+          <div class="mini-row"><span class="k">Elemento</span><span class="v">${sun2.element}</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>🔍 Análisis Detallado</h2>
+      <table>
+        <thead><tr><th>Área</th><th>Puntaje</th><th>Interpretación</th></tr></thead>
+        <tbody>
+          <tr><td>Camino de Vida</td><td>${compatNum}%</td>
+            <td>${cv1 === cv2 ? 'Almas gemelas numerológicas' : 'Complementarios'}</td></tr>
+          <tr><td>Expresión</td><td>${compatExp}%</td>
+            <td>${Math.abs(exp1-exp2) <= 2 ? 'Comunicación fluida' : 'Estilos distintos'}</td></tr>
+          <tr><td>Sol / Elemento</td><td>${compatAstro}%</td>
+            <td>${sun1.element === sun2.element ? 'Misma energía' :
+              compatAstro >= 85 ? 'Elementos complementarios' : 'Elementos en tensión'}</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>💡 Consejo Sagrado</h2>
+      <div class="equation">
+        <div class="big">${total >= 75 ?
+          'Unidad en la diversidad' : 'La tensión es maestra'}</div>
+        <div class="heb">${total >= 75 ?
+          'אחדות' : 'תיקון'}</div>
+      </div>
+      <p style="text-align:center;color:var(--muted);font-size:.9rem;">
+        ${total >= 75 ? 'Esta unión refleja Yejidá — dos almas que se reconocen en la Unidad.'
+          : 'Los desafíos son oportunidades de tikkun (reparación) mutuo.'}
+      </p>
+    </section>
+  `;
+  results.scrollIntoView({ behavior:'smooth' });
+});
+</script>
+</body>
+</html>
