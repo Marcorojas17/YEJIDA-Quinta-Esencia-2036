@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✦ Yejidá — Geometría Sagrada del Alma ✦</title>
+<style>
+  :root{
+    --bg:#05060f;
+    --bg2:#0a0c1e;
+    --gold:#d4af37;
+    --gold2:#f7e08a;
+    --violet:#6c5ce7;
+    --cyan:#4fd1c5;
+    --text:#eceaf5;
+    --muted:#8d93ad;
+    --line:rgba(212,175,55,.28);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.7;
+    overflow-x:hidden;
+    min-height:100vh;
+  }
+
+  /* ---------- FONDO DE GEOMETRÍA SAGRADA ---------- */
+  #sacred-bg{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    background:
+      radial-gradient(circle at 50% 20%, #141a3a 0%, #05060f 55%, #02020a 100%);
+  }
+  #sacred-bg canvas{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    opacity:.55;
+  }
+  /* Neblina violeta pulsante */
+  #sacred-bg::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+      radial-gradient(circle at 15% 80%, rgba(108,92,231,.25), transparent 40%),
+      radial-gradient(circle at 85% 15%, rgba(79,209,197,.18), transparent 40%),
+      radial-gradient(circle at 50% 50%, rgba(212,175,55,.10), transparent 60%);
+    animation:breathe 12s ease-in-out infinite;
+    pointer-events:none;
+  }
+  @keyframes breathe{
+    0%,100%{opacity:.7;transform:scale(1);}
+    50%{opacity:1;transform:scale(1.06);}
+  }
+
+  /* ---------- LETRAS HEBREAS FLOTANTES ---------- */
+  .floating-letters{
+    position:fixed;
+    inset:0;
+    z-index:1;
+    pointer-events:none;
+    overflow:hidden;
+  }
+  .floating-letters span{
+    position:absolute;
+    color:rgba(212,175,55,.18);
+    font-size:clamp(28px,5vw,64px);
+    font-family:'David','Times New Roman',serif;
+    direction:rtl;
+    text-shadow:0 0 20px rgba(212,175,55,.35);
+    animation:drift linear infinite;
+    user-select:none;
+  }
+  @keyframes drift{
+    0%{transform:translateY(110vh) rotate(0deg);opacity:0;}
+    10%{opacity:1;}
+    90%{opacity:1;}
+    100%{transform:translateY(-20vh) rotate(360deg);opacity:0;}
+  }
+
+  /* ---------- CONTENIDO ---------- */
+  .container{
+    position:relative;
+    z-index:2;
+    max-width:1000px;
+    margin:0 auto;
+    padding:2.5rem 1.2rem 4rem;
+  }
+
+  /* ---------- HEADER ---------- */
+  header{
+    text-align:center;
+    padding:3rem 1.5rem 2.5rem;
+    border:1px solid var(--line);
+    border-radius:20px;
+    background:
+      linear-gradient(180deg, rgba(212,175,55,.07), rgba(108,92,231,.04)),
+      rgba(10,12,30,.55);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    box-shadow:
+      0 0 60px rgba(212,175,55,.15),
+      inset 0 0 40px rgba(108,92,231,.08);
+    margin-bottom:2rem;
+    position:relative;
+    overflow:hidden;
+  }
+  header::before{
+    content:"";
+    position:absolute;
+    inset:-2px;
+    background:conic-gradient(from 0deg, transparent, rgba(212,175,55,.5), transparent 30%);
+    animation:spin 8s linear infinite;
+    z-index:-1;
+    border-radius:22px;
+    opacity:.5;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  .hebrew-main{
+    font-size:clamp(3rem,9vw,5.5rem);
+    color:var(--gold2);
+    direction:rtl;
+    font-family:'David','Times New Roman',serif;
+    text-shadow:
+      0 0 20px rgba(212,175,55,.8),
+      0 0 45px rgba(212,175,55,.45),
+      0 0 80px rgba(247,224,138,.25);
+    letter-spacing:.05em;
+    animation:pulse-glow 4s ease-in-out infinite;
+    line-height:1.1;
+  }
+  @keyframes pulse-glow{
+    0%,100%{text-shadow:0 0 20px rgba(212,175,55,.8),0 0 45px rgba(212,175,55,.45);}
+    50%{text-shadow:0 0 32px rgba(247,224,138,1),0 0 70px rgba(212,175,55,.7),0 0 120px rgba(247,224,138,.4);}
+  }
+  header h1{
+    font-size:clamp(1.05rem,2.6vw,1.6rem);
+    color:var(--gold2);
+    letter-spacing:.35em;
+    text-transform:uppercase;
+    margin:.9rem 0 .5rem;
+    font-weight:400;
+  }
+  header p{
+    color:var(--muted);
+    font-size:.95rem;
+    letter-spacing:.1em;
+  }
+  .sigil{
+    display:inline-block;
+    margin-top:1rem;
+    font-size:1.6rem;
+    color:var(--gold);
+    animation:spin 20s linear infinite;
+  }
+
+  /* ---------- SECCIONES ---------- */
+  section{
+    background:rgba(10,12,30,.55);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:1.6rem 1.7rem;
+    margin-bottom:1.6rem;
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    box-shadow:
+      0 8px 32px rgba(0,0,0,.4),
+      inset 0 1px 0 rgba(212,175,55,.15);
+    transition:transform .4s ease, box-shadow .4s ease, border-color .4s ease;
+    position:relative;
+  }
+  section::before{
+    content:"";
+    position:absolute;
+    top:0;left:0;right:0;height:1px;
+    background:linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity:.5;
+  }
+  section:hover{
+    transform:translateY(-3px);
+    box-shadow:
+      0 12px 48px rgba(212,175,55,.15),
+      0 0 30px rgba(108,92,231,.15),
+      inset 0 1px 0 rgba(212,175,55,.25);
+    border-color:rgba(212,175,55,.5);
+  }
+
+  h2{
+    color:var(--gold2);
+    font-size:1.2rem;
+    font-weight:500;
+    letter-spacing:.15em;
+    text-transform:uppercase;
+    margin-bottom:1.1rem;
+    display:flex;
+    align-items:center;
+    gap:.7rem;
+  }
+  h2::before{
+    content:"";
+    width:8px;height:8px;
+    background:var(--gold);
+    border-radius:50%;
+    box-shadow:0 0 12px var(--gold), 0 0 24px var(--gold);
+    flex-shrink:0;
+  }
+
+  h3{color:var(--gold);font-size:1rem;margin:1.3rem 0 .5rem;letter-spacing:.08em;}
+
+  /* ---------- TABLAS ---------- */
+  table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.9rem;}
+  th,td{
+    border:1px solid var(--line);
+    padding:.7rem .9rem;
+    text-align:left;
+    vertical-align:top;
+  }
+  th{
+    background:rgba(212,175,55,.1);
+    color:var(--gold2);
+    font-weight:500;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    font-size:.78rem;
+  }
+  tr:nth-child(even) td{background:rgba(255,255,255,.015);}
+  tr:hover td{background:rgba(212,175,55,.05);transition:background .3s;}
+
+  .hebrew-inline{
+    direction:rtl;
+    color:var(--gold);
+    font-family:'David','Times New Roman',serif;
+    font-weight:600;
+    font-size:1.15rem;
+    text-shadow:0 0 10px rgba(212,175,55,.5);
+  }
+
+  /* ---------- DIAGRAMA YHVH ---------- */
+  .yhvh-diagram{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:.4rem;
+    margin:1.5rem 0;
+    padding:1.5rem 1rem;
+    border-radius:14px;
+    background:
+      radial-gradient(circle at 50% 50%, rgba(212,175,55,.05), transparent 70%),
+      rgba(5,6,15,.6);
+    border:1px solid var(--line);
+  }
+  .yhvh-node{
+    display:flex;
+    align-items:center;
+    gap:1.2rem;
+    padding:.6rem 1.4rem;
+    border:1px solid var(--line);
+    border-radius:50px;
+    background:rgba(10,12,30,.8);
+    min-width:min(340px,90%);
+    justify-content:center;
+    transition:all .4s ease;
+    cursor:default;
+  }
+  .yhvh-node:hover{
+    border-color:var(--gold);
+    box-shadow:0 0 25px rgba(212,175,55,.4);
+    transform:scale(1.03);
+  }
+  .yhvh-node .letter{
+    font-size:1.9rem;
+    color:var(--gold2);
+    font-family:'David','Times New Roman',serif;
+    text-shadow:0 0 15px rgba(212,175,55,.8);
+    min-width:38px;
+    text-align:center;
+  }
+  .yhvh-node .info{font-size:.85rem;color:var(--text);}
+  .yhvh-node .info b{color:var(--gold2);}
+  .yhvh-node .info small{color:var(--muted);display:block;font-size:.75rem;}
+  .yhvh-connector{
+    width:2px;height:18px;
+    background:linear-gradient(180deg,var(--gold),transparent);
+    opacity:.6;
+  }
+  .yhvh-apex{
+    font-size:1.4rem;
+    color:var(--gold2);
+    text-shadow:0 0 20px var(--gold),0 0 40px var(--gold);
+    animation:pulse-glow 3s ease-in-out infinite;
+    margin-bottom:.3rem;
+  }
+  .yhvh-apex-label{
+    font-size:.75rem;
+    color:var(--muted);
+    letter-spacing:.15em;
+    text-transform:uppercase;
+    margin-bottom:1rem;
+  }
+
+  /* ---------- ECUACIÓN ---------- */
+  .equation{
+    text-align:center;
+    padding:2rem 1.5rem;
+    border:1px solid var(--gold);
+    border-radius:14px;
+    background:
+      radial-gradient(circle at 50% 50%, rgba(212,175,55,.12), transparent 70%),
+      rgba(5,6,15,.7);
+    margin:1.5rem 0;
+    box-shadow:
+      0 0 40px rgba(212,175,55,.2),
+      inset 0 0 30px rgba(212,175,55,.05);
+    position:relative;
+    overflow:hidden;
+  }
+  .equation::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:conic-gradient(from 0deg, transparent 0deg, rgba(212,175,55,.25) 90deg, transparent 180deg, rgba(108,92,231,.2) 270deg, transparent 360deg);
+    animation:spin 12s linear infinite;
+    opacity:.35;
+    z-index:0;
+  }
+  .equation > *{position:relative;z-index:1;}
+  .equation .big{
+    font-size:clamp(.9rem,2.2vw,1.15rem);
+    color:var(--gold2);
+    font-weight:600;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+  }
+  .equation .heb{
+    font-size:clamp(1rem,2.5vw,1.35rem);
+    direction:rtl;
+    color:var(--gold);
+    margin-top:.8rem;
+    font-family:'David','Times New Roman',serif;
+    text-shadow:0 0 15px rgba(212,175,55,.6);
+  }
+
+  /* ---------- NIVELES CARD ---------- */
+  .nivel-card{
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:1rem 1.3rem;
+    margin:1rem 0;
+    background:linear-gradient(135deg, rgba(212,175,55,.04), rgba(108,92,231,.03));
+    transition:all .4s ease;
+    position:relative;
+    overflow:hidden;
+  }
+  .nivel-card::after{
+    content:"";
+    position:absolute;
+    left:0;top:0;bottom:0;
+    width:3px;
+    background:linear-gradient(180deg,var(--gold),var(--violet));
+    opacity:.7;
+  }
+  .nivel-card:hover{
+    transform:translateX(6px);
+    border-color:var(--gold);
+    box-shadow:0 0 25px rgba(212,175,55,.2);
+  }
+  .nivel-card .num{
+    display:inline-flex;
+    align-items:center;justify-content:center;
+    background:linear-gradient(135deg,var(--gold),var(--gold2));
+    color:#05060f;
+    width:28px;height:28px;
+    border-radius:50%;
+    font-weight:700;
+    font-size:.85rem;
+    margin-right:.7rem;
+    box-shadow:0 0 15px rgba(212,175,55,.6);
+  }
+
+  /* ---------- BLOCKQUOTE ---------- */
+  blockquote{
+    border-left:3px solid var(--gold);
+    padding:.9rem 1.2rem;
+    margin:1.2rem 0;
+    color:var(--gold2);
+    font-style:italic;
+    background:linear-gradient(90deg, rgba(212,175,55,.08), transparent);
+    border-radius:0 10px 10px 0;
+    letter-spacing:.03em;
+  }
+
+  /* ---------- LISTAS ---------- */
+  ul{margin:.8rem 0 0 1.2rem;}
+  li{margin:.4rem 0;color:var(--text);}
+  li strong{color:var(--gold2);}
+
+  /* ---------- TAGS ---------- */
+  .tags{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin:1rem 0;}
+  .tag{
+    display:inline-block;
+    background:rgba(108,92,231,.18);
+    border:1px solid var(--violet);
+    color:#c3bcff;
+    border-radius:20px;
+    padding:.25rem .85rem;
+    font-size:.75rem;
+    letter-spacing:.1em;
+    transition:all .3s ease;
+  }
+  .tag:hover{
+    background:rgba(108,92,231,.35);
+    box-shadow:0 0 15px rgba(108,92,231,.5);
+    transform:translateY(-2px);
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    text-align:center;
+    color:var(--muted);
+    font-size:.82rem;
+    margin-top:2.5rem;
+    padding:1.5rem 1rem;
+    border-top:1px solid var(--line);
+    letter-spacing:.08em;
+  }
+  footer .sigil-row{
+    color:var(--gold);
+    font-size:1.2rem;
+    margin-bottom:.6rem;
+    letter-spacing:1rem;
+    animation:glow-text 5s ease-in-out infinite;
+  }
+  @keyframes glow-text{
+    0%,100%{opacity:.6;}
+    50%{opacity:1;text-shadow:0 0 20px var(--gold);}
+  }
+
+  /* ---------- SCROLLBAR ---------- */
+  ::-webkit-scrollbar{width:10px;}
+  ::-webkit-scrollbar-track{background:var(--bg);}
+  ::-webkit-scrollbar-thumb{
+    background:linear-gradient(180deg,var(--gold),var(--violet));
+    border-radius:5px;
+  }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media(max-width:600px){
+    th,td{font-size:.78rem;padding:.5rem;}
+    section{padding:1.2rem;}
+    .yhvh-node{padding:.5rem 1rem;gap:.7rem;min-width:auto;width:100%;}
+    .yhvh-node .letter{font-size:1.5rem;}
+    header h1{letter-spacing:.2em;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ FONDO DE GEOMETRÍA SAGRADA ============ -->
+<div id="sacred-bg">
+  <canvas id="geo-canvas"></canvas>
+</div>
+
+<!-- ============ LETRAS HEBREAS FLOTANTES ============ -->
+<div class="floating-letters" id="floaters"></div>
+
+<!-- ============ CONTENIDO ============ -->
+<div class="container">
+
+  <header>
+    <div class="hebrew-main">יחידה</div>
+    <h1>✦ La Quinta Esencia del Alma ✦</h1>
+    <p>Yejidá · Unicidad · Uno con Dios</p>
+    <div class="sigil">✡</div>
+  </header>
+
+  <section>
+    <h2>📖 Introducción</h2>
+    <p>La <strong>"quinta esencia"</strong> del alma en la Kabaláh hebrea se denomina
+    <strong>Yejidá (יחידה)</strong>, que significa <em>"unicidad"</em> o <em>"singularidad"</em>.
+    Es el nivel más elevado y trascendente de los cinco aspectos del alma, representando
+    la <strong>chispa divina que está permanentemente unida a Dios</strong>.</p>
+  </section>
+
+  <section>
+    <h2>🔯 Los Cinco Niveles del Alma</h2>
+    <table>
+      <thead>
+        <tr><th>Nivel</th><th>Hebreo</th><th>Significado</th><th>Función</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Nefesh</td><td class="hebrew-inline">נפש</td><td>Alma / Vitalidad</td><td>Facultades naturales y físicas</td></tr>
+        <tr><td>Ruaj</td><td class="hebrew-inline">רוח</td><td>Espíritu / Viento</td><td>Facultades emocionales</td></tr>
+        <tr><td>Neshamá</td><td class="hebrew-inline">נשמה</td><td>Aliento / Alma</td><td>Facultades mentales e intelectuales</td></tr>
+        <tr><td>Jaiá</td><td class="hebrew-inline">חיה</td><td>Vida</td><td>Facultades supra-racionales</td></tr>
+        <tr><td>Yejidá</td><td class="hebrew-inline">יחידה</td><td>Unicidad</td><td>Unidad absoluta con Dios</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>🔢 La Aritmética Divina</h2>
+    <p><strong>Yejidá</strong> se corresponde con la Sefirá de <strong>Kéter (Corona)</strong>
+    y el mundo de <strong>Adam Kadmon</strong> (el Hombre Primordial).</p>
+
+    <h3>El Nombre de Dios (YHVH) y la Quinta Esencia</h3>
+    <div class="yhvh-diagram">
+      <div class="yhvh-apex">✦</div>
+      <div class="yhvh-apex-label">Ápice del Yud · Yejidá · Kéter</div>
+
+      <div class="yhvh-node">
+        <span class="letter">י</span>
+        <div class="info"><b>Yud</b> → Jaiá<br><small>Jojmá · Sabiduría · "Hueso"</small></div>
+      </div>
+      <div class="yhvh-connector"></div>
+
+      <div class="yhvh-node">
+        <span class="letter">ה</span>
+        <div class="info"><b>Hei</b> → Neshamá<br><small>Biná · Entendimiento</small></div>
+      </div>
+      <div class="yhvh-connector"></div>
+
+      <div class="yhvh-node">
+        <span class="letter">ו</span>
+        <div class="info"><b>Vav</b> → Ruaj<br><small>6 Sefirot · Emociones · Carne</small></div>
+      </div>
+      <div class="yhvh-connector"></div>
+
+      <div class="yhvh-node">
+        <span class="letter">ה</span>
+        <div class="info"><b>Hei final</b> → Nefesh<br><small>Maljut · Reino · Piel</small></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>💡 La Ecuación de la Kabaláh</h2>
+    <div class="equation">
+      <div class="big">Yejidá = Kéter = Ápice del Yud = Luz Infinita</div>
+      <div class="heb">יחידה = כתר = קוצו של יוד = מקור האור אין סוף</div>
+    </div>
+    <blockquote>"Cuando tú agarras un poco de la esencia, tú la tienes en su totalidad." — Baal Shem Tov</blockquote>
+  </section>
+
+  <section>
+    <h2>🔮 Yejidá y la Profecía</h2>
+    <h3>La conexión con el Mashiaj</h3>
+    <p>El Mashiaj es identificado con la <strong>Yejidá ha-Kelalit</strong> (la Yejidá colectiva
+    de Israel), y se dice que es <em>"uno con la esencia infinita"</em>.</p>
+    <h3>El nivel de Jayá como antesala</h3>
+    <p>Los sabios alcanzaron primero <em>"los cerebros de Jayá"</em> y luego
+    <em>"la luz de Yejidá"</em>.</p>
+    <h3>La revelación de unidad</h3>
+    <p>El profeta, al tocar Yejidá, experimenta que
+    <strong>"Hashem es todo, y todo es Hashem"</strong>.</p>
+  </section>
+
+  <section>
+    <h2>🧘 Yejidá y la Meditación</h2>
+    <ul>
+      <li><strong>Meditación con los símbolos hebreos (otiot)</strong> — elevación hacia Atzilut.</li>
+      <li><strong>Silencio interior</strong> y actos de bondad consciente.</li>
+      <li><strong>Respiración atenta</strong> y oración enfocada en la unidad.</li>
+      <li><strong>Paradoja:</strong> Yejidá no se "alcanza", se <em>recuerda</em>.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>🔗 La Relación Esencial</h2>
+    <table>
+      <thead>
+        <tr><th>Nivel</th><th>Función</th><th>Relación con Profecía/Meditación</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Nefesh</td><td>Vitalidad física</td><td>Base corporal</td></tr>
+        <tr><td>Ruaj</td><td>Emociones</td><td>Purificación emocional</td></tr>
+        <tr><td>Neshamá</td><td>Intelecto</td><td>Estudio y comprensión</td></tr>
+        <tr><td>Jayá</td><td>Voluntad supra-racional</td><td>Antesala profética</td></tr>
+        <tr><td>Yejidá</td><td>Unidad absoluta</td><td>Revelación de que "todo es Uno"</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>📚 Terminología Esencial</h2>
+    <table>
+      <thead>
+        <tr><th>Hebreo</th><th>Fonética</th><th>Español</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="hebrew-inline">יחידה</td><td>Yejidá</td><td>Singularidad, unicidad</td></tr>
+        <tr><td class="hebrew-inline">נשמה</td><td>Neshamá</td><td>Aliento, alma</td></tr>
+        <tr><td class="hebrew-inline">רוח</td><td>Ruaj</td><td>Espíritu, viento</td></tr>
+        <tr><td class="hebrew-inline">נפש</td><td>Nefesh</td><td>Alma, vitalidad</td></tr>
+        <tr><td class="hebrew-inline">חיה</td><td>Jaiá</td><td>Vida</td></tr>
+        <tr><td class="hebrew-inline">כתר</td><td>Kéter</td><td>Corona</td></tr>
+        <tr><td class="hebrew-inline">אדם קדמון</td><td>Adam Kadmon</td><td>Hombre Primordial</td></tr>
+        <tr><td class="hebrew-inline">צלם</td><td>Tzélem</td><td>Imagen</td></tr>
+        <tr><td class="hebrew-inline">אור מקיף</td><td>Or Makif</td><td>Luz circundante</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>✦ Síntesis Final</h2>
+    <div class="nivel-card">
+      <p><span class="num">1</span><strong>La Profecía</strong> es Yejidá revelándose a través de un alma preparada.</p>
+    </div>
+    <div class="nivel-card">
+      <p><span class="num">2</span><strong>La Meditación</strong> es Yejidá recordándose a sí misma.</p>
+    </div>
+    <div class="nivel-card">
+      <p><span class="num">3</span><strong>La Práctica</strong> es Yejidá expresándose en la acción cotidiana.</p>
+    </div>
+
+    <div class="equation" style="margin-top:1.5rem;">
+      <div class="big">☰ Yejidá = Unidad Absoluta = Uno con Dios ☰</div>
+      <div class="heb">"Hashem es todo, y todo es Hashem"</div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="sigil-row">✡ ✦ ☰ ✦ ✡</div>
+    <div class="tags">
+      <span class="tag">Kabaláh</span>
+      <span class="tag">Yejidá</span>
+      <span class="tag">Adam Kadmon</span>
+      <span class="tag">Kéter</span>
+      <span class="tag">YHVH</span>
+    </div>
+    <p>Proyecto Yejidá · Geometría Sagrada del Alma</p>
+  </footer>
+
+</div>
+
+<!-- ============ SCRIPT: GEOMETRÍA SAGRADA ANIMADA ============ -->
+<script>
+(function(){
+  const canvas = document.getElementById('geo-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, cx, cy, dpr;
+
+  function resize(){
+    dpr = window.devicePixelRatio || 1;
+    W = canvas.clientWidth;
+    H = canvas.clientHeight;
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    cx = W / 2;
+    cy = H / 2;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  // ---------- Partículas doradas ----------
+  const particles = [];
+  const PARTICLE_COUNT = 90;
+  for(let i = 0; i < PARTICLE_COUNT; i++){
+    particles.push({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: Math.random() * 1.6 + 0.4,
+      vx: (Math.random() - 0.5) * 0.25,
+      vy: (Math.random() - 0.5) * 0.25,
+      a: Math.random() * 0.6 + 0.2
+    });
+  }
+
+  // ---------- Flor de la Vida (círculos concéntricos en hexágono) ----------
+  function drawFlowerOfLife(t){
+    const baseR = Math.min(W, H) * 0.13;
+    const layers = 2;
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(t * 0.00008);
+
+    for(let layer = 0; layer <= layers; layer++){
+      const ringCount = layer === 0 ? 1 : layer * 6;
+      const radius = baseR * layer;
+
+      if(layer === 0){
+        drawCircle(0, 0, baseR * 0.6);
+      } else {
+        for(let i = 0; i < ringCount; i++){
+          const angle = (Math.PI * 2 / ringCount) * i;
+          const x = Math.cos(angle) * radius;
+          const y = Math.sin(angle) * radius;
+          drawCircle(x, y, baseR * 0.6);
+        }
+      }
+    }
+    ctx.restore();
+  }
+
+  function drawCircle(x, y, r){
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(212,175,55,0.13)';
+    ctx.lineWidth = 0.7;
+    ctx.stroke();
+  }
+
+  // ---------- Cubo de Metatrón (13 círculos + líneas) ----------
+  function drawMetatron(t){
+    const R = Math.min(W, H) * 0.22;
+    const angleOffset = t * 0.00015;
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(angleOffset);
+
+    const points = [{x:0, y:0}];
+    for(let i = 0; i < 6; i++){
+      const a = (Math.PI / 3) * i - Math.PI / 2;
+      points.push({x: Math.cos(a) * R, y: Math.sin(a) * R});
+      points.push({x: Math.cos(a) * R * 2, y: Math.sin(a) * R * 2});
+    }
+
+    // Líneas conectando todos los puntos
+    ctx.strokeStyle = 'rgba(108,92,231,0.10)';
+    ctx.lineWidth = 0.5;
+    for(let i = 0; i < points.length; i++){
+      for(let j = i + 1; j < points.length; j++){
+        ctx.beginPath();
+        ctx.moveTo(points[i].x, points[i].y);
+        ctx.lineTo(points[j].x, points[j].y);
+        ctx.stroke();
+      }
+    }
+
+    // Círculos
+    ctx.strokeStyle = 'rgba(79,209,197,0.14)';
+    ctx.lineWidth = 0.6;
+    points.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, R * 0.55, 0, Math.PI * 2);
+      ctx.stroke();
+    });
+
+    ctx.restore();
+  }
+
+  // ---------- Árbol de la Vida (Sefirot) ----------
+  const sefirot = [
+    {n:'Kéter',   y:-1.00, x: 0.00},
+    {n:'Jojmá',   y:-0.72, x:-0.35},
+    {n:'Biná',    y:-0.72, x: 0.35},
+    {n:'Jesed',   y:-0.30, x:-0.42},
+    {n:'Guevurá', y:-0.30, x: 0.42},
+    {n:'Tiféret', y: 0.05, x: 0.00},
+    {n:'Netzaj',  y: 0.42, x:-0.42},
+    {n:'Hod',     y: 0.42, x: 0.42},
+    {n:'Yesod',   y: 0.72, x: 0.00},
+    {n:'Maljut',  y: 1.05, x: 0.00}
+  ];
+  const paths = [
+    [0,1],[0,2],[0,5],[0,6],[0,7],
+    [1,2],[1,3],[1,5],
+    [2,4],[2,5],
+    [3,4],[3,5],[3,6],
+    [4,5],[4,7],
+    [5,6],[5,7],[5,8],
+    [6,8],[7,8],
+    [8,9]
+  ];
+
+  function drawTreeOfLife(t){
+    const S = Math.min(W, H) * 0.16;
+    const pulse = 0.5 + 0.5 * Math.sin(t * 0.0015);
+
+    ctx.save();
+    ctx.translate(cx, cy + 20);
+
+    // Líneas
+    ctx.strokeStyle = 'rgba(212,175,55,0.18)';
+    ctx.lineWidth = 0.8;
+    paths.forEach(([a, b]) => {
+      ctx.beginPath();
+      ctx.moveTo(sefirot[a].x * S, sefirot[a].y * S);
+      ctx.lineTo(sefirot[b].x * S, sefirot[b].y * S);
+      ctx.stroke();
+    });
+
+    // Nodos
+    sefirot.forEach((s, i) => {
+      const x = s.x * S, y = s.y * S;
+      const isKeter = i === 0;
+      const r = isKeter ? 5 + pulse * 3 : 3;
+
+      // Halo
+      const grad = ctx.createRadialGradient(x, y, 0, x, y, r * 6);
+      if(isKeter){
+        grad.addColorStop(0, 'rgba(247,224,138,0.55)');
+        grad.addColorStop(1, 'rgba(247,224,138,0)');
+      } else {
+        grad.addColorStop(0, 'rgba(212,175,55,0.30)');
+        grad.addColorStop(1, 'rgba(212,175,55,0)');
+      }
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(x, y, r * 6, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Punto
+      ctx.fillStyle = isKeter ? '#f7e08a' : '#d4af37';
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    ctx.restore();
+  }
+
+  // ---------- Anillo externo sagrado ----------
+  function drawOuterRing(t){
+    const R = Math.min(W, H) * 0.42;
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(-t * 0.0001);
+
+    ctx.strokeStyle = 'rgba(212,175,55,0.10)';
+    ctx.lineWidth = 0.6;
+    ctx.beginPath();
+    ctx.arc(0, 0, R, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // 12 marcas
+    for(let i = 0; i < 12; i++){
+      const a = (Math.PI * 2 / 12) * i;
+      const x1 = Math.cos(a) * R;
+      const y1 = Math.sin(a) * R;
+      const x2 = Math.cos(a) * (R + 8);
+      const y2 = Math.sin(a) * (R + 8);
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  // ---------- Partículas ----------
+  function drawParticles(){
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      if(p.x < 0) p.x = W;
+      if(p.x > W) p.x = 0;
+      if(p.y < 0) p.y = H;
+      if(p.y > H) p.y = 0;
+
+      ctx.fillStyle = `rgba(247,224,138,${p.a})`;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fill();
+    });
+  }
+
+  // ---------- Loop ----------
+  function animate(t){
+    ctx.clearRect(0, 0, W, H);
+    drawOuterRing(t);
+    drawFlowerOfLife(t);
+    drawMetatron(t);
+    drawTreeOfLife(t);
+    drawParticles();
+    requestAnimationFrame(animate);
+  }
+  requestAnimationFrame(animate);
+
+  // ---------- Letras hebreas flotantes ----------
+  const letters = ['י','ה','ו','ה','א','ח','ד','כ','ת','ר','נ','פ','ש','מ'];
+  const container = document.getElementById('floaters');
+  const COUNT = 14;
+  for(let i = 0; i < COUNT; i++){
+    const el = document.createElement('span');
+    el.textContent = letters[Math.floor(Math.random() * letters.length)];
+    el.style.left = Math.random() * 100 + '%';
+    el.style.fontSize = (28 + Math.random() * 50) + 'px';
+    el.style.animationDuration = (18 + Math.random() * 22) + 's';
+    el.style.animationDelay = (-Math.random() * 30) + 's';
+    el.style.opacity = (0.06 + Math.random() * 0.16).toFixed(2);
+    container.appendChild(el);
+  }
+
+  // ---------- Parallax sutil al mover el mouse ----------
+  document.addEventListener('mousemove', (e) => {
+    const dx = (e.clientX / window.innerWidth - 0.5) * 12;
+    const dy = (e.clientY / window.innerHeight - 0.5) * 12;
+    document.querySelector('.container').style.transform =
+      `translate(${dx}px, ${dy}px)`;
+  });
+})();
+</script>
+</body>
+</html>
