@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Tu piedra sagrada según el Hoshen (pectoral del Sumo Sacerdote)">
+<title>✦ Tu Piedra Sagrada — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.piedra-card{text-align:center;padding:2.5rem 1.5rem;
+  background:radial-gradient(circle, rgba(212,175,55,.15), transparent 70%),
+  rgba(5,6,15,.7);border:2px solid var(--gold);border-radius:20px;
+  margin:1.5rem 0;box-shadow:0 0 60px rgba(212,175,55,.3);}
+.piedra-gema{width:140px;height:140px;margin:0 auto 1.5rem;
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:4rem;box-shadow:0 0 60px currentColor;
+  animation:pulse-glow 4s ease-in-out infinite;}
+.piedra-card .nombre{color:var(--gold2);font-size:1.6rem;letter-spacing:.15em;
+  margin:.5rem 0;}
+.piedra-card .tribu{color:var(--cyan);font-size:1rem;letter-spacing:.12em;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">אבן</div>
+  <h1>✦ Tu Piedra Sagrada ✦</h1>
+  <p>Las 12 piedras del Hoshen</p>
+  <span class="page-number">Extras · Piedra</span>
+</header>
+
+<section>
+  <h2>💎 ¿Qué es el Hoshen?</h2>
+  <p>El <strong>Hoshen HaMishpat</strong> era el pectoral del Sumo Sacerdote,
+  con <strong>12 piedras preciosas</strong>, una por cada tribu de Israel
+  (Éxodo 28:15-30). Cada piedra canaliza una bendición específica.</p>
+  <form id="piedra-form" autocomplete="off">
+    <div class="form-grid">
+      <div class="form-field full">
+        <label for="fecha">Fecha de nacimiento</label>
+        <input type="date" id="fecha" required>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1.2rem">
+      <button type="submit" class="btn">✦ Revelar mi Piedra ✦</button>
+    </div>
+  </form>
+</section>
+
+<div id="results" style="display:none"></div>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Piedra Sagrada</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const PIEDRAS = [
+  { tribu:'Yehudá',    heb:'יהודה',   piedra:'Rubí',        color:'#e63946', emoji:'🔴', signo:'Aries' },
+  { tribu:'Isajar',    heb:'יששכר',   piedra:'Topacio',     color:'#f4c430', emoji:'🟡', signo:'Tauro' },
+  { tribu:'Zevulún',   heb:'זבולון',  piedra:'Esmeralda',   color:'#2ecc71', emoji:'🟢', signo:'Géminis' },
+  { tribu:'Reubén',    heb:'ראובן',   piedra:'Carbunclo',   color:'#c0392b', emoji:'🔺', signo:'Cáncer' },
+  { tribu:'Shimón',    heb:'שמעון',   piedra:'Zafiro',      color:'#3498db', emoji:'🔵', signo:'Leo' },
+  { tribu:'Gad',       heb:'גד',      piedra:'Ágata',       color:'#95a5a6', emoji:'⚪', signo:'Virgo' },
+  { tribu:'Efraim',    heb:'אפרים',   piedra:'Amatista',    color:'#9b59b6', emoji:'🟣', signo:'Libra' },
+  { tribu:'Menashé',   heb:'מנשה',    piedra:'Ónice',       color:'#2c3e50', emoji:'⬛', signo:'Escorpio' },
+  { tribu:'Biniamín',  heb:'בנימין',  piedra:'Jaspe',       color:'#e67e22', emoji:'🟠', signo:'Sagitario' },
+  { tribu:'Dan',       heb:'דן',      piedra:'Crisólito',   color:'#f39c12', emoji:'💛', signo:'Capricornio' },
+  { tribu:'Asher',     heb:'אשר',     piedra:'Berilo',      color:'#1abc9c', emoji:'🩵', signo:'Acuario' },
+  { tribu:'Naftalí',   heb:'נפתלי',   piedra:'Ámbar',       color:'#e74c3c', emoji:'🟧', signo:'Piscis' }
+];
+
+const RANGOS = [
+  { i:0, f:[3,21], t:[4,19] }, { i:1, f:[4,20], t:[5,20] },
+  { i:2, f:[5,21], t:[6,20] }, { i:3, f:[6,21], t:[7,22] },
+  { i:4, f:[7,23], t:[8,22] }, { i:5, f:[8,23], t:[9,22] },
+  { i:6, f:[9,23], t:[10,22] }, { i:7, f:[10,23], t:[11,21] },
+  { i:8, f:[11,22], t:[12,21] }, { i:9, f:[12,22], t:[1,19] },
+  { i:10, f:[1,20], t:[2,18] }, { i:11, f:[2,19], t:[3,20] }
+];
+
+function signoIdx(fecha){
+  const d = new Date(fecha + 'T12:00:00');
+  const m = d.getMonth() + 1, day = d.getDate();
+  for(const r of RANGOS){
+    const [fm, fd] = r.f, [tm, td] = r.t;
+    if(fm <= tm){
+      if((m === fm && day >= fd) || (m === tm && day <= td) ||
+        (m > fm && m < tm)) return r.i;
+    } else {
+      if((m === fm && day >= fd) || (m === tm && day <= td)) return r.i;
+    }
+  }
+  return 0;
+}
+
+document.getElementById('piedra-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const fechaStr = document.getElementById('fecha').value;
+  if(!fechaStr) return alert('Ingresa tu fecha.');
+  const idx = signoIdx(fechaStr);
+  const p = PIEDRAS[idx];
+  const results = document.getElementById('results');
+  results.style.display = 'block';
+  results.innerHTML = `
+    <section>
+      <div class="piedra-card">
+        <div class="piedra-gema" style="background:radial-gradient(circle at 30% 30%, ${p.color}, ${p.color}88);
+          color:${p.color};">💎</div>
+        <div class="nombre">${p.piedra}</div>
+        <div class="tribu">${p.tribu} · ${p.heb}</div>
+        <p style="color:var(--muted);margin-top:1rem;font-size:.9rem;">
+          Signo: ${p.signo}
+        </p>
+      </div>
+    </section>
+    <section>
+      <h2>📖 La Piedra y su Tribu</h2>
+      <table>
+        <tbody>
+          <tr><td><strong>Piedra</strong></td><td>${p.piedra}</td></tr>
+          <tr><td><strong>Tribu</strong></td><td>${p.tribu} (${p.heb})</td></tr>
+          <tr><td><strong>Signo</strong></td><td>${p.signo}</td></tr>
+          <tr><td><strong>Color</strong></td><td>${p.color}</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <section>
+      <h2>💡 Significado</h2>
+      <p>Tu piedra sagrada corresponde a la tribu <strong>${p.tribu}</strong>.
+      En el pectoral del Sumo Sacerdote, esta piedra canalizaba la bendición
+      específica de tu alma.</p>
+      <div class="equation">
+        <div class="big">${p.piedra} · ${p.tribu}</div>
+        <div class="heb">${p.heb}</div>
+      </div>
+    </section>
+  `;
+  results.scrollIntoView({ behavior:'smooth' });
+});
+</script>
+</body>
+</html>
