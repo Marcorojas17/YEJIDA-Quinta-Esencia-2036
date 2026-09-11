@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Teshuvá: el retorno del alma a su fuente, paso a paso">
+<title>✦ Teshuvá — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">תשובה</div>
+  <h1>✦ Teshuvá ✦</h1>
+  <p>El retorno del alma</p>
+  <span class="page-number">Práctica · Retorno</span>
+</header>
+
+<section>
+  <h2>🔄 ¿Qué es la Teshuvá?</h2>
+  <p><strong>Teshuvá (תשובה)</strong> significa literalmente <em>"retorno"</em>,
+  no "arrepentimiento". Es el acto de <strong>volver a casa</strong> — a nuestra
+  esencia, a Dios, a la Unidad de la que nunca realmente nos separamos.</p>
+  <p>En la Kabaláh, Teshuvá no es un castigo sino una <strong>oportunidad
+  cósmica</strong>: cada retorno <strong>repara mundos</strong>.</p>
+</section>
+
+<section>
+  <h2>📋 Los 4 Pasos de la Teshuvá</h2>
+  <div class="nivel-card">
+    <p><span class="num">1</span><strong>Reconocimiento (Hakarat HaJet)</strong><br>
+    Ver claramente lo que hicimos, sin auto-engaño ni auto-castigo.</p>
+  </div>
+  <div class="nivel-card">
+    <p><span class="num">2</span><strong>Remordimiento (Jarata)</strong><br>
+    Sentir genuinamente el dolor del daño causado. No culpa, sino compasión.</p>
+  </div>
+  <div class="nivel-card">
+    <p><span class="num">3</span><strong>Confesión (Vidui)</strong><br>
+    Nombrar en voz alta lo sucedido, ante Dios y ante nosotros mismos.</p>
+  </div>
+  <div class="nivel-card">
+    <p><span class="num">4</span><strong>Abandono (Azivat HaJet)</strong><br>
+    Soltar el patrón. No volver a caer en la misma trampa cuando se presente la oportunidad.</p>
+  </div>
+</section>
+
+<section>
+  <h2>💡 La Fórmula Cabalística</h2>
+  <p>En el <strong>Rambam (Maimónides)</strong>, la Teshuvá completa requiere:</p>
+  <ul>
+    <li>Dejar el pecado</li>
+    <li>Confesarlo</li>
+    <li>Sentir remordimiento</li>
+    <li>Comprometerse a no repetirlo</li>
+    <li><strong>Y probarlo cuando la situación se repite</strong></li>
+  </ul>
+  <div class="equation">
+    <div class="big">Reconocer · Sentir · Confesar · Soltar</div>
+    <div class="heb">להכיר · להרגיש · להתוודות · לשחרר</div>
+  </div>
+</section>
+
+<section>
+  <h2>🎯 Ejercicio Personal</h2>
+  <p>Escribe (en privado, no se guarda) qué necesitas soltar:</p>
+  <div class="form-grid">
+    <div class="form-field full">
+      <label for="reconocimiento">1. ¿Qué reconozco?</label>
+      <textarea id="reconocimiento" rows="3" placeholder="Escribe libremente..."></textarea>
+    </div>
+    <div class="form-field full">
+      <label for="remordimiento">2. ¿Qué siento?</label>
+      <textarea id="remordimiento" rows="3" placeholder="Escribe libremente..."></textarea>
+    </div>
+    <div class="form-field full">
+      <label for="confesion">3. Lo confieso</label>
+      <textarea id="confesion" rows="3" placeholder="Escribe libremente..."></textarea>
+    </div>
+    <div class="form-field full">
+      <label for="soltar">4. Suelto y me comprometo</label>
+      <textarea id="soltar" rows="3" placeholder="Escribe libremente..."></textarea>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:1rem;">
+    <button id="soltar-btn" class="btn">✦ Sellar mi Teshuvá ✦</button>
+  </div>
+  <div id="resultado-tesh" style="display:none;text-align:center;margin-top:1.5rem;">
+    <div class="equation">
+      <div class="big">✦ Teshuvá completada ✦</div>
+      <div class="heb">תשובה שלמה</div>
+    </div>
+    <p style="color:var(--muted);font-size:.9rem;margin-top:.5rem;">
+      Los textos NO se guardan. Fueron solo para ti. Puedes cerrar esta página.
+    </p>
+  </div>
+</section>
+
+<section>
+  <h2>💫 La Teshuvá y Yejidá</h2>
+  <blockquote>
+    "La Teshuvá es tan grande que trae la redención al mundo."
+    — Talmud, Yoma 86b
+  </blockquote>
+  <p>Cada Teshuvá libera una <strong>chispa caída</strong>. Cada chispa liberada
+  acerca la <strong>Unidad final</strong>. En Yejidá, no hay separación entre
+  tu retorno personal y la redención cósmica.</p>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Teshuvá</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+document.getElementById('soltar-btn').addEventListener('click', () => {
+  const r = document.getElementById('reconocimiento').value.trim();
+  const rm = document.getElementById('remordimiento').value.trim();
+  const c = document.getElementById('confesion').value.trim();
+  const s = document.getElementById('soltar').value.trim();
+  if(!r || !s) return alert('Completa al menos el reconocimiento y el compromiso.');
+  // Limpiar campos (no guardar)
+  ['reconocimiento','remordimiento','confesion','soltar'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('resultado-tesh').style.display = 'block';
+  document.getElementById('resultado-tesh').scrollIntoView({ behavior:'smooth' });
+});
+</script>
+</body>
+</html>
