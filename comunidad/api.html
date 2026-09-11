@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="API pública de Yejidá: acceso programático a la Kabaláh">
+<title>✦ API Pública — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.endpoint{border:1px solid var(--line);border-radius:10px;padding:1rem 1.2rem;
+  margin-bottom:.8rem;background:rgba(10,12,30,.6);transition:all .3s;}
+.endpoint:hover{border-color:var(--gold);}
+.endpoint .metodo{display:inline-block;padding:.2rem .6rem;border-radius:6px;
+  font-family:var(--font-mono);font-size:.75rem;font-weight:700;
+  margin-right:.6rem;}
+.endpoint .metodo.get{background:rgba(74,222,128,.2);color:var(--success);}
+.endpoint .ruta{font-family:var(--font-mono);color:var(--gold2);
+  font-size:.9rem;}
+.endpoint .desc{color:var(--muted);font-size:.85rem;margin-top:.4rem;}
+pre{background:#060814;border:1px solid var(--line);border-radius:10px;
+  padding:1rem;overflow-x:auto;color:var(--cyan);font-size:.82rem;
+  font-family:var(--font-mono);line-height:1.6;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">API</div>
+  <h1>✦ API Pública ✦</h1>
+  <p>Acceso programático a la Kabaláh</p>
+  <span class="page-number">Comunidad · API</span>
+</header>
+
+<section>
+  <h2>🔌 Endpoints Disponibles</h2>
+  <p style="color:var(--muted);font-size:.9rem;">
+    La API pública de Yejidá permite a desarrolladores integrar cálculos
+    cabalísticos en sus propias aplicaciones. Base URL:
+    <code style="color:var(--gold2);">https://yejida.api/v1</code>
+  </p>
+
+  <div class="endpoint">
+    <span class="metodo get">GET</span>
+    <span class="ruta">/v1/sefirot</span>
+    <div class="desc">Lista las 10 Sefirot con sus atributos.</div>
+  </div>
+  <div class="endpoint">
+    <span class="metodo get">GET</span>
+    <span class="ruta">/v1/sefirot/:id</span>
+    <div class="desc">Detalle de una Sefirá por ID (1-10).</div>
+  </div>
+  <div class="endpoint">
+    <span class="metodo get">GET</span>
+    <span class="ruta">/v1/letras</span>
+    <div class="desc">Las 22 letras hebreas con valor numérico.</div>
+  </div>
+  <div class="endpoint">
+    <span class="metodo get">GET</span>
+    <span class="ruta">/v1/letras/:letra</span>
+    <div class="desc">Detalle de una letra específica.</div>
+  </div>
+  <div class="endpoint">
+    <span class="metodo get">GET</span>
+    <span class="ruta">/v1/guematria/:texto</span>
+    <div class="desc">Calcula la guematria de un texto en hebreo.</div>
+  </div>
+  <div class="endpoint">
+    <span class="metodo get">GET</span>
+    <span class="ruta">/v1/niveles</span>
+    <div class="desc">Los 5 niveles del alma con sus correspondencias.</div>
+  </div>
+  <div class="endpoint">
+    <span class="metodo get">GET</span>
+    <span class="ruta">/v1/mundos</span>
+    <div class="desc">Los 4 mundos cabalísticos.</div>
+  </div>
+  <div class="endpoint">
+    <span class="metodo get">GET</span>
+    <span class="ruta">/v1/nombres-72</span>
+    <div class="desc">Los 72 Nombres del Shem HaMephorash.</div>
+  </div>
+  <div class="endpoint">
+    <span class="metodo get">GET</span>
+    <span class="ruta">/v1/tribus</span>
+    <div class="desc">Las 12 tribus de Israel.</div>
+  </div>
+  <div class="endpoint">
+    <span class="metodo get">GET</span>
+    <span class="ruta">/v1/angeles/:fecha</span>
+    <div class="desc">Ángel regente según fecha (YYYY-MM-DD).</div>
+  </div>
+</section>
+
+<section>
+  <h2>📥 Ejemplo de Uso</h2>
+  <p>Consulta de las Sefirot con <code style="color:var(--gold2);">curl</code>:</p>
+  <pre>curl https://yejida.api/v1/sefirot</pre>
+  <p>Respuesta JSON:</p>
+  <pre>{
+  "sefirot": [
+    { "id": 1, "nombre": "Kéter", "hebreo": "כתר", "significado": "Corona" },
+    { "id": 2, "nombre": "Jojmá", "hebreo": "חכמה", "significado": "Sabiduría" },
+    ...
+  ],
+  "total": 10,
+  "version": "1.0.0"
+}</pre>
+  <p>Ejemplo en JavaScript:</p>
+  <pre>const res = await fetch('https://yejida.api/v1/sefirot');
+const data = await res.json();
+console.log(data.sefirot);</pre>
+</section>
+
+<section>
+  <h2>🔐 Autenticación</h2>
+  <p>La API es <strong>abierta</strong> para consultas de solo lectura, con
+  límite de <strong>60 solicitudes por minuto por IP</strong>.</p>
+  <div class="notice" style="border-left-color:var(--cyan);background:rgba(79,209,197,.08);">
+    <strong>Nota:</strong> Esta API es conceptual. Para implementarla
+    realmente se requiere un backend (Cloudflare Workers, Vercel Functions
+    o similar).
+  </div>
+</section>
+
+<section>
+  <h2>📚 Documentación Completa</h2>
+  <p>Puedes consultar la documentación completa en el archivo
+  <code style="color:var(--gold2);">docs/api.md</code> del repositorio.</p>
+  <div class="cta-wrap">
+    <a href="contribuir.html" class="btn">✦ Contribuir a la API ✦</a>
+  </div>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · API</p>
+</footer>
+<script src="../shared.js"></script>
+</body>
+</html>
