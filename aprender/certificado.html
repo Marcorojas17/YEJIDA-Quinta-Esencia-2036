@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Certificado de estudio de Kabaláh personalizado y descargable">
+<title>✦ Certificado de Estudio — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.certificado{max-width:800px;margin:2rem auto;padding:3rem 2rem;
+  background:radial-gradient(circle at 50% 50%,
+    rgba(212,175,55,.08), transparent 70%), rgba(5,6,15,.85);
+  border:3px double var(--gold);border-radius:20px;
+  box-shadow:0 0 60px rgba(212,175,55,.4),
+    inset 0 0 60px rgba(212,175,55,.1);
+  position:relative;text-align:center;
+  background-color:#0a0c1e;}
+.certificado::before{content:"";position:absolute;inset:15px;
+  border:1px solid rgba(212,175,55,.3);border-radius:12px;
+  pointer-events:none;}
+.certificado .esquinas{position:absolute;width:40px;height:40px;
+  border:2px solid var(--gold);}
+.certificado .esquina-1{top:20px;left:20px;border-right:none;border-bottom:none;}
+.certificado .esquina-2{top:20px;right:20px;border-left:none;border-bottom:none;}
+.certificado .esquina-3{bottom:20px;left:20px;border-right:none;border-top:none;}
+.certificado .esquina-4{bottom:20px;right:20px;border-left:none;border-top:none;}
+.certificado .titulo-cert{font-family:var(--font-heb);font-size:2.5rem;
+  color:var(--gold2);direction:rtl;letter-spacing:.15em;
+  text-shadow:0 0 25px rgba(212,175,55,.8);line-height:1.2;}
+.certificado .subtitulo{font-size:.9rem;color:var(--muted);
+  letter-spacing:.4em;text-transform:uppercase;margin:1rem 0;}
+.certificado .texto{color:var(--text);font-size:1.05rem;line-height:2;
+  margin:2rem 0;}
+.certificado .nombre{font-size:2rem;color:var(--gold2);
+  font-family:var(--font-heb);letter-spacing:.15em;
+  text-shadow:0 0 20px rgba(212,175,55,.7);
+  margin:1rem 0;padding:.5rem 1rem;
+  border-bottom:1px solid var(--line);display:inline-block;min-width:300px;}
+.certificado .sello{font-size:4rem;color:var(--gold);
+  margin:1.5rem 0;text-shadow:0 0 30px rgba(212,175,55,.9);
+  animation:spin 20s linear infinite;}
+.certificado .firma{display:flex;justify-content:space-around;
+  margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--line);}
+.certificado .firma > div{text-align:center;}
+.certificado .firma .linea{width:140px;border-bottom:1px solid var(--gold);
+  margin-bottom:.5rem;height:30px;}
+.certificado .firma .rol{color:var(--muted);font-size:.75rem;
+  letter-spacing:.15em;text-transform:uppercase;}
+.certificado .numero-cert{font-family:var(--font-mono);color:var(--gold);
+  font-size:.75rem;letter-spacing:.15em;margin-top:1rem;}
+.form-cert{margin:2rem 0;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">תעודה</div>
+  <h1>✦ Certificado de Estudio ✦</h1>
+  <p>Reconoce tu camino en la Kabaláh</p>
+  <span class="page-number">Aprender · Certificado</span>
+</header>
+
+<section>
+  <h2>🎓 Genera tu Certificado</h2>
+  <p style="color:var(--muted);font-size:.9rem;">
+    Genera un certificado personalizado con tu nombre. Puedes descargarlo en PDF
+    e imprimirlo. Requiere haber aprobado el <a href="quiz.html"
+    style="color:var(--gold2);">Quiz de Kabaláh</a> (75% o más).
+  </p>
+
+  <div id="aviso-quiz" class="notice" style="border-left-color:var(--danger);
+    background:rgba(255,107,107,.08);">
+    <strong>Quiz no aprobado aún.</strong> Aprueba el
+    <a href="quiz.html" style="color:var(--gold2);">Quiz de Kabaláh</a>
+    con 75% o más para generar tu certificado.
+  </div>
+
+  <div class="form-cert" id="form-cert" style="display:none;">
+    <div class="form-grid">
+      <div class="form-field full">
+        <label for="nombre">Nombre completo</label>
+        <input type="text" id="nombre" placeholder="Tu nombre completo" required>
+      </div>
+      <div class="form-field">
+        <label for="curso">Curso</label>
+        <select id="curso">
+          <option>Kabaláh Principiantes</option>
+          <option>Kabaláh Intermedio</option>
+          <option>Kabaláh Avanzado</option>
+          <option>Estudio General de Kabaláh</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label for="fecha">Fecha</label>
+        <input type="date" id="fecha">
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1rem;">
+      <button id="generar" class="btn">✦ Generar Certificado ✦</button>
+    </div>
+  </div>
+</section>
+
+<div id="certificado-container" style="display:none;">
+  <div class="certificado" id="certificado">
+    <div class="esquinas esquina-1"></div>
+    <div class="esquinas esquina-2"></div>
+    <div class="esquinas esquina-3"></div>
+    <div class="esquinas esquina-4"></div>
+
+    <div class="titulo-cert">תעודת לימוד</div>
+    <div class="subtitulo">Certificado de Estudio</div>
+
+    <div class="texto">Se otorga el presente certificado a</div>
+    <div class="nombre" id="cert-nombre">Nombre</div>
+
+    <div class="texto">
+      por haber completado con éxito el curso de<br>
+      <strong id="cert-curso">Kabaláh</strong><br>
+      demostrando dedicación al estudio de la sabiduría ancestral.
+    </div>
+
+    <div class="sello">✡</div>
+
+    <div class="texto" style="font-family:var(--font-heb);font-size:1.4rem;
+      color:var(--gold2);direction:rtl;">
+      יחידה · אחדות · אור
+    </div>
+    <div class="subtitulo" style="letter-spacing:.2em;font-size:.75rem;">
+      Yejidá · Unidad · Luz
+    </div>
+
+    <div class="firma">
+      <div>
+        <div class="linea"></div>
+        <div class="rol">Proyecto Yejidá</div>
+      </div>
+      <div>
+        <div class="linea"></div>
+        <div class="rol">Maestro Kabaláh</div>
+      </div>
+    </div>
+
+    <div class="numero-cert" id="cert-numero">Nº YJD-0000</div>
+  </div>
+
+  <div style="text-align:center;margin-top:1.5rem;">
+    <button id="descargar" class="btn">📥 Descargar / Imprimir</button>
+  </div>
+</div>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Certificado</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const aprobado = localStorage.getItem('yejida_quiz_passed') === 'true';
+  const score = localStorage.getItem('yejida_quiz_score') || '';
+  if(aprobado){
+    document.getElementById('aviso-quiz').style.display = 'none';
+    document.getElementById('form-cert').style.display = 'block';
+    if(score){
+      const aviso = document.createElement('div');
+      aviso.className = 'notice';
+      aviso.innerHTML = `<strong>✓ Quiz aprobado</strong> · Puntaje: ${score}`;
+      document.getElementById('form-cert').prepend(aviso);
+    }
+  }
+});
+
+document.getElementById('generar').addEventListener('click', () => {
+  const nombre = document.getElementById('nombre').value.trim();
+  const curso = document.getElementById('curso').value;
+  const fecha = document.getElementById('fecha').value ||
+    new Date().toISOString().slice(0,10);
+  if(!nombre) return alert('Escribe tu nombre.');
+
+  document.getElementById('cert-nombre').textContent = nombre;
+  document.getElementById('cert-curso').textContent = curso;
+  const num = 'YJD-' + Date.now().toString().slice(-6);
+  document.getElementById('cert-numero').textContent = `Nº ${num}`;
+
+  document.getElementById('certificado-container').style.display = 'block';
+  document.getElementById('certificado').scrollIntoView({ behavior:'smooth' });
+});
+
+document.getElementById('descargar').addEventListener('click', () => {
+  window.print();
+});
+</script>
+</body>
+</html>
