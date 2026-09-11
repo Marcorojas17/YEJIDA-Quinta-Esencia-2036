@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Juego de memoria con las 22 letras hebreas y sus valores">
+<title>✦ Memoria de Letras — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.tablero{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem;
+  max-width:520px;margin:1.5rem auto;}
+@media(max-width:500px){.tablero{grid-template-columns:repeat(3,1fr);}}
+.carta{aspect-ratio:1;border:1px solid var(--line);border-radius:12px;
+  background:linear-gradient(135deg, rgba(10,12,30,.8), rgba(10,12,30,.5));
+  cursor:pointer;transition:all .4s;position:relative;
+  display:flex;align-items:center;justify-content:center;
+  transform-style:preserve-3d;perspective:600px;}
+.carta:hover{border-color:var(--gold);transform:translateY(-3px);
+  box-shadow:0 0 20px rgba(212,175,55,.3);}
+.carta .cara{position:absolute;inset:0;display:flex;
+  align-items:center;justify-content:center;
+  backface-visibility:hidden;transition:transform .5s;
+  font-size:1.8rem;border-radius:12px;font-weight:700;}
+.carta .frente{color:var(--gold);
+  font-family:var(--font-heb);direction:rtl;
+  text-shadow:0 0 15px rgba(212,175,55,.8);}
+.carta .atras{background:linear-gradient(135deg,var(--gold),var(--violet));
+  color:var(--bg);font-size:1.5rem;}
+.carta.volteada .frente{transform:rotateY(0);}
+.carta.volteada .atras{transform:rotateY(180deg);}
+.carta:not(.volteada) .frente{transform:rotateY(180deg);}
+.carta.encontrada{border-color:var(--success);
+  box-shadow:0 0 20px rgba(74,222,128,.5);}
+.carta.encontrada .frente{color:var(--success);}
+.stats{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;
+  margin:1rem 0;}
+.stat{text-align:center;padding:.6rem 1.2rem;background:rgba(10,12,30,.6);
+  border:1px solid var(--line);border-radius:10px;min-width:100px;}
+.stat .num{color:var(--gold2);font-size:1.3rem;font-family:var(--font-mono);}
+.stat .lbl{color:var(--muted);font-size:.7rem;letter-spacing:.15em;
+  text-transform:uppercase;}
+.mensaje-victoria{text-align:center;padding:1.5rem;
+  background:radial-gradient(circle, rgba(212,175,55,.15), transparent 70%),
+  rgba(5,6,15,.7);border:2px solid var(--gold);border-radius:16px;
+  margin-top:1rem;display:none;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">זיכרון</div>
+  <h1>✦ Memoria de Letras ✦</h1>
+  <p>Encuentra los pares: letra hebrea + valor numérico</p>
+  <span class="page-number">Juegos · Memoria</span>
+</header>
+
+<section>
+  <h2>🎴 Empareja la Letra con su Valor</h2>
+  <p style="color:var(--muted);font-size:.9rem;text-align:center;">
+    Cada par es una letra hebrea y su valor numérico. Encuentra los 8 pares.
+  </p>
+
+  <div class="stats">
+    <div class="stat"><div class="num" id="intentos">0</div><div class="lbl">Intentos</div></div>
+    <div class="stat"><div class="num" id="pares">0/8</div><div class="lbl">Pares</div></div>
+    <div class="stat"><div class="num" id="tiempo">0:00</div><div class="lbl">Tiempo</div></div>
+  </div>
+
+  <div class="tablero" id="tablero"></div>
+
+  <div style="text-align:center;margin-top:1.5rem;">
+    <button id="reiniciar" class="btn">🔄 Nuevo Juego</button>
+  </div>
+
+  <div class="mensaje-victoria" id="victoria">
+    <h3 style="color:var(--gold2);font-size:1.5rem;">✦ ¡Completado! ✦</h3>
+    <p id="resultado-vic" style="color:var(--muted);margin:.5rem 0;"></p>
+  </div>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Memoria de Letras</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const PARES_DATOS = [
+  ['א', '1'], ['ב', '2'], ['ג', '3'], ['ד', '4'],
+  ['ה', '5'], ['ו', '6'], ['ז', '7'], ['ח', '8']
+];
+
+let cartas = [];
+let volteadas = [];
+let encontradas = 0;
+let intentos = 0;
+let tiempo = 0;
+let timerId = null;
+let bloqueado = false;
+
+function shuffle(a){
+  const arr = [...a];
+  for(let i = arr.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function crearBaraja(){
+  const baraja = [];
+  PARES_DATOS.forEach(([letra, valor], idx) => {
+    baraja.push({ tipo:'letra', valor:letra, par:idx, id:Math.random() });
+    baraja.push({ tipo:'numero', valor, par:idx, id:Math.random() });
+  });
+  return shuffle(baraja);
+}
+
+function render(){
+  document.getElementById('tablero').innerHTML = cartas.map((c, i) => `
+    <div class="carta ${c.volteada ? 'volteada' : ''} ${c.encontrada ? 'encontrada' : ''}"
+      data-i="${i}" role="button" tabindex="0"
+      aria-label="${c.encontrada ? c.valor : 'Carta oculta'}">
+      <div class="cara atras">✡</div>
+      <div class="cara frente">${c.valor}</div>
+    </div>
+  `).join('');
+  document.querySelectorAll('.carta').forEach(el => {
+    el.addEventListener('click', () => voltear(parseInt(el.dataset.i)));
+  });
+}
+
+function voltear(i){
+  if(bloqueado) return;
+  const c = cartas[i];
+  if(c.volteada || c.encontrada) return;
+  c.volteada = true;
+  volteadas.push(i);
+  render();
+  if(volteadas.length === 2){
+    intentos++;
+    document.getElementById('intentos').textContent = intentos;
+    const [a, b] = volteadas;
+    if(cartas[a].par === cartas[b].par && cartas[a].tipo !== cartas[b].tipo){
+      cartas[a].encontrada = true;
+      cartas[b].encontrada = true;
+      encontradas++;
+      document.getElementById('pares').textContent = `${encontradas}/8`;
+      volteadas = [];
+      render();
+      if(encontradas === 8) victoria();
+    } else {
+      bloqueado = true;
+      setTimeout(() => {
+        cartas[a].volteada = false;
+        cartas[b].volteada = false;
+        volteadas = [];
+        bloqueado = false;
+        render();
+      }, 900);
+    }
+  }
+}
+
+function victoria(){
+  clearInterval(timerId);
+  document.getElementById('victoria').style.display = 'block';
+  document.getElementById('resultado-vic').innerHTML =
+    `Encontrados los 8 pares en <strong>${intentos} intentos</strong> y <strong>${formTiempo(tiempo)}</strong>.`;
+  const record = JSON.parse(localStorage.getItem('yejida_memoria_record') || 'null');
+  if(!record || intentos < record.intentos){
+    localStorage.setItem('yejida_memoria_record', JSON.stringify({ intentos, tiempo }));
+  }
+}
+
+function formTiempo(s){
+  const m = Math.floor(s / 60), r = s % 60;
+  return `${m}:${String(r).padStart(2,'0')}`;
+}
+
+function iniciar(){
+  cartas = crearBaraja().map(c => ({ ...c, volteada:false, encontrada:false }));
+  volteadas = [];
+  encontradas = 0;
+  intentos = 0;
+  tiempo = 0;
+  bloqueado = false;
+  document.getElementById('intentos').textContent = '0';
+  document.getElementById('pares').textContent = '0/8';
+  document.getElementById('tiempo').textContent = '0:00';
+  document.getElementById('victoria').style.display = 'none';
+  clearInterval(timerId);
+  timerId = setInterval(() => {
+    tiempo++;
+    document.getElementById('tiempo').textContent = formTiempo(tiempo);
+  }, 1000);
+  render();
+}
+
+document.getElementById('reiniciar').addEventListener('click', iniciar);
+iniciar();
+</script>
+</body>
+</html>
