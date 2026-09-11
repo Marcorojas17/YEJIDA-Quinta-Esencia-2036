@@ -2,263 +2,41 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>✦ Portal de Profecía — Yejidá ✦</title>
-<style>
-  :root{
-    --bg:#05060f;
-    --gold:#d4af37;
-    --gold2:#f7e08a;
-    --violet:#6c5ce7;
-    --cyan:#4fd1c5;
-    --text:#eceaf5;
-    --muted:#8d93ad;
-    --line:rgba(212,175,55,.28);
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  html,body{height:100%;}
-  body{
-    font-family:'Segoe UI',system-ui,sans-serif;
-    background:var(--bg);color:var(--text);line-height:1.7;
-    overflow-x:hidden;min-height:100vh;
-  }
-  #sacred-bg{position:fixed;inset:0;z-index:0;
-    background:radial-gradient(circle at 50% 20%, #141a3a 0%, #05060f 55%, #02020a 100%);}
-  #sacred-bg canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.5;}
-  #sacred-bg::after{
-    content:"";position:absolute;inset:0;
-    background:
-      radial-gradient(circle at 20% 70%, rgba(79,209,197,.22), transparent 40%),
-      radial-gradient(circle at 80% 30%, rgba(108,92,231,.22), transparent 40%),
-      radial-gradient(circle at 50% 50%, rgba(212,175,55,.08), transparent 65%);
-    animation:breathe 14s ease-in-out infinite;pointer-events:none;
-  }
-  @keyframes breathe{0%,100%{opacity:.7;}50%{opacity:1;}}
-
-  .floating-letters{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden;}
-  .floating-letters span{
-    position:absolute;color:rgba(108,92,231,.22);
-    font-size:clamp(28px,5vw,64px);
-    font-family:'David','Times New Roman',serif;direction:rtl;
-    text-shadow:0 0 20px rgba(108,92,231,.4);
-    animation:drift linear infinite;user-select:none;
-  }
-  @keyframes drift{
-    0%{transform:translateY(110vh) rotate(0);opacity:0;}
-    10%{opacity:1;}90%{opacity:1;}
-    100%{transform:translateY(-20vh) rotate(360deg);opacity:0;}
-  }
-
-  .container{position:relative;z-index:2;max-width:1000px;margin:0 auto;padding:2.5rem 1.2rem 4rem;}
-
-  header{
-    text-align:center;padding:3rem 1.5rem 2.5rem;
-    border:1px solid var(--line);border-radius:20px;
-    background:linear-gradient(180deg, rgba(108,92,231,.08), rgba(79,209,197,.04)), rgba(10,12,30,.55);
-    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-    box-shadow:0 0 60px rgba(108,92,231,.2), inset 0 0 40px rgba(79,209,197,.08);
-    margin-bottom:2rem;position:relative;overflow:hidden;
-  }
-  header::before{
-    content:"";position:absolute;inset:-2px;
-    background:conic-gradient(from 0deg, transparent, rgba(108,92,231,.6), transparent 30%);
-    animation:spin 8s linear infinite;z-index:-1;border-radius:22px;opacity:.5;
-  }
-  @keyframes spin{to{transform:rotate(360deg);}}
-
-  .hebrew-main{
-    font-size:clamp(2.5rem,7vw,4.5rem);color:var(--gold2);direction:rtl;
-    font-family:'David','Times New Roman',serif;
-    text-shadow:0 0 20px rgba(108,92,231,.9),0 0 45px rgba(79,209,197,.5);
-    animation:pulse-glow 4s ease-in-out infinite;line-height:1.1;
-  }
-  @keyframes pulse-glow{
-    0%,100%{text-shadow:0 0 20px rgba(108,92,231,.9),0 0 45px rgba(79,209,197,.5);}
-    50%{text-shadow:0 0 32px rgba(79,209,197,1),0 0 70px rgba(108,92,231,.8);}
-  }
-  header h1{
-    font-size:clamp(1rem,2.4vw,1.5rem);color:var(--gold2);
-    letter-spacing:.35em;text-transform:uppercase;margin:.9rem 0 .5rem;font-weight:400;
-  }
-  header p{color:var(--muted);font-size:.95rem;letter-spacing:.1em;}
-
-  section{
-    background:rgba(10,12,30,.55);border:1px solid var(--line);border-radius:16px;
-    padding:1.6rem 1.7rem;margin-bottom:1.6rem;
-    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-    box-shadow:0 8px 32px rgba(0,0,0,.4), inset 0 1px 0 rgba(212,175,55,.15);
-    transition:transform .4s, box-shadow .4s, border-color .4s;position:relative;
-  }
-  section::before{
-    content:"";position:absolute;top:0;left:0;right:0;height:1px;
-    background:linear-gradient(90deg, transparent, var(--violet), transparent);opacity:.6;
-  }
-  section:hover{
-    transform:translateY(-3px);
-    box-shadow:0 12px 48px rgba(108,92,231,.2), 0 0 30px rgba(79,209,197,.15);
-    border-color:rgba(108,92,231,.55);
-  }
-
-  h2{
-    color:var(--gold2);font-size:1.15rem;font-weight:500;letter-spacing:.15em;
-    text-transform:uppercase;margin-bottom:1.1rem;display:flex;align-items:center;gap:.7rem;
-  }
-  h2::before{
-    content:"";width:8px;height:8px;background:var(--violet);border-radius:50%;
-    box-shadow:0 0 12px var(--violet),0 0 24px var(--cyan);flex-shrink:0;
-  }
-  h3{color:var(--gold);font-size:1rem;margin:1.3rem 0 .5rem;letter-spacing:.08em;}
-
-  /* ============ ASCENSO VISUAL ============ */
-  .ascent{
-    display:flex;flex-direction:column;align-items:center;
-    gap:.3rem;margin:1.5rem 0;padding:1.5rem 1rem;
-    border-radius:14px;
-    background:radial-gradient(circle at 50% 50%, rgba(108,92,231,.08), transparent 70%), rgba(5,6,15,.6);
-    border:1px solid var(--line);
-  }
-  .ascent-step{
-    display:flex;align-items:center;gap:1rem;
-    padding:.55rem 1.3rem;
-    border:1px solid var(--line);
-    border-radius:50px;
-    background:rgba(10,12,30,.8);
-    min-width:min(320px,90%);
-    justify-content:center;
-    transition:all .4s ease;
-    cursor:default;
-  }
-  .ascent-step:hover{
-    border-color:var(--gold);
-    box-shadow:0 0 25px rgba(212,175,55,.5);
-    transform:scale(1.04);
-  }
-  .ascent-step .letter{
-    font-size:1.7rem;color:var(--gold2);
-    font-family:'David','Times New Roman',serif;
-    text-shadow:0 0 15px rgba(212,175,55,.8);
-    min-width:34px;text-align:center;
-  }
-  .ascent-step .info{font-size:.85rem;}
-  .ascent-step .info b{color:var(--gold2);}
-  .ascent-step .info small{color:var(--muted);display:block;font-size:.75rem;}
-  .ascent-arrow{color:var(--violet);font-size:1.1rem;opacity:.7;}
-
-  .ascent-final{
-    margin-top:.5rem;padding:.8rem 1.5rem;
-    border:1px solid var(--gold);
-    border-radius:50px;
-    background:linear-gradient(135deg, rgba(212,175,55,.2), rgba(108,92,231,.15));
-    color:var(--gold2);
-    font-weight:600;letter-spacing:.15em;
-    text-transform:uppercase;font-size:.85rem;
-    box-shadow:0 0 30px rgba(212,175,55,.5);
-    animation:pulse-glow 3s ease-in-out infinite;
-  }
-
-  blockquote{
-    border-left:3px solid var(--gold);padding:.9rem 1.2rem;margin:1.2rem 0;
-    color:var(--gold2);font-style:italic;
-    background:linear-gradient(90deg, rgba(212,175,55,.08), transparent);
-    border-radius:0 10px 10px 0;
-  }
-  ul{margin:.8rem 0 0 1.2rem;}
-  li{margin:.4rem 0;}
-  li strong{color:var(--gold2);}
-
-  .equation{
-    text-align:center;padding:2rem 1.5rem;border:1px solid var(--gold);border-radius:14px;
-    background:radial-gradient(circle at 50% 50%, rgba(212,175,55,.12), transparent 70%), rgba(5,6,15,.7);
-    margin:1.5rem 0;box-shadow:0 0 40px rgba(212,175,55,.2);
-    position:relative;overflow:hidden;
-  }
-  .equation::before{
-    content:"";position:absolute;inset:0;
-    background:conic-gradient(from 0deg, transparent 0deg, rgba(79,209,197,.25) 90deg,
-      transparent 180deg, rgba(108,92,231,.25) 270deg, transparent 360deg);
-    animation:spin 12s linear infinite;opacity:.35;z-index:0;
-  }
-  .equation > *{position:relative;z-index:1;}
-  .equation .big{
-    font-size:clamp(.9rem,2.2vw,1.15rem);color:var(--gold2);
-    font-weight:600;letter-spacing:.12em;text-transform:uppercase;
-  }
-  .equation .heb{
-    font-size:clamp(1rem,2.5vw,1.35rem);direction:rtl;color:var(--gold);
-    margin-top:.8rem;font-family:'David','Times New Roman',serif;
-  }
-
-  /* ============ BOTÓN VOLVER ============ */
-  .cta-wrap{text-align:center;margin:2.5rem 0 1rem;}
-  .cta-portal{
-    position:relative;display:inline-block;
-    padding:1.1rem 2.8rem;font-size:.95rem;letter-spacing:.25em;
-    text-transform:uppercase;color:var(--gold2);text-decoration:none;
-    border:1px solid var(--gold);border-radius:60px;
-    background:linear-gradient(135deg, rgba(212,175,55,.12), rgba(108,92,231,.12));
-    backdrop-filter:blur(10px);
-    transition:all .5s cubic-bezier(.2,.9,.3,1.2);
-    overflow:hidden;isolation:isolate;
-    box-shadow:0 0 25px rgba(212,175,55,.35), inset 0 0 20px rgba(212,175,55,.08);
-  }
-  .cta-portal::before{
-    content:"";position:absolute;inset:-2px;border-radius:60px;
-    background:conic-gradient(from 0deg, var(--gold), var(--violet), var(--cyan), var(--gold));
-    z-index:-2;animation:spin 6s linear infinite;opacity:.75;
-  }
-  .cta-portal::after{
-    content:"";position:absolute;inset:0;border-radius:60px;
-    background:linear-gradient(135deg, rgba(10,12,30,.95), rgba(10,12,30,.85));
-    z-index:-1;transition:opacity .5s;
-  }
-  .cta-portal:hover{
-    color:#fff;letter-spacing:.35em;
-    transform:translateY(-3px) scale(1.04);
-    box-shadow:0 0 45px rgba(212,175,55,.7), 0 0 80px rgba(108,92,231,.4);
-  }
-  .cta-portal:hover::after{opacity:.55;}
-  .cta-portal .arrow{display:inline-block;margin-right:.7rem;transition:transform .4s;}
-  .cta-portal:hover .arrow{transform:translateX(-6px);}
-
-  footer{
-    text-align:center;color:var(--muted);font-size:.82rem;
-    margin-top:2.5rem;padding:1.5rem 1rem;border-top:1px solid var(--line);letter-spacing:.08em;
-  }
-  footer .sigil-row{color:var(--gold);font-size:1.2rem;margin-bottom:.6rem;letter-spacing:1rem;
-    animation:glow-text 5s ease-in-out infinite;}
-  @keyframes glow-text{0%,100%{opacity:.6;}50%{opacity:1;text-shadow:0 0 20px var(--gold);}}
-
-  ::-webkit-scrollbar{width:10px;}
-  ::-webkit-scrollbar-track{background:var(--bg);}
-  ::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--gold),var(--violet));border-radius:5px;}
-
-  @media(max-width:600px){
-    section{padding:1.2rem;}
-    header h1{letter-spacing:.2em;}
-    .cta-portal{padding:.9rem 1.8rem;font-size:.8rem;}
-    .ascent-step{padding:.5rem 1rem;gap:.7rem;min-width:auto;width:100%;}
-  }
-</style>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>✦ Yejidá y la Profecía ✦</title>
+<link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body data-page="4">
 
 <div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
 <div class="floating-letters" id="floaters"></div>
+
+<nav class="pager">
+  <a href="yhvh.html" class="pager-btn prev">← Anterior</a>
+  <div class="pager-dots">
+    <a href="index.html" class="dot" title="1"></a>
+    <a href="niveles.html" class="dot" title="2"></a>
+    <a href="yhvh.html" class="dot" title="3"></a>
+    <a href="profecia.html" class="dot" title="4"></a>
+    <a href="meditacion.html" class="dot" title="5"></a>
+    <a href="terminologia.html" class="dot" title="6"></a>
+    <a href="sintesis.html" class="dot" title="7"></a>
+  </div>
+  <a href="meditacion.html" class="pager-btn next">Siguiente →</a>
+</nav>
 
 <div class="container">
 
   <header>
     <div class="hebrew-main">נבואה</div>
-    <h1>✦ Portal de Profecía ✦</h1>
-    <p>Yejidá · Mashiaj · Meditación</p>
+    <h1>✦ Yejidá y la Profecía ✦</h1>
+    <p>Revelación · Mashiaj · Unidad</p>
   </header>
 
   <section>
-    <h2>🔮 Yejidá y el Proceso de la Profecía</h2>
+    <h2>🔮 El Proceso Profético</h2>
     <p>La profecía no es simplemente "predecir el futuro", sino la
-    <strong>revelación directa de la voluntad divina</strong> a través de un alma humana.
-    Yejidá es la raíz oculta que hace posible tanto la revelación profética como la
-    unificación mística.</p>
+    <strong>revelación directa de la voluntad divina</strong> a través de un alma humana.</p>
 
     <div class="ascent">
       <div class="ascent-step"><span class="letter">נ</span><div class="info"><b>Nefesh</b><small>Base corporal</small></div></div>
@@ -267,206 +45,30 @@
       <div class="ascent-arrow">▼</div>
       <div class="ascent-step"><span class="letter">נ</span><div class="info"><b>Neshamá</b><small>Estudio y comprensión</small></div></div>
       <div class="ascent-arrow">▼</div>
-      <div class="ascent-step"><span class="letter">ח</span><div class="info"><b>Jaiá</b><small>Cerebros de Jayá · Antesala profética</small></div></div>
+      <div class="ascent-step"><span class="letter">ח</span><div class="info"><b>Jaiá</b><small>Cerebros de Jayá · Antesala</small></div></div>
       <div class="ascent-arrow">▼</div>
       <div class="ascent-final">✦ Yejidá · Unidad Absoluta ✦</div>
     </div>
+  </section>
 
-    <h3>La conexión con el Mashiaj</h3>
+  <section>
+    <h2>👑 La Conexión con el Mashiaj</h2>
     <p>El Mashiaj es identificado con la <strong>Yejidá ha-Kelalit</strong>
     (la Yejidá colectiva de Israel), y se dice que es <em>"uno con la esencia infinita"</em>.</p>
-
     <h3>El nivel de Jayá como antesala</h3>
     <p>Los textos del Zohar describen cómo los sabios alcanzaron primero
     <em>"los cerebros de Jayá"</em> y luego <em>"la luz de Yejidá"</em>.</p>
-
     <h3>La revelación de unidad</h3>
     <p>El profeta, al tocar Yejidá, experimenta que
     <strong>"Hashem es todo, y todo es Hashem"</strong>.</p>
   </section>
 
-  <section>
-    <h2>🧘 Yejidá y la Meditación Cabalística</h2>
-    <p>La meditación busca conectar con Yejidá, pero no como quien conquista un territorio,
-    sino como quien <strong>recuerda lo que siempre estuvo allí</strong>.</p>
-    <ul>
-      <li><strong>Meditación con los símbolos hebreos (otiot)</strong> — elevación hacia Atzilut.</li>
-      <li><strong>Silencio interior</strong> y actos de bondad consciente.</li>
-      <li><strong>Respiración atenta</strong> y oración breve enfocada en la unidad.</li>
-      <li><strong>Lectura reflexiva</strong> de un pasaje que eleve.</li>
-      <li><strong>Pequeñas acciones desinteresadas</strong> que preparan el terreno.</li>
-    </ul>
-
-    <h3>Destellos o "toques" de Yejidá</h3>
-    <ul>
-      <li>Momentos de unidad profunda</li>
-      <li>Éxtasis místico</li>
-      <li>Intuición unificadora</li>
-      <li>Oración intensa</li>
-      <li>Meditación concentrada</li>
-      <li>Hitos de Teshuvá (retorno)</li>
-      <li>Experiencias límite que disuelven las defensas del ego</li>
-    </ul>
-
-    <blockquote>"Cuando tú agarras un poco de la esencia, tú la tienes en su totalidad." — Baal Shem Tov</blockquote>
-  </section>
-
-  <section>
-    <h2>✦ Síntesis Final</h2>
-    <div class="equation">
-      <div class="big">La Profecía es Yejidá revelándose</div>
-      <div class="big" style="margin-top:.5rem;">La Meditación es Yejidá recordándose</div>
-      <div class="big" style="margin-top:.5rem;">La Práctica es Yejidá expresándose</div>
-    </div>
-
-    <div class="equation">
-      <div class="big">☰ Yejidá = Unidad Absoluta = Uno con Dios ☰</div>
-      <div class="heb">"Hashem es todo, y todo es Hashem"</div>
-    </div>
-  </section>
-
-  <!-- ============ BOTÓN VOLVER AL INDEX ============ -->
-  <div class="cta-wrap">
-    <a href="index.html" class="cta-portal">
-      <span class="arrow">← ✦</span> Volver al Origen
-    </a>
-  </div>
-
   <footer>
     <div class="sigil-row">✡ ✦ ☰ ✦ ✡</div>
-    <p>Proyecto Yejidá · Portal de Profecía</p>
+    <p>Proyecto Yejidá · Portal 4 de 7</p>
   </footer>
 
 </div>
-
-<script>
-(function(){
-  const canvas = document.getElementById('geo-canvas');
-  const ctx = canvas.getContext('2d');
-  let W,H,cx,cy,dpr;
-  function resize(){
-    dpr=window.devicePixelRatio||1;
-    W=canvas.clientWidth;H=canvas.clientHeight;
-    canvas.width=W*dpr;canvas.height=H*dpr;
-    ctx.setTransform(dpr,0,0,dpr,0,0);
-    cx=W/2;cy=H/2;
-  }
-  window.addEventListener('resize',resize);resize();
-
-  const particles=[];
-  for(let i=0;i<90;i++){
-    particles.push({
-      x:Math.random()*W,y:Math.random()*H,
-      r:Math.random()*1.6+0.4,
-      vx:(Math.random()-.5)*.25,vy:(Math.random()-.5)*.25,
-      a:Math.random()*.6+.2
-    });
-  }
-  function drawCircle(x,y,r){
-    ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);
-    ctx.strokeStyle='rgba(108,92,231,0.14)';ctx.lineWidth=.7;ctx.stroke();
-  }
-  function drawFlower(t){
-    const baseR=Math.min(W,H)*0.13;
-    ctx.save();ctx.translate(cx,cy);ctx.rotate(t*0.00008);
-    for(let layer=0;layer<=2;layer++){
-      const rc=layer===0?1:layer*6,r=baseR*layer;
-      if(layer===0){drawCircle(0,0,baseR*0.6);}
-      else for(let i=0;i<rc;i++){
-        const a=(Math.PI*2/rc)*i;
-        drawCircle(Math.cos(a)*r,Math.sin(a)*r,baseR*0.6);
-      }
-    }
-    ctx.restore();
-  }
-  function drawMetatron(t){
-    const R=Math.min(W,H)*0.22;
-    ctx.save();ctx.translate(cx,cy);ctx.rotate(t*0.00015);
-    const pts=[{x:0,y:0}];
-    for(let i=0;i<6;i++){
-      const a=(Math.PI/3)*i-Math.PI/2;
-      pts.push({x:Math.cos(a)*R,y:Math.sin(a)*R});
-      pts.push({x:Math.cos(a)*R*2,y:Math.sin(a)*R*2});
-    }
-    ctx.strokeStyle='rgba(212,175,55,0.10)';ctx.lineWidth=.5;
-    for(let i=0;i<pts.length;i++)
-      for(let j=i+1;j<pts.length;j++){
-        ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.stroke();
-      }
-    ctx.strokeStyle='rgba(79,209,197,0.16)';ctx.lineWidth=.6;
-    pts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,R*0.55,0,Math.PI*2);ctx.stroke();});
-    ctx.restore();
-  }
-  const sefirot=[
-    {y:-1.00,x:0},{y:-0.72,x:-0.35},{y:-0.72,x:0.35},
-    {y:-0.30,x:-0.42},{y:-0.30,x:0.42},{y:0.05,x:0},
-    {y:0.42,x:-0.42},{y:0.42,x:0.42},{y:0.72,x:0},{y:1.05,x:0}
-  ];
-  const paths=[[0,1],[0,2],[0,5],[0,6],[0,7],[1,2],[1,3],[1,5],[2,4],[2,5],
-    [3,4],[3,5],[3,6],[4,5],[4,7],[5,6],[5,7],[5,8],[6,8],[7,8],[8,9]];
-  function drawTree(t){
-    const S=Math.min(W,H)*0.16;
-    const pulse=0.5+0.5*Math.sin(t*0.0015);
-    ctx.save();ctx.translate(cx,cy+20);
-    ctx.strokeStyle='rgba(108,92,231,0.22)';ctx.lineWidth=.8;
-    paths.forEach(([a,b])=>{
-      ctx.beginPath();ctx.moveTo(sefirot[a].x*S,sefirot[a].y*S);
-      ctx.lineTo(sefirot[b].x*S,sefirot[b].y*S);ctx.stroke();
-    });
-    sefirot.forEach((s,i)=>{
-      const x=s.x*S,y=s.y*S,isK=i===0,r=isK?5+pulse*3:3;
-      const g=ctx.createRadialGradient(x,y,0,x,y,r*6);
-      if(isK){g.addColorStop(0,'rgba(79,209,197,0.6)');g.addColorStop(1,'rgba(79,209,197,0)');}
-      else{g.addColorStop(0,'rgba(108,92,231,0.35)');g.addColorStop(1,'rgba(108,92,231,0)');}
-      ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r*6,0,Math.PI*2);ctx.fill();
-      ctx.fillStyle=isK?'#4fd1c5':'#6c5ce7';
-      ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();
-    });
-    ctx.restore();
-  }
-  function drawRing(t){
-    const R=Math.min(W,H)*0.42;
-    ctx.save();ctx.translate(cx,cy);ctx.rotate(-t*0.0001);
-    ctx.strokeStyle='rgba(79,209,197,0.12)';ctx.lineWidth=.6;
-    ctx.beginPath();ctx.arc(0,0,R,0,Math.PI*2);ctx.stroke();
-    for(let i=0;i<12;i++){
-      const a=(Math.PI*2/12)*i;
-      ctx.beginPath();
-      ctx.moveTo(Math.cos(a)*R,Math.sin(a)*R);
-      ctx.lineTo(Math.cos(a)*(R+8),Math.sin(a)*(R+8));
-      ctx.stroke();
-    }
-    ctx.restore();
-  }
-  function drawParticles(){
-    particles.forEach(p=>{
-      p.x+=p.vx;p.y+=p.vy;
-      if(p.x<0)p.x=W;if(p.x>W)p.x=0;
-      if(p.y<0)p.y=H;if(p.y>H)p.y=0;
-      ctx.fillStyle=`rgba(79,209,197,${p.a*0.9})`;
-      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();
-    });
-  }
-  function loop(t){
-    ctx.clearRect(0,0,W,H);
-    drawRing(t);drawFlower(t);drawMetatron(t);drawTree(t);drawParticles();
-    requestAnimationFrame(loop);
-  }
-  requestAnimationFrame(loop);
-
-  const letters=['נ','ב','ו','א','ה','י','ח','ד','כ','ת','ר','מ','ש','ע'];
-  const cont=document.getElementById('floaters');
-  for(let i=0;i<14;i++){
-    const el=document.createElement('span');
-    el.textContent=letters[Math.floor(Math.random()*letters.length)];
-    el.style.left=Math.random()*100+'%';
-    el.style.fontSize=(28+Math.random()*50)+'px';
-    el.style.animationDuration=(18+Math.random()*22)+'s';
-    el.style.animationDelay=(-Math.random()*30)+'s';
-    el.style.opacity=(0.06+Math.random()*0.16).toFixed(2);
-    cont.appendChild(el);
-  }
-})();
-</script>
+<script src="script.js"></script>
 </body>
 </html>
