@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Diario espiritual: registra tus reflexiones, sueños y revelaciones">
+<title>✦ Diario Espiritual — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.entrada{border:1px solid var(--line);border-radius:12px;padding:1rem 1.2rem;
+  margin-bottom:1rem;background:rgba(10,12,30,.6);transition:all .4s;}
+.entrada:hover{border-color:var(--gold);}
+.entrada .fecha{font-family:var(--font-mono);color:var(--gold);font-size:.8rem;
+  letter-spacing:.1em;margin-bottom:.4rem;}
+.entrada .titulo{color:var(--gold2);font-weight:600;margin-bottom:.4rem;}
+.entrada .contenido{color:var(--text);font-size:.92rem;line-height:1.6;
+  white-space:pre-wrap;}
+.entrada .acciones{margin-top:.8rem;display:flex;gap:.5rem;}
+.entrada .acciones button{background:none;border:1px solid var(--line);
+  color:var(--muted);padding:.25rem .7rem;border-radius:20px;cursor:pointer;
+  font-size:.75rem;font-family:inherit;transition:all .3s;}
+.entrada .acciones button:hover{border-color:var(--gold);color:var(--gold2);}
+.entrada .acciones button.eliminar:hover{border-color:var(--danger);color:var(--danger);}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">יומן רוחני</div>
+  <h1>✦ Diario Espiritual ✦</h1>
+  <p>Registra tus reflexiones, sueños y revelaciones</p>
+  <span class="page-number">Práctica · Diario</span>
+</header>
+
+<section>
+  <h2>✍️ Nueva Entrada</h2>
+  <p style="color:var(--muted);font-size:.85rem;">
+    Todo se guarda <strong>cifrado en tu navegador</strong>. Nada sale de tu dispositivo.
+  </p>
+  <form id="entrada-form">
+    <div class="form-grid">
+      <div class="form-field full">
+        <label for="titulo">Título</label>
+        <input type="text" id="titulo" placeholder="Ej: Sueño con el Árbol" required maxlength="80">
+      </div>
+      <div class="form-field full">
+        <label for="contenido">Contenido</label>
+        <textarea id="contenido" rows="6" placeholder="Escribe tu reflexión..." required></textarea>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1rem;">
+      <button type="submit" class="btn">✦ Guardar Entrada ✦</button>
+    </div>
+  </form>
+</section>
+
+<section>
+  <h2>📖 Tus Entradas</h2>
+  <div style="text-align:center;margin-bottom:1rem;">
+    <button id="exportar" class="btn btn-sm">📤 Exportar</button>
+    <button id="borrar-todo" class="btn btn-sm btn-danger">🗑️ Borrar todo</button>
+  </div>
+  <div id="entradas"></div>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Diario Espiritual</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const KEY = 'yejida_diario';
+
+function cargar(){
+  try{ return JSON.parse(localStorage.getItem(KEY) || '[]'); }
+  catch(e){ return []; }
+}
+function guardar(entradas){
+  localStorage.setItem(KEY, JSON.stringify(entradas));
+}
+
+function render(){
+  const entradas = cargar().reverse();
+  const cont = document.getElementById('entradas');
+  if(!entradas.length){
+    cont.innerHTML = '<p style="text-align:center;color:var(--muted);padding:2rem;">Aún no hay entradas. Comienza tu diario hoy.</p>';
+    return;
+  }
+  cont.innerHTML = entradas.map((e, i) => `
+    <article class="entrada">
+      <div class="fecha">${new Date(e.fecha).toLocaleString('es-MX', {
+        day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit'
+      })}</div>
+      <div class="titulo">${escape(e.titulo)}</div>
+      <div class="contenido">${escape(e.contenido)}</div>
+      <div class="acciones">
+        <button data-id="${e.id}" class="eliminar">🗑️ Eliminar</button>
+      </div>
+    </article>
+  `).join('');
+  cont.querySelectorAll('.eliminar').forEach(btn => {
+    btn.addEventListener('click', () => eliminar(btn.dataset.id));
+  });
+}
+
+function escape(str){
+  return String(str).replace(/[&<>"']/g, c =>
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function agregar(e){
+  e.preventDefault();
+  const titulo = document.getElementById('titulo').value.trim();
+  const contenido = document.getElementById('contenido').value.trim();
+  if(!titulo || !contenido) return;
+  const entradas = cargar();
+  entradas.push({
+    id: Date.now().toString(),
+    fecha: new Date().toISOString(),
+    titulo, contenido
+  });
+  guardar(entradas);
+  document.getElementById('titulo').value = '';
+  document.getElementById('contenido').value = '';
+  render();
+}
+
+function eliminar(id){
+  if(!confirm('¿Eliminar esta entrada?')) return;
+  const entradas = cargar().filter(e => e.id !== id);
+  guardar(entradas);
+  render();
+}
+
+document.getElementById('entrada-form').addEventListener('submit', agregar);
+
+document.getElementById('exportar').addEventListener('click', () => {
+  const entradas = cargar();
+  if(!entradas.length) return alert('No hay entradas para exportar.');
+  const blob = new Blob([JSON.stringify(entradas, null, 2)], {
+    type: 'application/json'
+  });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `diario-yejida-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+document.getElementById('borrar-todo').addEventListener('click', () => {
+  if(confirm('¿Borrar TODAS las entradas? Esta acción no se puede deshacer.')){
+    guardar([]);
+    render();
+  }
+});
+
+render();
+</script>
+</body>
+</html>
