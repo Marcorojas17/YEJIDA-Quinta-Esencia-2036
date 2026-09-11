@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Curso intermedio de Kabaláh: 10 lecciones avanzadas">
+<title>✦ Curso Intermedio — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.leccion{display:flex;gap:1rem;align-items:start;padding:1.2rem;
+  background:rgba(10,12,30,.6);border:1px solid var(--line);
+  border-radius:12px;margin-bottom:.8rem;transition:all .4s;cursor:pointer;}
+.leccion:hover{border-color:var(--gold);background:rgba(212,175,55,.06);}
+.leccion.completada{border-color:var(--success);background:rgba(74,222,128,.06);}
+.leccion .num{flex-shrink:0;width:40px;height:40px;
+  background:linear-gradient(135deg,var(--violet),var(--violet2));
+  color:var(--text);border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-weight:700;font-size:1rem;}
+.leccion.completada .num{background:linear-gradient(135deg,var(--success),#22c55e);}
+.leccion .info{flex:1;}
+.leccion .info h3{color:var(--gold2);font-size:1rem;margin-bottom:.3rem;}
+.leccion .info p{color:var(--muted);font-size:.85rem;margin:0;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">בינוני</div>
+  <h1>✦ Curso Intermedio ✦</h1>
+  <p>10 lecciones · Profundización cabalística</p>
+  <span class="page-number">Aprender · Curso II</span>
+</header>
+
+<section>
+  <h2>📖 Continuación del Camino</h2>
+  <p>Ya conoces las Sefirot, los mundos y las letras. Es hora de profundizar
+  en la <strong>interacción entre los Partzufim</strong>, los
+  <strong>nombres divinos</strong> y las <strong>prácticas meditativas</strong>
+  avanzadas.</p>
+</section>
+
+<section>
+  <h2>📚 Las 10 Lecciones</h2>
+  <div id="lecciones"></div>
+</section>
+
+<section>
+  <h2>💡 Requisito Previo</h2>
+  <div class="notice" style="border-left-color:var(--gold);background:rgba(212,175,55,.08);">
+    <strong>Importante:</strong> Este curso asume que has completado el
+    curso de principiantes o tienes conocimientos equivalentes.
+  </div>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Curso Intermedio</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const LECCIONES = [
+  { n:'Los 5 Partzufim', d:'Arij Anpin, Aba, Imma, Zeir Anpin, Nukvá.' },
+  { n:'Shevirat HaKelim', d:'La ruptura de los vasos y las chispas caídas.' },
+  { n:'Tikkun Olam', d:'La reparación del mundo a través de las mitzvot.' },
+  { n:'Los 4 elementos', d:'Fuego, agua, aire, tierra en la Kabaláh.' },
+  { n:'Los 7 días y las Sefirot', d:'El ciclo semanal como ascenso.' },
+  { n:'Guematria básica', d:'Valor numérico y sus primeros usos.' },
+  { n:'Los 32 caminos', d:'10 Sefirot + 22 letras = 32 senderos.' },
+  { n:'El Nombre de 72', d:'Shem HaMephorash y sus 72 combinaciones.' },
+  { n:'Reencarnación (Gilgul)', d:'Almas que retornan para completar su tarea.' },
+  { n:'Kabaláh profética', d:'La profecía como revelación de la Unidad.' }
+];
+
+const KEY = 'yejida_curso_inter';
+
+function cargar(){
+  try{ return JSON.parse(localStorage.getItem(KEY) || '[]'); }
+  catch(e){ return []; }
+}
+
+function render(){
+  const completadas = cargar();
+  document.getElementById('lecciones').innerHTML = LECCIONES.map((l, i) => `
+    <div class="leccion ${completadas.includes(i) ? 'completada' : ''}" data-i="${i}">
+      <div class="num">${completadas.includes(i) ? '✓' : i + 1}</div>
+      <div class="info">
+        <h3>${l.n}</h3>
+        <p>${l.d}</p>
+      </div>
+    </div>
+  `).join('');
+  document.querySelectorAll('.leccion').forEach(el => {
+    el.addEventListener('click', () => toggle(parseInt(el.dataset.i)));
+  });
+}
+
+function toggle(i){
+  let c = cargar();
+  if(c.includes(i)) c = c.filter(x => x !== i);
+  else c.push(i);
+  localStorage.setItem(KEY, JSON.stringify(c));
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
