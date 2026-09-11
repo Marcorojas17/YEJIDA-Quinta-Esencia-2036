@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>🌳 Árbol de la Vida 2D — Yejidá</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+  .tree-container{display:flex;justify-content:center;margin:2rem 0;}
+  .tree-svg{width:100%;max-width:600px;filter:drop-shadow(0 0 30px rgba(212,175,55,.3));}
+  .node circle{fill:rgba(212,175,55,.12);stroke:var(--gold);stroke-width:2;
+    transition:all .4s;cursor:pointer;}
+  .node:hover circle{fill:rgba(212,175,55,.4);stroke-width:3;
+    filter:drop-shadow(0 0 15px var(--gold));}
+  .node text{fill:var(--gold2);text-anchor:middle;pointer-events:none;
+    font-family:var(--font-heb);font-weight:600;}
+  .path{stroke:rgba(212,175,55,.35);stroke-width:1.2;fill:none;
+    stroke-dasharray:4 3;animation:dash 20s linear infinite;}
+  @keyframes dash{to{stroke-dashoffset:-100;}}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+  <header class="page-header">
+    <div class="hebrew-title">עץ חיים</div>
+    <h1>🌳 Árbol de la Vida</h1>
+    <p>Etz Jaim · Las 10 Sefirot interactivas</p>
+  </header>
+  <section>
+    <h2>🌿 Diagrama interactivo</h2>
+    <p>Clic en cada Sefirá para explorar sus significados.</p>
+    <div class="tree-container">
+      <svg class="tree-svg" viewBox="0 0 300 500" role="img"
+        aria-label="Árbol de la Vida con las 10 Sefirot">
+        <g id="paths"></g>
+        <g id="nodes"></g>
+      </svg>
+    </div>
+  </section>
+  <section>
+    <h2>📖 Detalle de la Sefirá</h2>
+    <div id="info" style="min-height:120px;padding:1rem;background:rgba(5,6,15,.5);
+      border-radius:10px;border:1px solid var(--line);">
+      <p style="text-align:center;color:var(--muted);">Selecciona una Sefirá.</p>
+    </div>
+  </section>
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Visualización</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const SEF = [
+  {n:'Kéter', h:'כתר', x:150, y:50,  d:'Corona. Voluntad divina primordial. Corresponde a Yejidá.'},
+  {n:'Jojmá', h:'חכמה', x:90,  y:130, d:'Sabiduría. La chispa creativa, revelación.'},
+  {n:'Biná',  h:'בינה', x:210, y:130, d:'Entendimiento. Corresponde a Neshamá.'},
+  {n:'Jesed', h:'חסד', x:70,  y:230, d:'Misericordia. Amor incondicional.'},
+  {n:'Guevurá',h:'גבורה',x:230, y:230, d:'Rigor. Justicia, disciplina.'},
+  {n:'Tiféret',h:'תפארת',x:150, y:230, d:'Belleza. Corazón del Árbol.'},
+  {n:'Netzaj',h:'נצח', x:70,  y:330, d:'Victoria. Eternidad, resistencia.'},
+  {n:'Hod',   h:'הוד', x:230, y:330, d:'Esplendor. Gratitud, humildad.'},
+  {n:'Yesod', h:'יסוד', x:150, y:330, d:'Fundamento. Canal hacia Maljut.'},
+  {n:'Maljut',h:'מלכות',x:150, y:430, d:'Reino. La Shejiná. Corresponde a Nefesh.'}
+];
+const PATHS = [[0,1],[0,2],[0,5],[0,6],[0,7],[1,2],[1,3],[1,5],
+  [2,4],[2,5],[3,4],[3,5],[3,6],[4,5],[4,7],[5,6],[5,7],[5,8],
+  [6,8],[7,8],[8,9]];
+
+document.addEventListener('DOMContentLoaded', () => {
+  const pathsG = document.getElementById('paths');
+  PATHS.forEach(([a,b]) => {
+    const l = document.createElementNS('http://www.w3.org/2000/svg','line');
+    l.setAttribute('x1', SEF[a].x); l.setAttribute('y1', SEF[a].y);
+    l.setAttribute('x2', SEF[b].x); l.setAttribute('y2', SEF[b].y);
+    l.setAttribute('class', 'path');
+    pathsG.appendChild(l);
+  });
+  const nodesG = document.getElementById('nodes');
+  SEF.forEach(s => {
+    const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+    g.setAttribute('class','node');
+    g.setAttribute('tabindex','0');
+    g.setAttribute('role','button');
+    g.setAttribute('aria-label', s.n);
+    g.innerHTML = `
+      <circle cx="${s.x}" cy="${s.y}" r="28"/>
+      <text x="${s.x}" y="${s.y+8}" font-size="18">${s.h}</text>
+      <text x="${s.x}" y="${s.y+50}" font-size="11" fill="#8d93ad">${s.n}</text>
+    `;
+    const show = () => {
+      document.getElementById('info').innerHTML = `
+        <h3 style="color:var(--gold2);font-size:1.3rem;margin-bottom:.5rem;">
+          ${s.h} · ${s.n}
+        </h3>
+        <p>${s.d}</p>
+      `;
+    };
+    g.addEventListener('click', show);
+    g.addEventListener('keydown', e => {
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); show(); }
+    });
+    nodesG.appendChild(g);
+  });
+});
+</script>
+</body>
+</html>
