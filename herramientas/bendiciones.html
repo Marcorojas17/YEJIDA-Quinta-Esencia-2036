@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Generador de bendiciones personalizadas según tu nombre y fecha">
+<title>✦ Bendiciones Sagradas — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">ברכות</div>
+  <h1>✦ Bendiciones Sagradas ✦</h1>
+  <p>Bendiciones personalizadas según tu alma</p>
+  <span class="page-number">Herramienta · Bendiciones</span>
+</header>
+
+<section>
+  <h2>🜁 Tus Datos</h2>
+  <form id="bend-form" autocomplete="off">
+    <div class="form-grid">
+      <div class="form-field full">
+        <label for="nombre">Nombre</label>
+        <input type="text" id="nombre" required>
+      </div>
+      <div class="form-field">
+        <label for="fecha">Fecha de nacimiento</label>
+        <input type="date" id="fecha" required>
+      </div>
+      <div class="form-field">
+        <label for="intencion">Intención (opcional)</label>
+        <select id="intencion">
+          <option value="general">Bendición general</option>
+          <option value="salud">Salud y sanación</option>
+          <option value="parnasá">Sustento y abundancia</option>
+          <option value="zivug">Encontrar pareja</option>
+          <option value="shalom">Paz interior</option>
+          <option value="limud">Éxito en el estudio</option>
+          <option value="banim">Fertilidad</option>
+          <option value="teshuvá">Retorno espiritual</option>
+        </select>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1.2rem">
+      <button type="submit" class="btn">✦ Recibir mi Bendición ✦</button>
+    </div>
+  </form>
+</section>
+
+<div id="results" style="display:none"></div>
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Bendiciones</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const BENDICIONES = {
+  general: [
+    { heb:'יְבָרֶכְךָ יְהוָה וְיִשְׁמְרֶךָ', esp:'Que el Eterno te bendiga y te guarde.' },
+    { heb:'יָאֵר יְהוָה פָּנָיו אֵלֶיךָ וִיחֻנֶּךָּ', esp:'Que el Eterno haga resplandecer Su rostro sobre ti y tenga de ti misericordia.' },
+    { heb:'יִשָּׂא יְהוָה פָּנָיו אֵלֶיךָ וְיָשֵׂם לְךָ שָׁלוֹם', esp:'Que el Eterno alce sobre ti Su rostro y ponga en ti paz.' }
+  ],
+  salud: [
+    { heb:'רְפָאֵנוּ יְהוָה וְנֵרָפֵא', esp:'Sánanos, Eterno, y seremos sanados.' },
+    { heb:'כִּי אֲנִי יְהוָה רֹפְאֶךָ', esp:'Porque Yo soy el Eterno que te sana.' }
+  ],
+  parnasá: [
+    { heb:'פּוֹתֵחַ אֶת יָדֶךָ וּמַשְׂבִּיעַ לְכָל חַי רָצוֹן', esp:'Abres Tu mano y sacias a todo viviente según su voluntad.' },
+    { heb:'הַשָּׁמַיִם שֶׁלִּי וְהָאָרֶץ שֶׁלִּי', esp:'Los cielos son míos y la tierra es mía.' }
+  ],
+  zivug: [
+    { heb:'לֹא טוֹב הֱיוֹת הָאָדָם לְבַדּוֹ', esp:'No es bueno que el hombre esté solo.' },
+    { heb:'וְהָיוּ לְבָשָׂר אֶחָד', esp:'Y serán una sola carne.' }
+  ],
+  shalom: [
+    { heb:'שָׁלוֹם עֲלֵיכֶם', esp:'Paz sobre vosotros.' },
+    { heb:'עוֹשֶׂה שָׁלוֹם בִּמְרוֹמָיו', esp:'El que hace la paz en las alturas.' }
+  ],
+  limud: [
+    { heb:'יְהִי רָצוֹן שֶׁתִּפְתַּח לִי הַתּוֹרָה', esp:'Que sea la voluntad que se me abra la Torá.' },
+    { heb:'חָכְמָה בִּינָה וָדָעַת', esp:'Sabiduría, entendimiento y conocimiento.' }
+  ],
+  banim: [
+    { heb:'פְּרוּ וּרְבוּ וּמִלְאוּ אֶת הָאָרֶץ', esp:'Fructificad y multiplicaos, y llenad la tierra.' },
+    { heb:'בָּרוּךְ הַפּוֹקֵד אֶת שָׂרָה', esp:'Bendito el que recuerda a Sara.' }
+  ],
+  teshuvá: [
+    { heb:'הֲשִׁיבֵנוּ יְהוָה אֵלֶיךָ וְנָשׁוּבָה', esp:'Haznos volver a Ti, Eterno, y volveremos.' },
+    { heb:'חַדֵּשׁ יָמֵינוּ כְּקֶדֶם', esp:'Renueva nuestros días como al principio.' }
+  ]
+};
+
+function reduce(n){
+  while(n > 9){
+    if([11,22,33].includes(n)) return n;
+    n = String(n).split('').reduce((a,b) => a + +b, 0);
+  }
+  return n;
+}
+
+document.getElementById('bend-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const nombre = document.getElementById('nombre').value.trim();
+  const fechaStr = document.getElementById('fecha').value;
+  const intencion = document.getElementById('intencion').value;
+  if(!nombre || !fechaStr) return alert('Completa nombre y fecha.');
+
+  const d = new Date(fechaStr + 'T12:00:00');
+  const caminoVida = reduce(d.getDate() + d.getMonth() + 1 + d.getFullYear());
+  const bend = BENDICIONES[intencion] || BENDICIONES.general;
+
+  // Personalizar según camino de vida
+  const añadido = caminoVida === 1 ? 'Que tu liderazgo sea bendecido.' :
+    caminoVida === 2 ? 'Que tu sensibilidad sea tu fuerza.' :
+    caminoVida === 3 ? 'Que tu voz inspire a muchos.' :
+    caminoVida === 4 ? 'Que tu constancia construya mundos.' :
+    caminoVida === 5 ? 'Que tu libertad te lleve a la verdad.' :
+    caminoVida === 6 ? 'Que tu amor sane corazones.' :
+    caminoVida === 7 ? 'Que tu sabiduría revele secretos.' :
+    caminoVida === 8 ? 'Que tu poder esté al servicio del bien.' :
+    caminoVida === 9 ? 'Que tu compasión abrace a todos.' :
+    caminoVida === 11 ? 'Que tu visión ilumine al mundo.' :
+    caminoVida === 22 ? 'Que construyas lo imposible.' :
+    'Que tu amor universal se manifieste.';
+
+  const results = document.getElementById('results');
+  results.style.display = 'block';
+  results.innerHTML = `
+    <section>
+      <h2>✨ Bendición para ${nombre}</h2>
+      <div class="equation">
+        <div class="big">Tu Bendición</div>
+        <div class="heb" style="font-size:1.4rem;line-height:1.8;">
+          ${bend[0].heb}
+        </div>
+      </div>
+      <blockquote>${bend[0].esp}</blockquote>
+      ${bend[1] ? `
+        <div class="equation">
+          <div class="heb" style="font-size:1.3rem;line-height:1.8;">
+            ${bend[1].heb}
+          </div>
+        </div>
+        <blockquote>${bend[1].esp}</blockquote>
+      ` : ''}
+    </section>
+
+    <section>
+      <h2>💫 Bendición Personal</h2>
+      <p style="text-align:center;font-size:1.05rem;">
+        <strong>${nombre}</strong>, Camino de Vida <strong>${caminoVida}</strong>:<br>
+        ${añadido}
+      </p>
+    </section>
+
+    <section>
+      <h2>📖 Cómo Recibirla</h2>
+      <ul>
+        <li>Léela en voz alta, lentamente.</li>
+        <li>Cierra los ojos y siente cada palabra.</li>
+        <li>Repítela al despertar durante 7 días.</li>
+        <li>Escríbela y colócala en un lugar visible.</li>
+      </ul>
+    </section>
+  `;
+  results.scrollIntoView({ behavior:'smooth' });
+});
+</script>
+</body>
+</html>
