@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Shabat: cuenta regresiva al día sagrado del descanso">
+<title>✦ Shabat — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.countdown{text-align:center;padding:2.5rem 1.5rem;
+  background:radial-gradient(circle, rgba(212,175,55,.12), transparent 70%),
+    rgba(5,6,15,.7);border:2px solid var(--gold);border-radius:20px;
+  box-shadow:0 0 60px rgba(212,175,55,.3);margin:1.5rem 0;}
+.countdown .titulo{font-size:.85rem;color:var(--muted);letter-spacing:.3em;
+  text-transform:uppercase;margin-bottom:1rem;}
+.countdown .tiempo{font-size:clamp(2rem,7vw,4rem);font-family:var(--font-mono);
+  color:var(--gold2);letter-spacing:.08em;line-height:1;
+  text-shadow:0 0 30px rgba(212,175,55,.8);}
+.countdown .estado{color:var(--cyan);margin-top:1rem;font-size:.95rem;
+  letter-spacing:.1em;}
+.velas{display:flex;justify-content:center;gap:1.5rem;margin:1.5rem 0;}
+.vela{width:24px;height:80px;background:linear-gradient(180deg, #fff, #f7e08a);
+  border-radius:12px;position:relative;transition:all .5s;}
+.vela.encendida::before{content:"";position:absolute;top:-20px;left:50%;
+  transform:translateX(-50%);width:14px;height:20px;
+  background:radial-gradient(circle, #fff, #ffd, #fa0);
+  border-radius:50% 50% 30% 30%;animation:flicker .8s infinite alternate;
+  filter:blur(1px);}
+@keyframes flicker{from{transform:translateX(-50%) scale(1);opacity:1;}
+  to{transform:translateX(-50%) scale(.9);opacity:.85;}}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">שבת</div>
+  <h1>✦ Shabat ✦</h1>
+  <p>El día sagrado del descanso</p>
+  <span class="page-number">Práctica · Ciclo</span>
+</header>
+
+<section>
+  <h2>🕯️ Cuenta Regresiva</h2>
+  <div class="countdown">
+    <div class="titulo">✦ Faltan para el Shabat ✦</div>
+    <div class="tiempo" id="tiempo">-- : -- : --</div>
+    <div class="estado" id="estado">Calculando...</div>
+    <div class="velas" id="velas"></div>
+  </div>
+</section>
+
+<section>
+  <h2>📖 ¿Qué es el Shabat?</h2>
+  <p>El <strong>Shabat (שבת)</strong> es el séptimo día de la semana,
+  el día de descanso ordenado en los Diez Mandamientos. Comienza el
+  <strong>viernes al atardecer</strong> y termina el <strong>sábado al
+  anochecer</strong>.</p>
+  <p>En la Kabaláh, el Shabat es la <strong>Shejiná manifestada</strong> en
+  el tiempo: una "novia" y una "reina" que desciende al mundo para unirse
+  con Israel.</p>
+</section>
+
+<section>
+  <h2>🕯️ Los 3 Momentos Sagrados</h2>
+  <div class="nivel-card">
+    <p><span class="num">1</span><strong>Encendido de velas</strong> — Al atardecer del viernes, 18 minutos antes de la puesta del sol. Se encienden al menos 2 velas, con bendición.</p>
+  </div>
+  <div class="nivel-card">
+    <p><span class="num">2</span><strong>Kidush</strong> — Bendición del vino que santifica el día.</p>
+  </div>
+  <div class="nivel-card">
+    <p><span class="num">3</span><strong>Havdalá</strong> — Al anochecer del sábado, ceremonia de separación entre lo sagrado y lo profano.</p>
+  </div>
+</section>
+
+<section>
+  <h2>📜 Lo que se Hace y No se Hace</h2>
+  <table>
+    <thead><tr><th>Se hace</th><th>No se hace</th></tr></thead>
+    <tbody>
+      <tr><td>Descansar</td><td>Trabajar</td></tr>
+      <tr><td>Estudiar Torá</td><td>Encender fuego</td></tr>
+      <tr><td>Compartir en familia</td><td>Cocinar (salvo recalentar)</td></tr>
+      <tr><td>Orar</td><td>Usar electricidad (según tradición)</td></tr>
+      <tr><td>Hacer el amor</td><td>Escribir (según tradición)</td></tr>
+      <tr><td>Alegrarse</td><td>Viajar (salvo necesidad)</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>💡 Significado Cabalístico</h2>
+  <div class="equation">
+    <div class="big">Shabat = Shejiná · Novia · Reina</div>
+    <div class="heb">שבת = שכינה · כלה · מלכה</div>
+  </div>
+  <blockquote>"Más que Israel haya guardado el Shabat, el Shabat ha guardado a Israel." — Ahad HaAm</blockquote>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Shabat</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+function proximoShabat(){
+  const now = new Date();
+  const day = now.getDay(); // 0=Dom, 5=Vie, 6=Sab
+  const shabat = new Date(now);
+  // Viernes atardecer (aprox 18:00)
+  const target = new Date(now);
+  target.setHours(18, 0, 0, 0);
+  const daysToFriday = (5 - day + 7) % 7;
+  target.setDate(target.getDate() + daysToFriday);
+  if(target <= now){
+    target.setDate(target.getDate() + 7);
+  }
+  return target;
+}
+
+function actualizar(){
+  const now = new Date();
+  const day = now.getDay();
+  const hour = now.getHours();
+  const shabat = proximoShabat();
+  const diff = shabat - now;
+  const estado = document.getElementById('estado');
+
+  // Detectar si estamos en Shabat
+  // Viernes desde 18h hasta sábado 19h (aprox)
+  const enShabat = (day === 5 && hour >= 18) || (day === 6 && hour < 19);
+
+  if(enShabat){
+    estado.textContent = '✦ SHABAT SHALOM · Estás en el día sagrado ✦';
+    estado.style.color = 'var(--gold2)';
+    document.getElementById('tiempo').textContent = '✦ SHALOM ✦';
+    document.getElementById('tiempo').style.fontSize = 'clamp(1.5rem,5vw,2.5rem)';
+  } else {
+    estado.textContent = 'Faltan para el Shabat';
+    estado.style.color = 'var(--cyan)';
+    const h = Math.floor(diff / (1000*60*60));
+    const m = Math.floor((diff % (1000*60*60)) / (1000*60));
+    const s = Math.floor((diff % (1000*60)) / 1000);
+    document.getElementById('tiempo').textContent =
+      `${String(h).padStart(2,'0')} : ${String(m).padStart(2,'0')} : ${String(s).padStart(2,'0')}`;
+  }
+
+  // Velas
+  const velas = document.getElementById('velas');
+  if(velas.children.length === 0){
+    for(let i = 0; i < 3; i++){
+      const v = document.createElement('div');
+      v.className = 'vela';
+      velas.appendChild(v);
+    }
+  }
+  velas.querySelectorAll('.vela').forEach(v => {
+    v.classList.toggle('encendida', enShabat);
+  });
+}
+
+actualizar();
+setInterval(actualizar, 1000);
+</script>
+</body>
+</html>
