@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Tu sombra (Klipá): lo que debes trabajar en tu alma">
+<title>✦ Tu Sombra — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.sombra-card{text-align:center;padding:2.5rem 1.5rem;
+  background:radial-gradient(circle, rgba(108,92,231,.15), transparent 70%),
+  rgba(5,6,15,.75);border:2px solid var(--violet);border-radius:20px;
+  margin:1.5rem 0;box-shadow:0 0 60px rgba(108,92,231,.3);}
+.sombra-card .heb{font-size:3.5rem;color:var(--violet2);
+  font-family:var(--font-heb);direction:rtl;
+  text-shadow:0 0 25px rgba(108,92,231,.8);}
+.sombra-card .nombre{color:var(--gold2);font-size:1.4rem;
+  letter-spacing:.15em;margin:.5rem 0;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">קליפה</div>
+  <h1>✦ Tu Sombra ✦</h1>
+  <p>Lo que debes trabajar · Las Klipot</p>
+  <span class="page-number">Extras · Sombra</span>
+</header>
+
+<section>
+  <h2>🌑 ¿Qué es la Sombra?</h2>
+  <p>En la Kabaláh, la <strong>Klipá (קליפה)</strong> — "cáscara" — es la
+  capa externa que oculta la luz. Es lo que en psicología llamamos
+  <strong>sombra</strong>: aquello que no queremos ver en nosotros mismos.</p>
+  <p>Conocerla es el primer paso del <strong>Tikkun</strong>.</p>
+  <form id="sombra-form" autocomplete="off">
+    <div class="form-grid">
+      <div class="form-field full">
+        <label for="nombre">Nombre completo</label>
+        <input type="text" id="nombre" required>
+      </div>
+      <div class="form-field full">
+        <label for="fecha">Fecha de nacimiento</label>
+        <input type="date" id="fecha" required>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1.2rem">
+      <button type="submit" class="btn">✦ Revelar mi Sombra ✦</button>
+    </div>
+  </form>
+</section>
+
+<div id="results" style="display:none"></div>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Tu Sombra</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const PYT = {a:1,b:2,c:3,d:4,e:5,f:6,g:7,h:8,i:9,j:1,k:2,l:3,m:4,n:5,o:6,
+  p:7,q:8,r:9,s:1,t:2,u:3,v:4,w:5,x:6,y:7,z:8};
+
+const SOMBRAS = {
+  1:{ t:'El Egoísmo', heb:'אנוכיות', d:'El exceso de individualismo puede aislarte. Aprender a servir y compartir.', tikkun:'Sirve a alguien cada día sin esperar nada.' },
+  2:{ t:'La Codependencia', heb:'תלות', d:'Puedes perderte en las necesidades de otros. Aprender a poner límites saludables.', tikkun:'Practica decir "no" cuando algo no te corresponde.' },
+  3:{ t:'La Dispersión', heb:'פיזור', d:'Puedes dispersar tu energía en mil cosas sin terminar ninguna. Aprender a enfocarte.', tikkun:'Elige un proyecto y termínalo antes de empezar otro.' },
+  4:{ t:'La Rigidez', heb:'קשיחות', d:'El exceso de estructura puede volverse rigidez. Aprender a fluir.', tikkun:'Rompe una rutina cada semana. Improvisa.' },
+  5:{ t:'La Inconstancia', heb:'חוסר יציבות', d:'El amor por la libertad puede volverse incapacidad de compromiso. Aprender a permanecer.', tikkun:'Comprométete con algo por 6 meses sin abandonar.' },
+  6:{ t:'La Sobreprotección', heb:'הגנת יתר', d:'Cuidar demasiado puede volverse control. Aprender a confiar.', tikkun:'Deja que otros hagan las cosas a su manera.' },
+  7:{ t:'El Aislamiento', heb:'בדידות', d:'La búsqueda de la verdad puede aislarte. Aprender a compartir.', tikkun:'Comparte tu sabiduría con alguien cada semana.' },
+  8:{ t:'El Control', heb:'שליטה', d:'El amor por el poder puede volverse tiranía. Aprender a soltar.', tikkun:'Delega. Confía. No todo debe pasar por ti.' },
+  9:{ t:'El Martirio', heb:'הקרבה', d:'Ayudar a todos puede olvidarte de ti. Aprender a recibir.', tikkun:'Permite que otros te ayuden. Recibe con gratitud.' },
+  11:{ t:'La Ilusión', heb:'אשליה', d:'Las visiones elevadas pueden alejarte de la realidad. Aprender a aterrizar.', tikkun:'Conecta tu visión con pasos concretos.' },
+  22:{ t:'La Perfección Paralizante', heb:'שלמות משתקת', d:'La búsqueda de la perfección puede impedirte actuar. Aprender a empezar.', tikkun:'Haz algo imperfecto hoy. Publica, envía, actúa.' },
+  33:{ t:'El Salvador', heb:'מושיע', d:'Querer salvar a todos puede agotarte. Aprender a permitir que otros encuentren su camino.', tikkun:'Suelta la necesidad de arreglar a los demás.' }
+};
+
+function reduce(n){
+  while(n > 9){
+    if([11,22,33].includes(n)) return n;
+    n = String(n).split('').reduce((a,b) => a + +b, 0);
+  }
+  return n;
+}
+
+document.getElementById('sombra-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const nombre = document.getElementById('nombre').value.trim();
+  const f = document.getElementById('fecha').value;
+  if(!nombre || !f) return;
+  const d = new Date(f + 'T12:00:00');
+  const camino = reduce(d.getDate() + d.getMonth() + 1 + d.getFullYear());
+  const s = SOMBRAS[camino] || SOMBRAS[1];
+
+  const results = document.getElementById('results');
+  results.style.display = 'block';
+  results.innerHTML = `
+    <section>
+      <div class="sombra-card">
+        <div class="heb">${s.heb}</div>
+        <div class="nombre">${s.t}</div>
+      </div>
+    </section>
+    <section>
+      <h2>🌑 Tu Sombra</h2>
+      <p style="text-align:center;color:var(--text);font-size:1rem;line-height:1.8;">
+        <strong>${nombre}</strong>, tu Camino de Vida es <strong>${camino}</strong>.
+        La sombra que acompaña a este camino es: <strong style="color:var(--violet2);">${s.t}</strong>.
+      </p>
+      <blockquote>${s.d}</blockquote>
+    </section>
+    <section>
+      <h2>🔧 Tu Tikkun (Reparación)</h2>
+      <div class="equation">
+        <div class="big">${s.tikkun}</div>
+        <div class="heb">תיקון</div>
+      </div>
+    </section>
+    <section>
+      <h2>💡 Cómo Trabajarla</h2>
+      <ol>
+        <li><strong>Reconocerla</strong> — No negarla. Verla con honestidad.</li>
+        <li><strong>Aceptarla</strong> — No juzgarla. Es parte de ti.</li>
+        <li><strong>Integrarla</strong> — No reprimirla. Transmutarla.</li>
+        <li><strong>Transmutarla</strong> — Convertirla en fortaleza.</li>
+        <li><strong>Compartirla</strong> — Hablar con alguien de confianza.</li>
+      </ol>
+      <blockquote>"La sombra no es tu enemiga, es tu maestra no reconocida." — Carl Jung</blockquote>
+    </section>
+    <section>
+      <h2>⚖️ Luz y Sombra</h2>
+      <table>
+        <thead><tr><th>Fortaleza</th><th>Sombra</th></tr></thead>
+        <tbody>
+          <tr><td>Liderazgo</td><td>Egoísmo</td></tr>
+          <tr><td>Empatía</td><td>Codependencia</td></tr>
+          <tr><td>Expresión</td><td>Dispersión</td></tr>
+          <tr><td>Orden</td><td>Rigidez</td></tr>
+          <tr><td>Libertad</td><td>Inconstancia</td></tr>
+        </tbody>
+      </table>
+      <p style="text-align:center;color:var(--muted);font-size:.9rem;margin-top:1rem;">
+        La sombra es la luz que aún no has integrado.
+      </p>
+    </section>
+  `;
+  results.scrollIntoView({ behavior:'smooth' });
+});
+</script>
+</body>
+</html>
