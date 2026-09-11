@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Glosario cabalístico: 100+ términos hebreo-español buscables">
+<title>✦ Glosario Cabalístico — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.busqueda{margin:1.5rem 0;}
+.busqueda input{width:100%;padding:1rem 1.2rem;background:rgba(10,12,30,.7);
+  border:1px solid var(--line);border-radius:12px;color:var(--text);
+  font-size:1rem;font-family:inherit;}
+.busqueda input:focus{outline:none;border-color:var(--gold);
+  box-shadow:0 0 25px rgba(212,175,55,.3);}
+.termino{padding:.9rem 1.1rem;background:rgba(10,12,30,.6);
+  border:1px solid var(--line);border-radius:10px;margin-bottom:.5rem;
+  transition:all .3s;}
+.termino:hover{border-color:var(--gold);transform:translateX(4px);}
+.termino .palabra{color:var(--gold2);font-weight:600;
+  font-size:1rem;display:flex;justify-content:space-between;
+  align-items:baseline;gap:.8rem;flex-wrap:wrap;}
+.termino .palabra .heb{font-family:var(--font-heb);direction:rtl;
+  color:var(--gold);font-size:1.15rem;}
+.termino .def{color:var(--text);font-size:.88rem;margin-top:.3rem;}
+.contador{text-align:center;color:var(--muted);font-size:.85rem;
+  margin-bottom:1rem;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">מונחים</div>
+  <h1>✦ Glosario Cabalístico ✦</h1>
+  <p>100+ términos hebreo-español</p>
+  <span class="page-number">Aprender · Glosario</span>
+</header>
+
+<section>
+  <h2>🔍 Buscar Término</h2>
+  <div class="busqueda">
+    <input type="search" id="busqueda" placeholder="Busca por palabra, transliteración o definición..." autofocus aria-label="Buscar">
+  </div>
+  <div class="contador" id="contador"></div>
+  <div id="terminos"></div>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Glosario</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const TERMINOS = [
+  { h:'יחידה', t:'Yejidá', d:'Unicidad. Quinto y más alto nivel del alma.' },
+  { h:'חיה', t:'Jaiá', d:'Vida. Cuarto nivel del alma, voluntad supra-racional.' },
+  { h:'נשמה', t:'Neshamá', d:'Aliento. Tercer nivel, intelecto.' },
+  { h:'רוח', t:'Ruaj', d:'Espíritu. Segundo nivel, emociones.' },
+  { h:'נפש', t:'Nefesh', d:'Alma. Primer nivel, vitalidad física.' },
+  { h:'כתר', t:'Kéter', d:'Corona. Primera Sefirá, voluntad divina.' },
+  { h:'חכמה', t:'Jojmá', d:'Sabiduría. Segunda Sefirá, chispa creativa.' },
+  { h:'בינה', t:'Biná', d:'Entendimiento. Tercera Sefirá.' },
+  { h:'חסד', t:'Jesed', d:'Misericordia. Cuarta Sefirá, amor incondicional.' },
+  { h:'גבורה', t:'Guevurá', d:'Rigor. Quinta Sefirá, justicia.' },
+  { h:'תפארת', t:'Tiféret', d:'Belleza. Sexta Sefirá, corazón del Árbol.' },
+  { h:'נצח', t:'Netzaj', d:'Victoria. Séptima Sefirá, eternidad.' },
+  { h:'הוד', t:'Hod', d:'Esplendor. Octava Sefirá, gratitud.' },
+  { h:'יסוד', t:'Yesod', d:'Fundamento. Novena Sefirá, conexión.' },
+  { h:'מלכות', t:'Maljut', d:'Reino. Décima Sefirá, Shejiná.' },
+  { h:'אצילות', t:'Atzilut', d:'Emanación. Primer y más alto mundo.' },
+  { h:'בריאה', t:'Briá', d:'Creación. Segundo mundo.' },
+  { h:'יצירה', t:'Yetzirá', d:'Formación. Tercer mundo.' },
+  { h:'עשיה', t:'Asiá', d:'Acción. Cuarto mundo, el físico.' },
+  { h:'צמצום', t:'Tzimtzum', d:'Contracción. La auto-limitación divina.' },
+  { h:'שבירה', t:'Shevirá', d:'Ruptura. La ruptura de los vasos.' },
+  { h:'תיקון', t:'Tikkun', d:'Reparación. Reparación del mundo.' },
+  { h:'שכינה', t:'Shejiná', d:'Presencia divina en el mundo.' },
+  { h:'משיח', t:'Mashiaj', d:'El Ungido. Mesías.' },
+  { h:'תשובה', t:'Teshuvá', d:'Retorno. Arrepentimiento.' },
+  { h:'כוונה', t:'Kavaná', d:'Intención. Dirección del corazón.' },
+  { h:'מצוה', t:'Mitzvá', d:'Mandamiento, conexión.' },
+  { h:'תפילה', t:'Tefilá', d:'Oración.' },
+  { h:'תורה', t:'Torá', d:'Enseñanza, Ley.' },
+  { h:'גימטריה', t:'Guematria', d:'Valor numérico de las letras.' },
+  { h:'קליפה', t:'Kelipá', d:'Cáscara. Capa externa sin luz.' },
+  { h:'ניצוץ', t:'Nitzotz', d:'Chispa divina.' },
+  { h:'אין סוף', t:'Ein Sof', d:'Lo Infinito. La divinidad sin límite.' },
+  { h:'אור', t:'Or', d:'Luz.' },
+  { h:'אדם קדמון', t:'Adam Kadmon', d:'Hombre Primordial. Primer despliegue.' },
+  { h:'פרצופים', t:'Partzufim', d:'Rostros divinos. Configuraciones.' },
+  { h:'אריך אנפין', t:'Arij Anpin', d:'Rostro Largo. Partzuf de Kéter.' },
+  { h:'אבא', t:'Aba', d:'Padre. Partzuf de Jojmá.' },
+  { h:'אמא', t:'Imma', d:'Madre. Partzuf de Biná.' },
+  { h:'זעיר אנפין', t:'Zeir Anpin', d:'Rostro Corto. Partzuf de las 6 Sefirot.' },
+  { h:'נוקבא', t:'Nukvá', d:'Femenina. Partzuf de Maljut.' },
+  { h:'תפילין', t:'Tefilín', d:'Filacterias sagradas.' },
+  { h:'מזוזה', t:'Mezuzá', d:'Pergamino en la puerta.' },
+  { h:'סוכה', t:'Sucá', d:'Cabaña de Sucot.' },
+  { h:'מקווה', t:'Mikvé', d:'Baño ritual de aguas vivas.' },
+  { h:'שבת', t:'Shabat', d:'Día de descanso.' },
+  { h:'חג', t:'Jag', d:'Festividad.' },
+  { h:'תפילה', t:'Tefilá', d:'Oración.' },
+  { h:'תהילים', t:'Tehilim', d:'Salmos.' },
+  { h:'זוהר', t:'Zohar', d:'Libro del Esplendor.' },
+  { h:'ספר יצירה', t:'Sefer Yetzirá', d:'Libro de la Formación.' },
+  { h:'באהיר', t:'Bahir', d:'Libro del Esplendor (siglo XII).' },
+  { h:'עץ חיים', t:'Etz Jaim', d:'Árbol de la Vida (obra del Arizal).' },
+  { h:'תניא', t:'Tanya', d:'Obra fundamental del Jabad.' },
+  { h:'התבודדות', t:'Hitbodedut', d:'Meditación solitaria.' },
+  { h:'ייחוד', t:'Yijud', d:'Unificación.' },
+  { h:'נבואה', t:'Nevuá', d:'Profecía.' },
+  { h:'גלגול', t:'Gilgul', d:'Reencarnación.' },
+  { h:'עולם הבא', t:'Olam Habá', d:'El mundo venidero.' },
+  { h:'גן עדן', t:'Gan Edén', d:'Jardín del Edén.' },
+  { h:'גיהינום', t:'Gehinom', d:'Infierno, purificación.' },
+  { h:'מלאך', t:'Malaj', d:'Ángel.' },
+  { h:'מטטרון', t:'Metatrón', d:'El ángel más cercano a Dios.' },
+  { h:'סנדלפון', t:'Sandalphon', d:'Arcángel de las oraciones.' },
+  { h:'מיכאל', t:'Miguel', d:'Arcángel de la misericordia.' },
+  { h:'גבריאל', t:'Gabriel', d:'Arcángel del poder.' },
+  { h:'רפאל', t:'Rafael', d:'Arcángel de la sanación.' },
+  { h:'אוריאל', t:'Uriel', d:'Arcángel de la luz.' },
+  { h:'שדי', t:'Shadai', d:'Nombre divino. Guardián.' },
+  { h:'יהוה', t:'YHVH', d:'El Tetragrámaton.' },
+  { h:'אלהים', t:'Elohim', d:'Dios (aspecto de justicia).' },
+  { h:'אדני', t:'Adonai', d:'Mi Señor.' },
+  { h:'אל', t:'El', d:'Dios (aspecto de misericordia).' },
+  { h:'צבאות', t:'Tzevaot', d:'Ejércitos (de Dios).' },
+  { h:'עולם', t:'Olam', d:'Mundo.' },
+  { h:'נשמה יתרה', t:'Neshamá Yeterá', d:'Alma adicional (en Shabat).' },
+  { h:'דבקות', t:'Devekut', d:'Adhesión a Dios.' },
+  { h:'ביטול', t:'Bitul', d:'Auto-anulación.' },
+  { h:'תיקון עולם', t:'Tikkun Olam', d:'Reparación del mundo.' },
+  { h:'עולם הזה', t:'Olam Hazé', d:'Este mundo.' },
+  { h:'שאול', t:'Sheol', d:'Inframundo.' },
+  { h:'ספירות', t:'Sefirot', d:'Emanaciones divinas.' },
+  { h:'אותיות', t:'Otiot', d:'Letras.' },
+  { h:'נתיבות', t:'Netivot', d:'Caminos.' },
+  { h:'צלם', t:'Tzélem', d:'Imagen (divina).' },
+  { h:'דמות', t:'Demut', d:'Semejanza.' },
+  { h:'קדושה', t:'Kedushá', d:'Santidad.' },
+  { h:'טהרה', t:'Tajará', d:'Pureza.' },
+  { h:'אמונה', t:'Emuná', d:'Fe.' },
+  { h:'ביטחון', t:'Bitajón', d:'Confianza.' },
+  { h:'תפילה', t:'Tefilá', d:'Oración.' },
+  { h:'צדקה', t:'Tzedaká', d:'Caridad, justicia.' },
+  { h:'חסד', t:'Jesed', d:'Bondad.' },
+  { h:'רחמים', t:'Rajamim', d:'Misericordia.' },
+  { h:'דין', t:'Din', d:'Juicio.' },
+  { h:'אמת', t:'Emet', d:'Verdad.' },
+  { h:'שלום', t:'Shalom', d:'Paz.' },
+  { h:'שמחה', t:'Simjá', d:'Alegría.' },
+  { h:'תקווה', t:'Tikvá', d:'Esperanza.' },
+  { h:'אהבה', t:'Ahavá', d:'Amor.' },
+  { h:'יראה', t:'Yirá', d:'Temor, reverencia.' }
+];
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderGlosario(TERMINOS);
+  document.getElementById('busqueda').addEventListener('input', (e) => {
+    const q = e.target.value.toLowerCase().trim();
+    if(q.length < 2){
+      renderGlosario(TERMINOS);
+      return;
+    }
+    const filtered = TERMINOS.filter(t =>
+      t.t.toLowerCase().includes(q) ||
+      t.h.includes(e.target.value) ||
+      t.d.toLowerCase().includes(q)
+    );
+    renderGlosario(filtered);
+  });
+});
+
+function renderGlosario(lista){
+  document.getElementById('contador').textContent =
+    `${lista.length} términos`;
+  document.getElementById('terminos').innerHTML = lista.map(t => `
+    <div class="termino">
+      <div class="palabra">
+        <span>${t.t}</span>
+        <span class="heb">${t.h}</span>
+      </div>
+      <div class="def">${t.d}</div>
+    </div>
+  `).join('') || '<p style="text-align:center;color:var(--muted);padding:2rem;">Sin resultados.</p>';
+}
+</script>
+</body>
+</html>
