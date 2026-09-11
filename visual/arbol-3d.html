@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Árbol de la Vida en 3D con CSS transforms">
+<title>✦ Árbol de la Vida 3D — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.escena-3d{perspective:1200px;width:100%;max-width:600px;
+  margin:2rem auto;height:560px;position:relative;overflow:hidden;
+  border:1px solid var(--line);border-radius:16px;
+  background:radial-gradient(circle at 50% 50%,
+    rgba(108,92,231,.1), transparent 70%), rgba(5,6,15,.6);}
+.arbol-3d{position:absolute;top:50%;left:50%;
+  transform-style:preserve-3d;
+  transform:translate(-50%,-50%) rotateX(-15deg) rotateY(0deg);
+  animation:rotar3d 30s linear infinite;
+  width:400px;height:500px;}
+@keyframes rotar3d{
+  0%{transform:translate(-50%,-50%) rotateX(-15deg) rotateY(0deg);}
+  100%{transform:translate(-50%,-50%) rotateX(-15deg) rotateY(360deg);}
+}
+.sef-node-3d{position:absolute;width:56px;height:56px;
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle, rgba(212,175,55,.5), rgba(212,175,55,.1));
+  border:2px solid var(--gold);
+  color:var(--gold2);font-family:var(--font-heb);font-size:1.3rem;
+  font-weight:600;text-shadow:0 0 12px rgba(212,175,55,.9);
+  box-shadow:0 0 25px rgba(212,175,55,.5);
+  cursor:pointer;transition:all .4s;
+  transform-style:preserve-3d;}
+.sef-node-3d:hover{background:radial-gradient(circle, rgba(212,175,55,.9), rgba(212,175,55,.3));
+  transform:scale(1.15);}
+.sef-label-3d{position:absolute;font-size:.7rem;color:var(--muted);
+  letter-spacing:.1em;text-transform:uppercase;text-align:center;
+  pointer-events:none;white-space:nowrap;}
+.linea-3d{position:absolute;background:linear-gradient(90deg,
+  rgba(212,175,55,.5), rgba(108,92,231,.5));
+  transform-origin:0 0;pointer-events:none;
+  box-shadow:0 0 10px rgba(212,175,55,.3);}
+.control-3d{text-align:center;margin-top:1rem;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">עץ חיים · תלת מימד</div>
+  <h1>✦ Árbol de la Vida 3D ✦</h1>
+  <p>Rotación interactiva · Geometría sagrada</p>
+  <span class="page-number">Visualización · Árbol 3D</span>
+</header>
+
+<section>
+  <h2>🌳 El Árbol en el Espacio</h2>
+  <p>El Árbol de la Vida gira sobre su eje, revelando las <strong>10 Sefirot</strong>
+  desde todos los ángulos. Cada nodo es un centro de energía divina.</p>
+
+  <div class="escena-3d">
+    <div class="arbol-3d" id="arbol-3d"></div>
+  </div>
+
+  <div class="control-3d">
+    <button id="pausa-btn" class="btn btn-sm">⏸️ Pausar rotación</button>
+  </div>
+
+  <div id="info-sef" style="margin-top:1.5rem;padding:1.5rem;
+    background:rgba(5,6,15,.5);border:1px solid var(--line);border-radius:12px;
+    text-align:center;min-height:80px;">
+    <p style="color:var(--muted);">Haz clic en cada Sefirá.</p>
+  </div>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Árbol 3D</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const SEFIROT_3D = [
+  { n:'Kéter',   heb:'כתר',   x:172, y:20,  d:'Corona. Voluntad divina primordial.' },
+  { n:'Jojmá',   heb:'חכמה', x:80,  y:100, d:'Sabiduría. La chispa creativa.' },
+  { n:'Biná',    heb:'בינה',  x:264, y:100, d:'Entendimiento. Comprensión racional.' },
+  { n:'Jesed',   heb:'חסד',   x:60,  y:210, d:'Misericordia. Amor incondicional.' },
+  { n:'Guevurá', heb:'גבורה', x:284, y:210, d:'Rigor. Justicia y disciplina.' },
+  { n:'Tiféret', heb:'תפארת', x:172, y:210, d:'Belleza. Corazón del Árbol.' },
+  { n:'Netzaj',  heb:'נצח',   x:60,  y:320, d:'Victoria. Eternidad y resistencia.' },
+  { n:'Hod',     heb:'הוד',   x:284, y:320, d:'Esplendor. Gratitud y humildad.' },
+  { n:'Yesod',   heb:'יסוד',  x:172, y:320, d:'Fundamento. Canal hacia Maljut.' },
+  { n:'Maljut',  heb:'מלכות', x:172, y:430, d:'Reino. La Shejiná manifiesta.' }
+];
+
+const PATHS_3D = [[0,1],[0,2],[0,5],[0,6],[0,7],[1,2],[1,3],[1,5],
+  [2,4],[2,5],[3,4],[3,5],[3,6],[4,5],[4,7],[5,6],[5,7],[5,8],
+  [6,8],[7,8],[8,9]];
+
+document.addEventListener('DOMContentLoaded', () => {
+  const arbol = document.getElementById('arbol-3d');
+  const info = document.getElementById('info-sef');
+
+  // Dibujar líneas
+  PATHS_3D.forEach(([a, b]) => {
+    const p1 = SEFIROT_3D[a], p2 = SEFIROT_3D[b];
+    const dx = p2.x - p1.x, dy = p2.y - p1.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    const ang = Math.atan2(dy, dx) * 180 / Math.PI;
+
+    const linea = document.createElement('div');
+    linea.className = 'linea-3d';
+    linea.style.left = (p1.x + 28) + 'px';
+    linea.style.top = (p1.y + 28) + 'px';
+    linea.style.width = dist + 'px';
+    linea.style.height = '2px';
+    linea.style.transform = `rotate(${ang}deg) translateZ(0)`;
+    arbol.appendChild(linea);
+  });
+
+  // Dibujar nodos
+  SEFIROT_3D.forEach((s, i) => {
+    const node = document.createElement('div');
+    node.className = 'sef-node-3d';
+    node.style.left = s.x + 'px';
+    node.style.top = s.y + 'px';
+    node.setAttribute('tabindex', '0');
+    node.setAttribute('role', 'button');
+    node.setAttribute('aria-label', s.n);
+    node.textContent = s.heb;
+    node.addEventListener('click', (e) => {
+      e.stopPropagation();
+      info.innerHTML = `
+        <h3 style="color:var(--gold2);font-size:1.3rem;margin-bottom:.5rem;">
+          ${s.n} · <span class="hebrew-inline">${s.heb}</span>
+        </h3>
+        <p>${s.d}</p>
+      `;
+    });
+    node.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); node.click(); }
+    });
+    arbol.appendChild(node);
+
+    const label = document.createElement('div');
+    label.className = 'sef-label-3d';
+    label.style.left = s.x + 'px';
+    label.style.top = (s.y + 60) + 'px';
+    label.style.width = '56px';
+    label.textContent = s.n;
+    arbol.appendChild(label);
+  });
+
+  document.getElementById('pausa-btn').addEventListener('click', (e) => {
+    const anim = arbol.style.animation;
+    if(anim === 'none'){
+      arbol.style.animation = '';
+      e.target.textContent = '⏸️ Pausar rotación';
+    } else {
+      arbol.style.animation = 'none';
+      e.target.textContent = '▶️ Reanudar rotación';
+    }
+  });
+});
+</script>
+</body>
+</html>
