@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Los cuatro mundos cabalísticos: Atzilut, Briá, Yetzirá, Asiá">
+<title>✦ Los Cuatro Mundos — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">עולמות</div>
+  <h1>✦ Los Cuatro Mundos ✦</h1>
+  <p>Atzilut · Briá · Yetzirá · Asiá</p>
+  <span class="page-number">Portal 04 de 20</span>
+</header>
+
+<section>
+  <h2>🌍 Los Cuatro Mundos de la Existencia</h2>
+  <p>La Kabaláh describe la creación como una <strong>cascada descendente</strong>
+  de cuatro mundos o niveles de realidad, desde la más pura divinidad hasta el
+  mundo físico. Cada mundo es un <strong>velo</strong> que oculta y revela al
+  siguiente.</p>
+
+  <div class="nivel-card">
+    <p><span class="num">1</span><strong>Atzilut (אֲצִילוּת) — Emanación</strong><br>
+    El mundo más cercano a Dios. Aquí residen las Sefirot en su forma pura,
+    sin vestimenta. Corresponde a <em>Jaiá y Yejidá</em>. Luz divina sin vasijas.</p>
+  </div>
+  <div class="nivel-card">
+    <p><span class="num">2</span><strong>Briá (בְּרִיאָה) — Creación</strong><br>
+    El mundo del trono divino. Aquí habitan los arcángeles mayores
+    (Miguel, Gabriel, Rafael, Uriel). Corresponde a <em>Neshamá</em>.</p>
+  </div>
+  <div class="nivel-card">
+    <p><span class="num">3</span><strong>Yetzirá (יְצִירָה) — Formación</strong><br>
+    El mundo de los ángeles inferiores y las fuerzas espirituales.
+    Corresponde a <em>Ruaj</em>.</p>
+  </div>
+  <div class="nivel-card">
+    <p><span class="num">4</span><strong>Asiá (עֲשִׂיָּה) — Acción</strong><br>
+    Nuestro mundo físico. Materia, tiempo, espacio. Corresponde a <em>Nefesh</em>.</p>
+  </div>
+</section>
+
+<section>
+  <h2>🔗 Correspondencia con el Nombre YHVH</h2>
+  <table>
+    <thead>
+      <tr><th>Mundo</th><th>Hebreo</th><th>Letra YHVH</th><th>Nivel del Alma</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Atzilut</td><td class="hebrew-inline">אצילות</td><td>Yud (י)</td><td>Jaiá / Yejidá</td></tr>
+      <tr><td>Briá</td><td class="hebrew-inline">בריאה</td><td>Hei (ה)</td><td>Neshamá</td></tr>
+      <tr><td>Yetzirá</td><td class="hebrew-inline">יצירה</td><td>Vav (ו)</td><td>Ruaj</td></tr>
+      <tr><td>Asiá</td><td class="hebrew-inline">עשיה</td><td>Hei final (ה)</td><td>Nefesh</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>✦ Adam Kadmon — El Hombre Primordial</h2>
+  <p>Antes de los cuatro mundos existe <strong>Adam Kadmon</strong> (אָדָם קַדְמוֹן),
+  el "Hombre Primordial". No es un mundo separado, sino el <strong>primer despliegue
+  de la voluntad divina</strong> después del Tzimtzum. Corresponde a <strong>Yejidá</strong>
+  y a <strong>Kéter</strong>.</p>
+  <div class="equation">
+    <div class="big">Adam Kadmon → Yejidá → Kéter → Luz Infinita</div>
+    <div class="heb">אדם קדמון → יחידה → כתר → אין סוף</div>
+  </div>
+</section>
+
+<section>
+  <h2>💡 La Cascada Sagrada</h2>
+  <p>La luz divina desciende de mundo en mundo, <strong>contrayéndose</strong> más
+  en cada nivel. Cada mundo es un <strong>filtro</strong> que permite que la
+  infinitud divina se manifieste sin aniquilar la existencia finita.</p>
+  <blockquote>"A cada mundo le corresponde una letra del Nombre, un nivel del alma, un arcángel y una función cósmica."</blockquote>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Portal 04 de 20</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const p = Yejida.buildPager(4);
+  if(p) document.getElementById('main').appendChild(p);
+});
+</script>
+</body>
+</html>
