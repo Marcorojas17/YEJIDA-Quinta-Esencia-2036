@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Tu ángel regente según los 72 Nombres (Shem HaMephorash)">
+<title>✦ Tu Ángel Regente — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.angel-card{border:2px solid var(--gold);border-radius:20px;padding:2rem 1.5rem;
+  text-align:center;background:radial-gradient(circle at 50% 40%,
+    rgba(212,175,55,.15), transparent 70%), rgba(5,6,15,.7);
+  margin:1.5rem 0;box-shadow:0 0 50px rgba(212,175,55,.3);}
+.angel-heb{font-size:3.5rem;color:var(--gold2);font-family:var(--font-heb);
+  direction:rtl;text-shadow:0 0 30px rgba(212,175,55,.9);
+  animation:pulse-glow 4s ease-in-out infinite;line-height:1.2;}
+.angel-name{font-size:1.6rem;color:var(--gold2);letter-spacing:.15em;
+  margin:.8rem 0 .3rem;font-weight:600;}
+.angel-num{font-size:.8rem;color:var(--muted);letter-spacing:.2em;
+  text-transform:uppercase;}
+.angel-range{display:inline-block;margin-top:1rem;padding:.4rem 1.2rem;
+  background:rgba(212,175,55,.12);border:1px solid var(--line);
+  border-radius:30px;font-size:.8rem;color:var(--gold);letter-spacing:.1em;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">מלאכים</div>
+  <h1>✦ Tu Ángel Regente ✦</h1>
+  <p>Los 72 Nombres del Shem HaMephorash</p>
+  <span class="page-number">Extra · Ángeles</span>
+</header>
+
+<section>
+  <h2>🜁 Datos de Nacimiento</h2>
+  <p>Los <strong>72 ángeles</strong> corresponden a los <strong>72 Nombres de Dios</strong>
+  revelados en Éxodo 14:19-21. Cada uno rige <strong>5° del zodiaco</strong> (360° / 72 = 5°).
+  El ángel regente se determina por la <strong>posición exacta del Sol</strong> al nacer.</p>
+  <form id="angel-form" autocomplete="off">
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="fecha">Fecha de nacimiento</label>
+        <input type="date" id="fecha" required>
+      </div>
+      <div class="form-field">
+        <label for="hora">Hora (para precisión solar)</label>
+        <input type="time" id="hora" value="12:00">
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1.2rem">
+      <button type="submit" class="btn">✦ Revelar mi Ángel ✦</button>
+    </div>
+  </form>
+</section>
+
+<div id="results" style="display:none"></div>
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Ángeles</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+// Los 72 ángeles del Shem HaMephorash
+const ANGELES = [
+  'Vehuiah','Jeliel','Sitael','Elemiah','Mahasiah','Lelahel','Achaiah','Cahetel',
+  'Haziel','Aladiah','Lauviah','Hahaiah','Iezalel','Mebahel','Hariel','Hakamiah',
+  'Lauviah II','Caliel','Leuviah','Pahaliah','Nelchael','Ieiaiel','Melahel','Haheuiah',
+  'Nith-Haiah','Haaiah','Ierathel','Seheiah','Reiyel','Omael','Lecabel','Vasariah',
+  'Iehuiah','Lehahiah','Chavakhiah','Menadel','Aniel','Haamiah','Rehael','Ieiazel',
+  'Hahahel','Mikael','Veuliah','Yelahiah','Sealiah','Ariel','Asaliah','Mihael',
+  'Vehuel','Daniel','Hahasiah','Imamiah','Nanael','Nithael','Mebahiah','Poiel',
+  'Nemamiah','Ieialel','Harahel','Mizrael','Umabel','Iahhel','Anauel','Mehiel',
+  'Damabiah','Manakel','Eiael','Habuhiah','Rochel','Jabamiah','Haiaiel','Mumiah'
+];
+// Cada ángel tiene un nombre hebreo (3 letras del versículo)
+const NOMBRES_HEB = [
+  'והו','ילי','סיט','עלמ','מהש','ללה','אכא','כהת',
+  'הזי','אלד','לאו','ההע','יזל','מבה','הרי','הקם',
+  'לאו','כלי','לוו','פהל','נלכ','ייי','מלה','חהו',
+  'נתה','ההא','ירת','שהי','ריי','אום','לכב','ושר',
+  'יחו','להח','חכו','מנד','אני','העם','ראה','ייז',
+  'ההה','מיכ','וול','ילה','סאל','ערי','אשא','מיה',
+  'והו','דני','החש','עממ','ננא','נתה','מבה','פוי',
+  'נממ','ייל','הרה','מצר','ומב','יאה','ענו','מחי',
+  'דמב','מנק','איע','חבו','רהע','יבמ','היי','מום'
+];
+// Virtudes (resumidas) de cada ángel
+const VIRTUDES = [
+  'Voluntad, liderazgo iluminado','Amor incondicional, paz','Protección contra injusticias','Fuerza creativa, claridad',
+  'Sanación, corrección de errores','Luz, revelación artística','Paciencia, crecimiento','Bendición, abundancia',
+  'Misericordia, reconciliación','Liberación, perdón','Victorias, superación','Discreción, silencio sagrado',
+  'Fidelidad, memoria','Protección legal','Purificación, limpieza','Fuerza contra tentaciones',
+  'Reconciliación profunda','Escucha, justicia divina','Despertar espiritual','Valentía, defensa de la fe',
+  'Liberación de esclavitudes','Discernimiento, protección','Sanación física','Obediencia gozosa',
+  'Sabiduría oculta, alquimia','Perdón, gracia','Victoria sobre enemigos','Longevidad, protección',
+  'Ayuda en causas difíciles','Fertilidad, creatividad','Libertad, desapego','Diplomacia, mansedumbre',
+  'Instrucción, docencia','Compasión, protección maternal','Abundancia material','Dignidad, honor',
+  'Ciencia sagrada, inspiración','Fe, protección viajeros','Sanación, salud','Liberación del miedo',
+  'Visión profética, coraje','Ánimo, protección','Consuelo, sabiduría divina','Compasión, perdón',
+  'Valor, protección','Luz, revelación','Paciencia, templanza','Sanación mental',
+  'Gratitud, alegría','Justicia, honestidad','Sabiduría, inteligencia','Reconciliación, paz',
+  'Sabiduría del corazón','Pureza, castidad','Conocimiento, revelación','Poder, autoridad sagrada',
+  'Fortalecimiento, ánimo','Coraje, victoria','Inocencia, alegría','Sentido del humor, protección',
+  'Sanación emocional','Fidelidad, ternura','Sabiduría oculta, magia','Memoria, retención',
+  'Abundancia, prosperidad','Sanación energética','Luz espiritual, guía','Perdón, compasión',
+  'Revelación, sueños','Protección nocturna','Luz en la oscuridad','Renacimiento, transformación'
+];
+
+function sunLongitude(date){
+  // Aproximación de la longitud eclíptica del Sol
+  const d = new Date(date);
+  const J2000 = new Date('2000-01-01T12:00:00Z');
+  const days = (d - J2000) / (1000 * 60 * 60 * 24);
+  const L = 280.460 + 0.9856474 * days;
+  const g = (357.528 + 0.9856003 * days) * Math.PI / 180;
+  const lambda = L + 1.915 * Math.sin(g) + 0.020 * Math.sin(2 * g);
+  return ((lambda % 360) + 360) % 360;
+}
+
+document.getElementById('angel-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const fechaStr = document.getElementById('fecha').value;
+  const horaStr = document.getElementById('hora').value || '12:00';
+  if(!fechaStr) return alert('Ingresa tu fecha de nacimiento.');
+
+  const fecha = new Date(fechaStr + 'T' + horaStr + ':00Z');
+  const lon = sunLongitude(fecha);
+  const angelIdx = Math.floor(lon / 5);
+  const gradosEnSigno = (lon % 30).toFixed(1);
+  const signoIdx = Math.floor(lon / 30);
+  const signos = ['Aries','Tauro','Géminis','Cáncer','Leo','Virgo','Libra',
+    'Escorpio','Sagitario','Capricornio','Acuario','Piscis'];
+  const simbolos = ['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
+
+  const angel = ANGELES[angelIdx];
+  const heb = NOMBRES_HEB[angelIdx];
+  const virtud = VIRTUDES[angelIdx];
+  const rango = `${angelIdx * 5}° – ${(angelIdx + 1) * 5}° del zodiaco`;
+  const posicion = `${simbolos[signoIdx]} ${gradosEnSigno}° ${signos[signoIdx]}`;
+
+  const results = document.getElementById('results');
+  results.style.display = 'block';
+  results.innerHTML = `
+    <section>
+      <h2>✦ Tu Ángel Regente ✦</h2>
+      <div class="angel-card">
+        <div class="angel-heb">${heb}</div>
+        <div class="angel-name">${angel}</div>
+        <div class="angel-num">Ángel #${angelIdx + 1} de 72</div>
+        <div class="angel-range">Rige ${rango}</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>📖 Detalles</h2>
+      <table>
+        <tbody>
+          <tr><td><strong>Posición solar</strong></td><td>${posicion}</td></tr>
+          <tr><td><strong>Longitud eclíptica</strong></td><td>${lon.toFixed(2)}°</td></tr>
+          <tr><td><strong>Ángel</strong></td><td>${angel} (${heb})</td></tr>
+          <tr><td><strong>Virtud</strong></td><td>${virtud}</td></tr>
+          <tr><td><strong>Rango</strong></td><td>${rango}</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>✨ Invocación</h2>
+      <div class="equation">
+        <div class="big">${angel}</div>
+        <div class="heb">${heb}</div>
+      </div>
+      <blockquote>
+        "${angel}, ángel regente de mi alma, guíame en ${virtud.toLowerCase()}."
+      </blockquote>
+    </section>
+
+    <section>
+      <h2>📜 Sobre los 72 Nombres</h2>
+      <p>Los 72 ángeles provienen del <strong>Shem HaMephorash</strong> (Nombre Explícito),
+      derivado de tres versículos de Éxodo 14:19-21, cada uno con 72 letras.
+      Combinándolos de tres en tres se forman los 72 Nombres.</p>
+      <p>Cada ángel rige <strong>5° del zodiaco</strong>, por lo que se necesitan al menos
+      <strong>72 ángeles × 5° = 360°</strong> para cubrir todo el círculo.</p>
+    </section>
+  `;
+  results.scrollIntoView({ behavior:'smooth' });
+});
+</script>
+</body>
+</html>
