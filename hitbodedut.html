@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Hitbodedut: meditación solitaria según Rabí Najman de Breslov">
+<title>✦ Hitbodedut — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.timer-gigante{text-align:center;margin:2rem 0;padding:2rem;
+  background:radial-gradient(circle, rgba(212,175,55,.1), transparent 70%),
+    rgba(5,6,15,.6);border:1px solid var(--line);border-radius:20px;}
+.timer-gigante .tiempo{font-size:clamp(3rem,10vw,6rem);font-family:var(--font-mono);
+  color:var(--gold2);letter-spacing:.1em;
+  text-shadow:0 0 30px rgba(212,175,55,.8);line-height:1;}
+.timer-gigante .fase{font-size:.9rem;color:var(--muted);
+  letter-spacing:.2em;text-transform:uppercase;margin-top:.5rem;}
+.pasos{display:grid;gap:.6rem;margin:1rem 0;}
+.paso{display:flex;gap:1rem;align-items:start;padding:1rem;
+  background:rgba(10,12,30,.6);border:1px solid var(--line);border-radius:10px;
+  transition:all .4s;}
+.paso.activo{border-color:var(--gold);background:rgba(212,175,55,.08);
+  box-shadow:0 0 25px rgba(212,175,55,.25);}
+.paso .num{flex-shrink:0;width:32px;height:32px;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:var(--bg);border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-weight:700;font-size:.9rem;}
+.paso .texto{flex:1;}
+.paso .texto strong{color:var(--gold2);display:block;margin-bottom:.3rem;}
+.paso .texto p{font-size:.88rem;color:var(--text);margin:0;}
+.paso.activo .num{animation:pulse-glow 2s ease-in-out infinite;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">התבודדות</div>
+  <h1>✦ Hitbodedut ✦</h1>
+  <p>Meditación solitaria · Rabí Najman de Breslov</p>
+  <span class="page-number">Práctica · Meditación</span>
+</header>
+
+<section>
+  <h2>🌿 ¿Qué es el Hitbodedut?</h2>
+  <p><strong>Hitbodedut (התבודדות)</strong> significa <em>"aislamiento"</em> o
+  <em>"auto-seclusión"</em>. Es la práctica enseñada por
+  <strong>Rabí Najman de Breslov</strong>: hablar con Dios en voz alta, en
+  soledad, en tu propio idioma, como un hijo con su padre.</p>
+  <p>No es una oración formal, sino una <strong>conversación íntima</strong>.
+  No se pide, se <strong>conversa</strong>. No se recita, se <strong>abre el corazón</strong>.</p>
+</section>
+
+<section>
+  <h2>⏱️ Práctica Guiada</h2>
+  <div class="timer-gigante">
+    <div class="tiempo" id="tiempo">30:00</div>
+    <div class="fase" id="fase">Listo para comenzar</div>
+  </div>
+  <div style="text-align:center;">
+    <button id="iniciar" class="btn">▶️ Iniciar Hitbodedut</button>
+    <button id="detener" class="btn btn-danger" style="display:none;">⏸️ Detener</button>
+  </div>
+  <div style="text-align:center;margin-top:1rem;color:var(--muted);font-size:.8rem;">
+    Duración:
+    <select id="duracion" style="background:rgba(10,12,30,.7);color:var(--text);
+      border:1px solid var(--line);padding:.3rem .8rem;border-radius:20px;
+      font-family:inherit;">
+      <option value="10">10 minutos</option>
+      <option value="18">18 minutos (Jai)</option>
+      <option value="30" selected>30 minutos</option>
+      <option value="60">60 minutos</option>
+    </select>
+  </div>
+</section>
+
+<section>
+  <h2>📋 Los 7 Pasos</h2>
+  <div class="pasos" id="pasos">
+    <div class="paso"><span class="num">1</span><div class="texto">
+      <strong>Busca un lugar solitario</strong>
+      <p>Un bosque, un parque, un cuarto cerrado. Donde nadie te escuche.</p>
+    </div></div>
+    <div class="paso"><span class="num">2</span><div class="texto">
+      <strong>Camina o siéntate</strong>
+      <p>Algunos caminan; otros se sientan. Lo importante es estar presente.</p>
+    </div></div>
+    <div class="paso"><span class="num">3</span><div class="texto">
+      <strong>Habla en voz alta</strong>
+      <p>No susurres. Habla como hablarías con un amigo íntimo.</p>
+    </div></div>
+    <div class="paso"><span class="num">4</span><div class="texto">
+      <strong>Habla en tu idioma</strong>
+      <p>No necesitas hebreo. Habla en el idioma de tu corazón.</p>
+    </div></div>
+    <div class="paso"><span class="num">5</span><div class="texto">
+      <strong>Sé sincero</strong>
+      <p>Di lo que sientes. Enójate, llora, ríe. Dios lo puede soportar todo.</p>
+    </div></div>
+    <div class="paso"><span class="num">6</span><div class="texto">
+      <strong>No pidas, conversa</strong>
+      <p>Comparte tu día, tus miedos, tus sueños. Como con un padre amoroso.</p>
+    </div></div>
+    <div class="paso"><span class="num">7</span><div class="texto">
+      <strong>Escucha el silencio</strong>
+      <p>Después de hablar, quédate en silencio. A veces la respuesta viene sola.</p>
+    </div></div>
+  </div>
+</section>
+
+<section>
+  <h2>💡 Consejos de Rabí Najman</h2>
+  <blockquote>"Si puedes romper tu corazón ante Dios, tu corazón se abrirá como una fuente."</blockquote>
+  <ul>
+    <li>Una hora al día es lo ideal; incluso 10 minutos transforman.</li>
+    <li>La constancia vale más que la duración.</li>
+    <li>No te desanimes si al principio no sabes qué decir.</li>
+    <li>El simple acto de hablar ya es un acto de conexión.</li>
+    <li>Termina con alegría, agradeciendo el tiempo compartido.</li>
+  </ul>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Hitbodedut</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+let tiempoRestante = 0;
+let intervalo = null;
+let activo = false;
+
+document.getElementById('duracion').addEventListener('change', (e) => {
+  if(!activo){
+    document.getElementById('tiempo').textContent = formatTiempo(e.target.value * 60);
+  }
+});
+
+function formatTiempo(seg){
+  const m = Math.floor(seg / 60);
+  const s = seg % 60;
+  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function iniciar(){
+  const min = parseInt(document.getElementById('duracion').value);
+  tiempoRestante = min * 60;
+  activo = true;
+  document.getElementById('iniciar').style.display = 'none';
+  document.getElementById('detener').style.display = 'inline-block';
+  document.getElementById('fase').textContent = 'Habla con Dios';
+  document.getElementById('pasos').querySelectorAll('.paso').forEach(p => p.classList.remove('activo'));
+  document.getElementById('pasos').querySelector('.paso').classList.add('activo');
+
+  intervalo = setInterval(() => {
+    tiempoRestante--;
+    document.getElementById('tiempo').textContent = formatTiempo(tiempoRestante);
+
+    // Cambiar paso activo según progreso
+    const total = min * 60;
+    const progreso = 1 - (tiempoRestante / total);
+    const pasoIdx = Math.min(6, Math.floor(progreso * 7));
+    document.getElementById('pasos').querySelectorAll('.paso').forEach((p, i) => {
+      p.classList.toggle('activo', i === pasoIdx);
+    });
+
+    if(tiempoRestante <= 0){
+      clearInterval(intervalo);
+      activo = false;
+      document.getElementById('fase').textContent = '✦ Hitbodedut completado ✦';
+      document.getElementById('tiempo').textContent = '00:00';
+      document.getElementById('iniciar').style.display = 'inline-block';
+      document.getElementById('detener').style.display = 'none';
+      document.getElementById('pasos').querySelectorAll('.paso').forEach(p => p.classList.remove('activo'));
+    }
+  }, 1000);
+}
+
+function detener(){
+  clearInterval(intervalo);
+  activo = false;
+  document.getElementById('iniciar').style.display = 'inline-block';
+  document.getElementById('detener').style.display = 'none';
+  document.getElementById('fase').textContent = 'Práctica detenida';
+}
+
+document.getElementById('iniciar').addEventListener('click', iniciar);
+document.getElementById('detener').addEventListener('click', detener);
+document.getElementById('tiempo').textContent = formatTiempo(30 * 60);
+</script>
+</body>
+</html>
