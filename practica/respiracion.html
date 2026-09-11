@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Respiración con letras hebreas: meditación guiada del aliento sagrado">
+<title>✦ Respiración Sagrada — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.circulo-resp{width:280px;height:280px;margin:2rem auto;position:relative;
+  display:flex;align-items:center;justify-content:center;}
+.circulo-resp .anillo{position:absolute;inset:0;border:2px solid var(--gold);
+  border-radius:50%;transition:transform 4s ease-in-out, opacity 1s;
+  box-shadow:0 0 40px rgba(212,175,55,.5), inset 0 0 40px rgba(212,175,55,.2);}
+.circulo-resp .letra-central{font-size:5rem;color:var(--gold2);
+  font-family:var(--font-heb);direction:rtl;
+  text-shadow:0 0 40px rgba(212,175,55,.9);
+  transition:all 1s;position:relative;z-index:2;}
+.circulo-resp.inhala .anillo{transform:scale(1.3);opacity:1;}
+.circulo-resp.exhala .anillo{transform:scale(.8);opacity:.6;}
+.circulo-resp.sostiene .anillo{transform:scale(1.15);opacity:1;
+  border-color:var(--cyan);box-shadow:0 0 40px var(--cyan);}
+.instruccion{text-align:center;font-size:1.4rem;color:var(--gold2);
+  letter-spacing:.2em;text-transform:uppercase;margin:1rem 0;
+  text-shadow:0 0 15px rgba(212,175,55,.6);min-height:2em;}
+.contador{text-align:center;font-family:var(--font-mono);font-size:1rem;
+  color:var(--muted);}
+.ciclos-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:.8rem;margin-top:1rem;}
+.ciclos-grid button{padding:.8rem;background:rgba(10,12,30,.7);
+  border:1px solid var(--line);border-radius:10px;color:var(--text);
+  font-family:inherit;cursor:pointer;transition:all .3s;text-align:left;
+  font-size:.85rem;}
+.ciclos-grid button:hover{border-color:var(--gold);
+  box-shadow:0 0 20px rgba(212,175,55,.3);}
+.ciclos-grid button.active{border-color:var(--gold);color:var(--gold2);
+  background:rgba(212,175,55,.1);}
+.ciclos-grid button strong{display:block;color:var(--gold2);margin-bottom:.3rem;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">נשימה</div>
+  <h1>✦ Respiración Sagrada ✦</h1>
+  <p>El aliento como canal de la letra Alef</p>
+  <span class="page-number">Práctica · Meditación</span>
+</header>
+
+<section>
+  <h2>🌬️ Introducción</h2>
+  <p>La <strong>letra Alef (א)</strong> representa el <em>aliento</em> y el
+  <em>silencio</em>. En la tradición cabalística, respirar conscientemente es
+  <strong>pronunciar el Nombre</strong> sin sonido. Esta práctica une respiración
+  y letras sagradas.</p>
+</section>
+
+<section>
+  <h2>🧘 Práctica Guiada</h2>
+  <div class="circulo-resp" id="circulo">
+    <div class="anillo"></div>
+    <div class="letra-central" id="letra">א</div>
+  </div>
+  <div class="instruccion" id="instruccion">Presiona iniciar</div>
+  <div class="contador" id="contador">Ciclo: 0 / 0</div>
+  <div style="text-align:center;margin-top:1.5rem;">
+    <button id="iniciar-btn" class="btn">▶️ Iniciar</button>
+    <button id="detener-btn" class="btn btn-danger" style="display:none;">⏸️ Detener</button>
+  </div>
+</section>
+
+<section>
+  <h2>🔤 Elige tu Ciclo</h2>
+  <div class="ciclos-grid">
+    <button data-ciclo="4-4-4" class="active">
+      <strong>4-4-4 · Equilibrio</strong>
+      Inhala 4 · Sostén 4 · Exhala 4
+    </button>
+    <button data-ciclo="6-3-6">
+      <strong>6-3-6 · Calma</strong>
+      Inhala 6 · Sostén 3 · Exhala 6
+    </button>
+    <button data-ciclo="4-7-8">
+      <strong>4-7-8 · Relajación</strong>
+      Inhala 4 · Sostén 7 · Exhala 8
+    </button>
+    <button data-ciclo="7-7-7">
+      <strong>7-7-7 · Elevación</strong>
+      Inhala 7 · Sostén 7 · Exhala 7
+    </button>
+    <button data-ciclo="10-10-10">
+      <strong>10-10-10 · Yejidá</strong>
+      Inhala 10 · Sostén 10 · Exhala 10
+    </button>
+  </div>
+</section>
+
+<section>
+  <h2>🔯 Las Letras del Ciclo</h2>
+  <table>
+    <thead><tr><th>Fase</th><th>Letra</th><th>Significado</th></tr></thead>
+    <tbody>
+      <tr><td>Inhala</td><td class="hebrew-inline">א</td><td>Alef — Aliento, unidad</td></tr>
+      <tr><td>Sostén</td><td class="hebrew-inline">ה</td><td>He — Revelación, expansión</td></tr>
+      <tr><td>Exhala</td><td class="hebrew-inline">ו</td><td>Vav — Conexión, entrega</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>💡 Cómo Practicar</h2>
+  <ul>
+    <li>Siéntate con la espalda recta, en un lugar tranquilo.</li>
+    <li>Coloca una mano en el corazón, otra en el vientre.</li>
+    <li>Sigue el ritmo visual y sonoro del círculo.</li>
+    <li>Visualiza cada letra mientras respiras.</li>
+    <li>Realiza de 7 a 21 ciclos.</li>
+    <li>Termina en silencio, sintiendo el aliento reposar.</li>
+  </ul>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Respiración Sagrada</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+let ciclo = { inhala:4, sostiene:4, exhala:4 };
+let activo = false;
+let timeoutId = null;
+let contador = 0;
+const LIMITE = 7;
+
+document.querySelectorAll('.ciclos-grid button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.ciclos-grid button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const [i, s, e] = btn.dataset.ciclo.split('-').map(Number);
+    ciclo = { inhala:i, sostiene:s, exhala:e };
+  });
+});
+
+function fase(nombre, letra, duracion, siguiente){
+  const c = document.getElementById('circulo');
+  const l = document.getElementById('letra');
+  const ins = document.getElementById('instruccion');
+  c.className = 'circulo-resp ' + nombre;
+  l.textContent = letra;
+  ins.textContent = nombre.toUpperCase() + ' (' + duracion + 's)';
+  timeoutId = setTimeout(() => {
+    if(activo) siguiente();
+  }, duracion * 1000);
+}
+
+function cicloCompleto(){
+  contador++;
+  document.getElementById('contador').textContent = `Ciclo: ${contador} / ${LIMITE}`;
+  if(contador >= LIMITE){
+    detener();
+    document.getElementById('instruccion').textContent = '✦ Práctica Completada ✦';
+    document.getElementById('letra').textContent = '☰';
+    return;
+  }
+  siguiente();
+}
+
+function siguiente(){
+  fase('inhala', 'א', ciclo.inhala, () =>
+    fase('sostiene', 'ה', ciclo.sostiene, () =>
+      fase('exhala', 'ו', ciclo.exhala, cicloCompleto)
+    )
+  );
+}
+
+function iniciar(){
+  activo = true;
+  contador = 0;
+  document.getElementById('iniciar-btn').style.display = 'none';
+  document.getElementById('detener-btn').style.display = 'inline-block';
+  document.getElementById('contador').textContent = `Ciclo: 0 / ${LIMITE}`;
+  siguiente();
+}
+
+function detener(){
+  activo = false;
+  clearTimeout(timeoutId);
+  document.getElementById('circulo').className = 'circulo-resp';
+  document.getElementById('letra').textContent = 'א';
+  document.getElementById('instruccion').textContent = 'Práctica detenida';
+  document.getElementById('iniciar-btn').style.display = 'inline-block';
+  document.getElementById('detener-btn').style.display = 'none';
+}
+
+document.getElementById('iniciar-btn').addEventListener('click', iniciar);
+document.getElementById('detener-btn').addEventListener('click', detener);
+</script>
+</body>
+</html>
