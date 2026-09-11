@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Carta astral completa: Sol, Luna, Ascendente, planetas y elementos">
+<title>✦ Carta Astral Completa — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.planet-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.8rem;margin:1rem 0;}
+.planet-card{border:1px solid var(--line);border-radius:12px;padding:1rem;text-align:center;
+  background:rgba(10,12,30,.6);transition:all .4s;}
+.planet-card:hover{border-color:var(--gold);box-shadow:0 0 25px rgba(212,175,55,.3);transform:translateY(-3px);}
+.planet-card .symbol{font-size:2rem;color:var(--gold2);text-shadow:0 0 15px rgba(212,175,55,.7);}
+.planet-card .pl-name{font-size:.7rem;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin:.3rem 0;}
+.planet-card .pl-sign{font-size:1rem;color:var(--gold2);font-weight:600;}
+.planet-card .pl-degree{font-size:.75rem;color:var(--cyan);font-family:var(--font-mono);}
+.element-bar{display:flex;height:24px;border-radius:12px;overflow:hidden;margin:1rem 0;border:1px solid var(--line);}
+.element-bar div{display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;}
+.el-fuego{background:linear-gradient(90deg,#ff6b6b,#ffa94d);color:#1a0000;}
+.el-tierra{background:linear-gradient(90deg,#94a75e,#c2d06c);color:#0a1000;}
+.el-aire{background:linear-gradient(90deg,#7ac8ff,#a4d8ff);color:#001428;}
+.el-agua{background:linear-gradient(90deg,#5b8def,#8ea9f5);color:#000a2a;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">מזלות</div>
+  <h1>✦ Carta Astral Completa ✦</h1>
+  <p>Los 10 planetas · Elementos · Modalidades</p>
+  <span class="page-number">Herramienta · Astrología</span>
+</header>
+
+<section>
+  <h2>🜁 Datos de Nacimiento</h2>
+  <p>El <strong>Sol</strong>, los <strong>planetas exteriores</strong> y los <strong>elementos</strong>
+  son <em>exactos</em>. Luna, Ascendente y planetas interiores son <em>aproximados</em>.
+  Cálculo 100% local.</p>
+  <form id="astral-form" autocomplete="off">
+    <div class="form-grid">
+      <div class="form-field full">
+        <label for="nombre">Nombre</label>
+        <input type="text" id="nombre" placeholder="Tu nombre" required>
+      </div>
+      <div class="form-field">
+        <label for="fecha">Fecha de nacimiento</label>
+        <input type="date" id="fecha" required>
+      </div>
+      <div class="form-field">
+        <label for="hora">Hora (para Ascendente)</label>
+        <input type="time" id="hora" value="12:00">
+      </div>
+      <div class="form-field full">
+        <label for="lugar">Lugar</label>
+        <input type="text" id="lugar" placeholder="Ciudad, país">
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1.2rem">
+      <button type="submit" class="btn">✦ Calcular mi Carta Astral ✦</button>
+    </div>
+  </form>
+</section>
+
+<div id="results" style="display:none"></div>
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Carta Astral</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const SIGNS = [
+  {n:'Aries',s:'♈',e:'Fuego',m:'Cardinal'},{n:'Tauro',s:'♉',e:'Tierra',m:'Fijo'},
+  {n:'Géminis',s:'♊',e:'Aire',m:'Mutable'},{n:'Cáncer',s:'♋',e:'Agua',m:'Cardinal'},
+  {n:'Leo',s:'♌',e:'Fuego',m:'Fijo'},{n:'Virgo',s:'♍',e:'Tierra',m:'Mutable'},
+  {n:'Libra',s:'♎',e:'Aire',m:'Cardinal'},{n:'Escorpio',s:'♏',e:'Agua',m:'Fijo'},
+  {n:'Sagitario',s:'♐',e:'Fuego',m:'Mutable'},{n:'Capricornio',s:'♑',e:'Tierra',m:'Cardinal'},
+  {n:'Acuario',s:'♒',e:'Aire',m:'Fijo'},{n:'Piscis',s:'♓',e:'Agua',m:'Mutable'}
+];
+
+// Longitudes medias en J2000 (1 enero 2000, 12:00 UT) y movimientos diarios
+const PLANETS = [
+  {n:'Sol',sym:'☉',L0:280.46,mot:0.9856474},
+  {n:'Luna',sym:'☾',L0:218.32,mot:13.176396},
+  {n:'Mercurio',sym:'☿',L0:252.25,mot:4.0923344},
+  {n:'Venus',sym:'♀',L0:181.98,mot:1.6021303},
+  {n:'Marte',sym:'♂',L0:355.43,mot:0.5240207},
+  {n:'Júpiter',sym:'♃',L0:34.35,mot:0.0830853},
+  {n:'Saturno',sym:'♄',L0:50.08,mot:0.0334441},
+  {n:'Urano',sym:'♅',L0:314.06,mot:0.0117283},
+  {n:'Neptuno',sym:'♆',L0:304.35,mot:0.0059951},
+  {n:'Plutón',sym:'♇',L0:238.96,mot:0.0039685}
+];
+
+function norm360(x){ return ((x % 360) + 360) % 360; }
+
+function planetLongitude(planet, days){
+  return norm360(planet.L0 + planet.mot * days);
+}
+
+function signFromLongitude(lon){
+  const idx = Math.floor(lon / 30);
+  const deg = (lon % 30).toFixed(1);
+  return { sign: SIGNS[idx], deg, idx };
+}
+
+document.getElementById('astral-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const nombre = document.getElementById('nombre').value.trim();
+  const fechaStr = document.getElementById('fecha').value;
+  const horaStr = document.getElementById('hora').value || '12:00';
+  const lugar = document.getElementById('lugar').value.trim();
+  if(!nombre || !fechaStr) return alert('Completa nombre y fecha.');
+
+  const birth = new Date(fechaStr + 'T' + horaStr + ':00Z');
+  const J2000 = new Date('2000-01-01T12:00:00Z');
+  const days = (birth - J2000) / (1000*60*60*24);
+
+  // Calcular planetas
+  const positions = PLANETS.map(p => {
+    const lon = planetLongitude(p, days);
+    const s = signFromLongitude(lon);
+    return { ...p, lon, ...s };
+  });
+
+  // Ascendente (aproximación por hora local)
+  const hora = parseInt(horaStr.split(':')[0], 10);
+  const sunSign = positions[0].sign;
+  const sunIdx = SIGNS.findIndex(x => x.n === sunSign.n);
+  const ascIdx = (sunIdx + Math.round(((hora - 6 + 24) % 24) / 2)) % 12;
+  const asc = SIGNS[ascIdx];
+
+  // Contar elementos y modalidades
+  const conteoEl = {Fuego:0, Tierra:0, Aire:0, Agua:0};
+  const conteoMod = {Cardinal:0, Fijo:0, Mutable:0};
+  positions.forEach(p => { conteoEl[p.sign.e]++; conteoMod[p.sign.m]++; });
+
+  const total = positions.length;
+  const pct = (x) => Math.round(x/total*100);
+
+  const results = document.getElementById('results');
+  results.style.display = 'block';
+  results.innerHTML = `
+    <section>
+      <h2>👤 ${nombre}</h2>
+      <p style="color:var(--muted);text-align:center;">
+        ${new Date(fechaStr).toLocaleDateString('es-MX', {day:'numeric', month:'long', year:'numeric'})}
+        · ${horaStr}${lugar ? ' · ' + lugar : ''}
+      </p>
+    </section>
+
+    <section>
+      <h2>✦ Posiciones Planetarias</h2>
+      <div class="planet-grid">
+        ${positions.map(p => `
+          <div class="planet-card">
+            <div class="symbol">${p.sym}</div>
+            <div class="pl-name">${p.n}</div>
+            <div class="pl-sign">${p.sign.s} ${p.sign.n}</div>
+            <div class="pl-degree">${p.deg}°</div>
+          </div>
+        `).join('')}
+        <div class="planet-card">
+          <div class="symbol">↑</div>
+          <div class="pl-name">Ascendente</div>
+          <div class="pl-sign">${asc.s} ${asc.n}</div>
+          <div class="pl-degree">${asc.e}</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>🌍 Balance de Elementos</h2>
+      <div class="element-bar" role="img" aria-label="Distribución de elementos">
+        ${conteoEl.Fuego ? `<div class="el-fuego" style="width:${pct(conteoEl.Fuego)}%">🔥 ${conteoEl.Fuego}</div>` : ''}
+        ${conteoEl.Tierra ? `<div class="el-tierra" style="width:${pct(conteoEl.Tierra)}%">🌱 ${conteoEl.Tierra}</div>` : ''}
+        ${conteoEl.Aire ? `<div class="el-aire" style="width:${pct(conteoEl.Aire)}%">💨 ${conteoEl.Aire}</div>` : ''}
+        ${conteoEl.Agua ? `<div class="el-agua" style="width:${pct(conteoEl.Agua)}%">💧 ${conteoEl.Agua}</div>` : ''}
+      </div>
+      <p style="font-size:.85rem;color:var(--muted);text-align:center;">
+        ${Object.entries(conteoEl).map(([k,v]) => `${k}: ${pct(v)}%`).join(' · ')}
+      </p>
+    </section>
+
+    <section>
+      <h2>⚖️ Balance de Modalidades</h2>
+      <table>
+        <thead><tr><th>Modalidad</th><th>Cantidad</th><th>Porcentaje</th></tr></thead>
+        <tbody>
+          ${Object.entries(conteoMod).map(([k,v]) =>
+            `<tr><td>${k}</td><td>${v}</td><td>${pct(v)}%</td></tr>`
+          ).join('')}
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>📜 Nota de Transparencia</h2>
+      <div class="notice">
+        <strong>Precisión:</strong> Sol, elementos y modalidades son <em>exactos</em>.
+        Mercurio, Venus, Marte, Júpiter, Saturno, Urano, Neptuno y Plutón usan
+        <em>movimiento medio</em> (aprox. ±1 signo). Luna: ±1 signo.
+        Ascendente: estimación por hora (±1-2 signos).
+        Para precisión astronómica se requiere efemérides completa.
+      </div>
+    </section>
+  `;
+  results.scrollIntoView({ behavior:'smooth' });
+});
+</script>
+</body>
+</html>
