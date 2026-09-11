@@ -4,4 +4,241 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta name="description" content="Juego: adivina el año personal de cada fecha dada">
-<title
+<title>✦ Adivina el Ciclo — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.rueda-ciclo{width:100%;max-width:400px;margin:1.5rem auto;display:block;
+  filter:drop-shadow(0 0 25px rgba(212,175,55,.4));}
+.rueda-ciclo .sector{fill:none;stroke:rgba(212,175,55,.3);stroke-width:1;}
+.rueda-ciclo .sector:hover{fill:rgba(212,175,55,.15);cursor:pointer;}
+.rueda-ciclo .num{fill:var(--gold2);font-size:16px;font-family:var(--font-mono);
+  text-anchor:middle;font-weight:700;pointer-events:none;}
+.rueda-ciclo .mano{stroke:var(--gold2);stroke-width:3;stroke-linecap:round;
+  filter:drop-shadow(0 0 10px var(--gold));transition:all 1s cubic-bezier(.4,0,.2,1);}
+.rueda-ciclo .centro{fill:var(--gold2);}
+.pregunta-actual{text-align:center;padding:1.5rem;
+  background:rgba(10,12,30,.6);border:1px solid var(--line);
+  border-radius:14px;margin:1rem 0;}
+.pregunta-actual .fecha{color:var(--gold2);font-family:var(--font-mono);
+  font-size:1.3rem;margin:.5rem 0;}
+.pregunta-actual .label{color:var(--muted);font-size:.8rem;
+  letter-spacing:.15em;text-transform:uppercase;}
+.opciones-ciclo{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;
+  margin-top:1rem;}
+@media(max-width:500px){.opciones-ciclo{grid-template-columns:repeat(3,1fr);}}
+.opcion-ciclo{padding:1rem .5rem;background:rgba(10,12,30,.7);
+  border:1px solid var(--line);border-radius:10px;color:var(--text);
+  font-family:var(--font-mono);font-size:1.2rem;cursor:pointer;
+  transition:all .3s;font-weight:700;}
+.opcion-ciclo:hover{border-color:var(--gold);background:rgba(212,175,55,.1);}
+.opcion-ciclo.correcta{border-color:var(--success);background:rgba(74,222,128,.2);
+  color:var(--success);}
+.opcion-ciclo.incorrecta{border-color:var(--danger);background:rgba(255,107,107,.2);
+  color:var(--danger);}
+.opcion-ciclo:disabled{cursor:default;}
+.feedback{text-align:center;font-size:1.05rem;margin-top:1rem;min-height:1.5em;}
+.stats-juego{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+.stat{text-align:center;padding:.6rem 1.2rem;background:rgba(10,12,30,.6);
+  border:1px solid var(--line);border-radius:10px;min-width:100px;}
+.stat .num{color:var(--gold2);font-size:1.3rem;font-family:var(--font-mono);}
+.stat .lbl{color:var(--muted);font-size:.7rem;letter-spacing:.15em;
+  text-transform:uppercase;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">מחזורים</div>
+  <h1>✦ Adivina el Ciclo ✦</h1>
+  <p>¿Cuál es el año personal de esta fecha?</p>
+  <span class="page-number">Juegos · Cálculo</span>
+</header>
+
+<section>
+  <div class="stats-juego">
+    <div class="stat"><div class="num" id="ronda">1/8</div><div class="lbl">Ronda</div></div>
+    <div class="stat"><div class="num" id="aciertos">0</div><div class="lbl">Aciertos</div></div>
+    <div class="stat"><div class="num" id="puntaje">0</div><div class="lbl">Puntaje</div></div>
+  </div>
+
+  <svg class="rueda-ciclo" viewBox="0 0 400 400" id="rueda">
+    <g transform="translate(200,200)">
+      <g id="sectores"></g>
+      <line class="mano" id="mano" x1="0" y1="0" x2="0" y2="-130"/>
+      <circle class="centro" cx="0" cy="0" r="8"/>
+    </g>
+  </svg>
+
+  <div class="pregunta-actual">
+    <div class="label">Año personal de</div>
+    <div class="fecha" id="fecha-preg">—</div>
+    <div class="label" style="margin-top:.5rem;">en el año 2026</div>
+  </div>
+
+  <div class="opciones-ciclo" id="opciones"></div>
+  <div class="feedback" id="feedback"></div>
+
+  <div style="text-align:center;margin-top:1.5rem;">
+    <button id="reiniciar" class="btn">🔄 Nuevo Juego</button>
+  </div>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Adivina el Ciclo</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const FECHAS = [
+  { fecha:'1990-05-12' },
+  { fecha:'1985-08-22' },
+  { fecha:'1978-03-15' },
+  { fecha:'2000-11-07' },
+  { fecha:'1968-02-28' },
+  { fecha:'1995-07-04' },
+  { fecha:'1988-12-19' },
+  { fecha:'1972-09-30' }
+];
+
+function reduce(n){
+  while(n > 9){
+    if([11,22,33].includes(n)) return n;
+    n = String(n).split('').reduce((a,b) => a + +b, 0);
+  }
+  return n;
+}
+
+const AÑO_ACTUAL = 2026;
+
+function anioPersonal(fecha){
+  const d = new Date(fecha + 'T12:00:00');
+  return reduce(d.getDate() + d.getMonth() + 1 + AÑO_ACTUAL);
+}
+
+const TOTAL_RONDAS = 8;
+let ronda = 0;
+let aciertos = 0;
+let puntaje = 0;
+
+function dibujarRueda(){
+  const g = document.getElementById('sectores');
+  g.innerHTML = '';
+  for(let i = 0; i < 9; i++){
+    const a1 = (Math.PI * 2 / 9) * i - Math.PI / 2;
+    const a2 = (Math.PI * 2 / 9) * (i + 1) - Math.PI / 2;
+    const am = (a1 + a2) / 2;
+    const x1 = Math.cos(a1) * 130, y1 = Math.sin(a1) * 130;
+    const x2 = Math.cos(a2) * 130, y2 = Math.sin(a2) * 130;
+    const d = `M ${x1} ${y1} A 130 130 0 0 1 ${x2} ${y2} L 0 0 Z`;
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', d);
+    path.setAttribute('class', 'sector');
+    g.appendChild(path);
+    const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    t.setAttribute('x', Math.cos(am) * 105);
+    t.setAttribute('y', Math.sin(am) * 105 + 5);
+    t.setAttribute('class', 'num');
+    t.textContent = i + 1;
+    g.appendChild(t);
+  }
+}
+
+function iniciar(){
+  ronda = 0;
+  aciertos = 0;
+  puntaje = 0;
+  document.getElementById('aciertos').textContent = 0;
+  document.getElementById('puntaje').textContent = 0;
+  dibujarRueda();
+  siguiente();
+}
+
+function siguiente(){
+  if(ronda >= TOTAL_RONDAS){
+    finalizar();
+    return;
+  }
+  const f = FECHAS[ronda];
+  document.getElementById('ronda').textContent = `${ronda + 1}/${TOTAL_RONDAS}`;
+  document.getElementById('fecha-preg').textContent =
+    new Date(f.fecha + 'T12:00:00').toLocaleDateString('es-MX', {
+      day:'numeric', month:'long', year:'numeric'
+    });
+  document.getElementById('feedback').textContent = '';
+
+  // Generar 6 opciones (del 1 al 9, incluyendo la correcta)
+  const correcta = anioPersonal(f.fecha);
+  const opcionesSet = new Set([correcta]);
+  while(opcionesSet.size < 6){
+    opcionesSet.add(Math.floor(Math.random() * 9) + 1);
+  }
+  const ops = [...opcionesSet].sort(() => Math.random() - 0.5);
+  document.getElementById('opciones').innerHTML = ops.map(v => `
+    <button class="opcion-ciclo" data-v="${v}">${v}</button>
+  `).join('');
+  document.querySelectorAll('.opcion-ciclo').forEach(btn => {
+    btn.addEventListener('click', () => responder(parseInt(btn.dataset.v), correcta));
+  });
+}
+
+function responder(valor, correcta){
+  const btns = document.querySelectorAll('.opcion-ciclo');
+  btns.forEach(b => {
+    b.disabled = true;
+    if(parseInt(b.dataset.v) === correcta) b.classList.add('correcta');
+    else if(parseInt(b.dataset.v) === valor) b.classList.add('incorrecta');
+  });
+  // Mover mano de la rueda
+  const idx = correcta - 1;
+  const a = (Math.PI * 2 / 9) * idx + (Math.PI * 2 / 9) / 2 - Math.PI / 2;
+  const x = Math.cos(a) * 130, y = Math.sin(a) * 130;
+  const mano = document.getElementById('mano');
+  mano.setAttribute('x2', x);
+  mano.setAttribute('y2', y);
+
+  if(valor === correcta){
+    aciertos++;
+    puntaje += 20;
+    document.getElementById('feedback').innerHTML =
+      '<span style="color:var(--success);">✓ ¡Correcto!</span>';
+  } else {
+    document.getElementById('feedback').innerHTML =
+      `<span style="color:var(--danger);">✗ Era ${correcta}</span>`;
+  }
+  document.getElementById('aciertos').textContent = aciertos;
+  document.getElementById('puntaje').textContent = puntaje;
+  setTimeout(() => {
+    ronda++;
+    siguiente();
+  }, 1500);
+}
+
+function finalizar(){
+  document.getElementById('fecha-preg').textContent = '☰';
+  document.getElementById('opciones').innerHTML = '';
+  document.getElementById('feedback').innerHTML = `
+    <div style="text-align:center;padding:2rem;
+      background:radial-gradient(circle, rgba(212,175,55,.15), transparent 70%),
+      rgba(5,6,15,.7);border:2px solid var(--gold);border-radius:16px;">
+      <div style="font-size:2.5rem;color:var(--gold2);font-family:var(--font-mono);">
+        ${aciertos}/${TOTAL_RONDAS}
+      </div>
+      <p style="color:var(--gold2);margin:.5rem 0;font-size:1.1rem;">
+        ${aciertos >= 7 ? '✦ Maestro de los ciclos ✦' :
+          aciertos >= 5 ? '◈ Buen nivel ◈' : '⚠️ Sigue practicando'}
+      </p>
+      <p style="color:var(--muted);">Puntaje: ${puntaje}</p>
+    </div>
+  `;
+}
+
+document.getElementById('reiniciar').addEventListener('click', iniciar);
+iniciar();
+</script>
+</body>
+</html>
