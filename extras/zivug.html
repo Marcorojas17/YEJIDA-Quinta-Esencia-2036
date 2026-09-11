@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Tu Zivug: la pareja ideal según la Kabaláh">
+<title>✦ Tu Zivug — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">זיווג</div>
+  <h1>✦ Tu Zivug ✦</h1>
+  <p>La pareja ideal según la Kabaláh</p>
+  <span class="page-number">Extras · Zivug</span>
+</header>
+
+<section>
+  <h2>💑 ¿Qué es el Zivug?</h2>
+  <p><strong>Zivug (זיווג)</strong> significa <em>"unión"</em> o
+  <em>"emparejamiento"</em>. En la Kabaláh, antes de nacer, cada alma se
+  divide en dos mitades (<em>plaga</em>), que buscan reunirse en la vida.
+  Según el Zohar, cuarenta días antes de que un niño sea concebido, se
+  proclama en el cielo: "La hija de X será para Y".</p>
+  <form id="zivug-form" autocomplete="off">
+    <div class="form-grid">
+      <div class="form-field full">
+        <label for="fecha">Tu fecha de nacimiento</label>
+        <input type="date" id="fecha" required>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1.2rem">
+      <button type="submit" class="btn">✦ Revelar mi Zivug ✦</button>
+    </div>
+  </form>
+</section>
+
+<div id="results" style="display:none"></div>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Zivug</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const SIGNOS = [
+  { n:'Aries', e:'Fuego' }, { n:'Tauro', e:'Tierra' },
+  { n:'Géminis', e:'Aire' }, { n:'Cáncer', e:'Agua' },
+  { n:'Leo', e:'Fuego' }, { n:'Virgo', e:'Tierra' },
+  { n:'Libra', e:'Aire' }, { n:'Escorpio', e:'Agua' },
+  { n:'Sagitario', e:'Fuego' }, { n:'Capricornio', e:'Tierra' },
+  { n:'Acuario', e:'Aire' }, { n:'Piscis', e:'Agua' }
+];
+const RANGOS = [
+  { i:0, f:[3,21], t:[4,19] }, { i:1, f:[4,20], t:[5,20] },
+  { i:2, f:[5,21], t:[6,20] }, { i:3, f:[6,21], t:[7,22] },
+  { i:4, f:[7,23], t:[8,22] }, { i:5, f:[8,23], t:[9,22] },
+  { i:6, f:[9,23], t:[10,22] }, { i:7, f:[10,23], t:[11,21] },
+  { i:8, f:[11,22], t:[12,21] }, { i:9, f:[12,22], t:[1,19] },
+  { i:10, f:[1,20], t:[2,18] }, { i:11, f:[2,19], t:[3,20] }
+];
+const COMPAT = {
+  'Fuego-Aire': 'Excelente', 'Aire-Fuego': 'Excelente',
+  'Tierra-Agua': 'Excelente', 'Agua-Tierra': 'Excelente',
+  'Fuego-Fuego': 'Buena', 'Tierra-Tierra': 'Buena',
+  'Aire-Aire': 'Buena', 'Agua-Agua': 'Buena',
+  'Fuego-Tierra': 'Desafiante', 'Tierra-Fuego': 'Desafiante',
+  'Fuego-Agua': 'Desafiante', 'Agua-Fuego': 'Desafiante',
+  'Aire-Tierra': 'Desafiante', 'Tierra-Aire': 'Desafiante',
+  'Aire-Agua': 'Desafiante', 'Agua-Aire': 'Desafiante'
+};
+
+function signoDe(fecha){
+  const d = new Date(fecha + 'T12:00:00');
+  const m = d.getMonth() + 1, day = d.getDate();
+  for(const r of RANGOS){
+    const [fm, fd] = r.f, [tm, td] = r.t;
+    if(fm <= tm){
+      if((m === fm && day >= fd) || (m === tm && day <= td) ||
+        (m > fm && m < tm)) return SIGNOS[r.i];
+    } else {
+      if((m === fm && day >= fd) || (m === tm && day <= td)) return SIGNOS[r.i];
+    }
+  }
+  return SIGNOS[0];
+}
+
+function reducir(n){
+  while(n > 9){
+    if([11,22,33].includes(n)) return n;
+    n = String(n).split('').reduce((a,b) => a + +b, 0);
+  }
+  return n;
+}
+
+document.getElementById('zivug-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const f = document.getElementById('fecha').value;
+  if(!f) return;
+  const d = new Date(f + 'T12:00:00');
+  const camino = reducir(d.getDate() + d.getMonth() + 1 + d.getFullYear());
+  const sun = signoDe(f);
+  const complemento = {'Fuego':'Aire', 'Aire':'Fuego', 'Tierra':'Agua', 'Agua':'Tierra'};
+  const elementoZivug = complemento[sun.e];
+  const signosCompat = SIGNOS.filter(s => s.e === elementoZivug).map(s => s.n);
+
+  const results = document.getElementById('results');
+  results.style.display = 'block';
+  results.innerHTML = `
+    <section>
+      <h2>💑 Tu Zivug</h2>
+      <p style="text-align:center;color:var(--text);font-size:1.05rem;">
+        <strong>${sun.n}</strong> (${sun.e}) → tu Zivug vibra en
+        <strong style="color:var(--gold2);">${elementoZivug}</strong>.
+      </p>
+      <div class="equation">
+        <div class="big">Signos compatibles: ${signosCompat.join(' · ')}</div>
+        <div class="heb">זיווג</div>
+      </div>
+    </section>
+    <section>
+      <h2>🔯 Cómo Reconocer a tu Zivug</h2>
+      <ul>
+        <li><strong>Reconocimiento instantáneo</strong> — Como si te conocieras de siempre.</li>
+        <li><strong>Paz profunda</strong> — Su presencia te calma, no te agita.</li>
+        <li><strong>Alineación de valores</strong> — Comparten lo esencial.</li>
+        <li><strong>Complemento de dones</strong> — Donde uno falla, el otro brilla.</li>
+        <li><strong>Crecimiento mutuo</strong> — Te hacen mejor persona.</li>
+        <li><strong>Sin máscaras</strong> — Puedes ser tú mismo sin miedo.</li>
+      </ul>
+    </section>
+    <section>
+      <h2>💡 Enseñanza del Zohar</h2>
+      <blockquote>
+        "Antes de encarnar, el alma se divide en dos. Cada mitad desciende a un
+        cuerpo distinto. Encontrarse es recordar lo que nunca estuvo separado."
+      </blockquote>
+      <p style="text-align:center;color:var(--muted);font-size:.9rem;">
+        Tu Zivug no es algo que "buscas", sino algo que <em>reconoces</em>.
+      </p>
+    </section>
+    <section>
+      <h2>📊 Compatibilidad Elemental</h2>
+      <table>
+        <thead><tr><th>Tu elemento</th><th>Su elemento</th><th>Resultado</th></tr></thead>
+        <tbody>
+          <tr><td>${sun.e}</td><td>${elementoZivug}</td><td style="color:var(--success);">Complementario</td></tr>
+          <tr><td>${sun.e}</td><td>${sun.e}</td><td style="color:var(--gold2);">Similar</td></tr>
+          <tr><td>${sun.e}</td><td>Otros elementos</td><td style="color:var(--muted);">Desafiante</td></tr>
+        </tbody>
+      </table>
+    </section>
+  `;
+  results.scrollIntoView({ behavior:'smooth' });
+});
+</script>
+</body>
+</html>
