@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Rueda zodiacal cabalística: 12 signos, 12 letras, 12 tribus, 12 meses">
+<title>✦ Rueda Zodiacal — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.rueda{width:100%;max-width:600px;margin:2rem auto;display:block;
+  filter:drop-shadow(0 0 30px rgba(212,175,55,.35));}
+.rueda .sector{fill:none;stroke:rgba(212,175,55,.25);stroke-width:1;
+  cursor:pointer;transition:all .4s;}
+.rueda .sector:hover{fill:rgba(212,175,55,.08);stroke:var(--gold);stroke-width:2;}
+.rueda .sign-sym{fill:var(--gold2);font-size:20px;text-anchor:middle;
+  dominant-baseline:middle;pointer-events:none;
+  filter:drop-shadow(0 0 8px rgba(212,175,55,.7));}
+.rueda .sign-name{fill:var(--muted);font-size:9px;text-anchor:middle;
+  pointer-events:none;}
+.rueda .heb{fill:var(--gold);font-size:16px;text-anchor:middle;
+  font-family:var(--font-heb);pointer-events:none;
+  filter:drop-shadow(0 0 6px rgba(212,175,55,.6));}
+.rueda .tribu{fill:var(--cyan);font-size:8px;text-anchor:middle;
+  pointer-events:none;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">גלגל המזלות</div>
+  <h1>✦ Rueda Zodiacal ✦</h1>
+  <p>12 signos · 12 letras · 12 tribus · 12 meses</p>
+  <span class="page-number">Visualización · Ruedas</span>
+</header>
+
+<section>
+  <h2>🎡 La Rueda Sagrada</h2>
+  <p>Cada signo del zodiaco corresponde a una <strong>letra hebrea</strong>,
+  una <strong>tribu de Israel</strong>, un <strong>mes hebreo</strong> y un
+  <strong>sentido del alma</strong>. Haz clic en cada sector para explorar.</p>
+
+  <svg class="rueda" id="rueda-svg" viewBox="0 0 500 500" role="img"
+    aria-label="Rueda zodiacal cabalística">
+    <g id="rueda-g" transform="translate(250,250)"></g>
+  </svg>
+
+  <div id="info-signo" style="margin-top:1.5rem;padding:1rem;
+    background:rgba(5,6,15,.5);border:1px solid var(--line);border-radius:12px;
+    min-height:80px;text-align:center;">
+    <p style="color:var(--muted);">Selecciona un signo.</p>
+  </div>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Rueda Zodiacal</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const SIGNOS = [
+  { n:'Aries',       sym:'♈', heb:'ה', tribu:'Yehudá',   mes:'Nisán',   sentido:'Habla' },
+  { n:'Tauro',       sym:'♉', heb:'ו', tribu:'Isajar',   mes:'Iyar',    sentido:'Pensamiento' },
+  { n:'Géminis',     sym:'♊', heb:'ז', tribu:'Zevulún',  mes:'Siván',   sentido:'Movimiento' },
+  { n:'Cáncer',      sym:'♋', heb:'ח', tribu:'Reubén',   mes:'Tamuz',   sentido:'Vista' },
+  { n:'Leo',         sym:'♌', heb:'ט', tribu:'Shimón',   mes:'Av',      sentido:'Oído' },
+  { n:'Virgo',       sym:'♍', heb:'י', tribu:'Gad',      mes:'Elul',    sentido:'Acción' },
+  { n:'Libra',       sym:'♎', heb:'ל', tribu:'Efraim',   mes:'Tishrei', sentido:'Coito' },
+  { n:'Escorpio',    sym:'♏', heb:'נ', tribu:'Menashé',  mes:'Jeshván', sentido:'Olfato' },
+  { n:'Sagitario',   sym:'♐', heb:'ס', tribu:'Biniamín', mes:'Kislev',  sentido:'Sueño' },
+  { n:'Capricornio', sym:'♑', heb:'ע', tribu:'Dan',      mes:'Tevet',   sentido:'Ira' },
+  { n:'Acuario',     sym:'♒', heb:'צ', tribu:'Asher',    mes:'Shevat',  sentido:'Gusto' },
+  { n:'Piscis',      sym:'♓', heb:'ק', tribu:'Naftalí',  mes:'Adar',    sentido:'Risa' }
+];
+
+document.addEventListener('DOMContentLoaded', () => {
+  const g = document.getElementById('rueda-g');
+  const R1 = 100, R2 = 160, R3 = 220;
+  const info = document.getElementById('info-signo');
+
+  SIGNOS.forEach((s, i) => {
+    const a1 = (Math.PI * 2 / 12) * i - Math.PI / 2;
+    const a2 = (Math.PI * 2 / 12) * (i + 1) - Math.PI / 2;
+    const am = (a1 + a2) / 2;
+
+    // Sector
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    const x1 = Math.cos(a1) * R3, y1 = Math.sin(a1) * R3;
+    const x2 = Math.cos(a2) * R3, y2 = Math.sin(a2) * R3;
+    const x3 = Math.cos(a2) * R1, y3 = Math.sin(a2) * R1;
+    const x4 = Math.cos(a1) * R1, y4 = Math.sin(a1) * R1;
+    const d = `M ${x1} ${y1} A ${R3} ${R3} 0 0 1 ${x2} ${y2} L ${x3} ${y3} A ${R1} ${R1} 0 0 0 ${x4} ${y4} Z`;
+    path.setAttribute('d', d);
+    path.setAttribute('class', 'sector');
+    path.setAttribute('tabindex', '0');
+    path.setAttribute('role', 'button');
+    path.setAttribute('aria-label', s.n);
+    path.addEventListener('click', () => showSigno(s));
+    path.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); showSigno(s); }
+    });
+    g.appendChild(path);
+
+    // Símbolo del signo (exterior)
+    const symText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    symText.setAttribute('x', Math.cos(am) * (R3 - 20));
+    symText.setAttribute('y', Math.sin(am) * (R3 - 20));
+    symText.setAttribute('class', 'sign-sym');
+    symText.textContent = s.sym;
+    g.appendChild(symText);
+
+    // Letra hebrea (medio)
+    const hebText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    hebText.setAttribute('x', Math.cos(am) * (R2 - 10));
+    hebText.setAttribute('y', Math.sin(am) * (R2 - 10));
+    hebText.setAttribute('class', 'heb');
+    hebText.textContent = s.heb;
+    g.appendChild(hebText);
+
+    // Tribu (interior)
+    const tribuText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    tribuText.setAttribute('x', Math.cos(am) * (R1 + 20));
+    tribuText.setAttribute('y', Math.sin(am) * (R1 + 20));
+    tribuText.setAttribute('class', 'tribu');
+    tribuText.textContent = s.tribu;
+    g.appendChild(tribuText);
+  });
+
+  // Anillos decorativos
+  [R1, R2, R3].forEach(r => {
+    const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    c.setAttribute('r', r);
+    c.setAttribute('fill', 'none');
+    c.setAttribute('stroke', 'rgba(212,175,55,.3)');
+    c.setAttribute('stroke-width', '1');
+    g.appendChild(c);
+  });
+
+  function showSigno(s){
+    info.innerHTML = `
+      <h3 style="color:var(--gold2);font-size:1.3rem;margin-bottom:.5rem;">
+        ${s.sym} ${s.n}
+      </h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+        gap:.8rem;margin-top:1rem;">
+        <div><span style="color:var(--muted);font-size:.75rem;">LETRA</span><br>
+          <span class="hebrew-inline" style="font-size:1.6rem;">${s.heb}</span></div>
+        <div><span style="color:var(--muted);font-size:.75rem;">TRIBU</span><br>
+          <span style="color:var(--gold2);font-weight:600;">${s.tribu}</span></div>
+        <div><span style="color:var(--muted);font-size:.75rem;">MES</span><br>
+          <span style="color:var(--gold2);font-weight:600;">${s.mes}</span></div>
+        <div><span style="color:var(--muted);font-size:.75rem;">SENTIDO</span><br>
+          <span style="color:var(--cyan);font-weight:600;">${s.sentido}</span></div>
+      </div>
+    `;
+  }
+});
+</script>
+</body>
+</html>
