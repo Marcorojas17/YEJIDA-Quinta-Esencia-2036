@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Juego: adivina la compatibilidad entre dos personas famosas o inventadas">
+<title>✦ Adivina la Compatibilidad — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.personas{display:grid;grid-template-columns:1fr auto 1fr;gap:1rem;
+  align-items:center;margin:1.5rem 0;}
+@media(max-width:600px){.personas{grid-template-columns:1fr;}}
+.persona-card{text-align:center;padding:1.5rem 1rem;
+  background:rgba(10,12,30,.6);border:1px solid var(--line);
+  border-radius:14px;}
+.persona-card .nombre{color:var(--gold2);font-size:1.05rem;
+  margin-bottom:.5rem;}
+.persona-card .fecha{color:var(--muted);font-family:var(--font-mono);
+  font-size:.8rem;}
+.vs{font-size:1.5rem;color:var(--gold);text-align:center;}
+.slider{z-index:1;width:100%;margin:1.5rem 0;
+  -webkit-appearance:none;appearance:none;height:8px;
+  background:linear-gradient(90deg,var(--gold),var(--violet));
+  border-radius:4px;outline:none;}
+.slider::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;
+  border-radius:50%;background:var(--gold2);cursor:pointer;
+  box-shadow:0 0 15px var(--gold);}
+.slider::-moz-range-thumb{width:24px;height:24px;border-radius:50%;
+  background:var(--gold2);cursor:pointer;box-shadow:0 0 15px var(--gold);
+  border:none;}
+.valor-guess{text-align:center;color:var(--gold2);font-size:2rem;
+  font-family:var(--font-mono);margin:1rem 0;}
+.feedback{text-align:center;font-size:1rem;margin-top:1rem;min-height:1.5em;}
+.stats-juego{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+.stat{text-align:center;padding:.6rem 1.2rem;background:rgba(10,12,30,.6);
+  border:1px solid var(--line);border-radius:10px;min-width:100px;}
+.stat .num{color:var(--gold2);font-size:1.3rem;font-family:var(--font-mono);}
+.stat .lbl{color:var(--muted);font-size:.7rem;letter-spacing:.15em;
+  text-transform:uppercase;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">התאמה</div>
+  <h1>✦ Adivina la Compatibilidad ✦</h1>
+  <p>¿Qué porcentaje tendrán estas dos personas?</p>
+  <span class="page-number">Juegos · Estimación</span>
+</header>
+
+<section>
+  <div class="stats-juego">
+    <div class="stat"><div class="num" id="ronda">1/8</div><div class="lbl">Ronda</div></div>
+    <div class="stat"><div class="num" id="puntaje">0</div><div class="lbl">Puntaje</div></div>
+  </div>
+
+  <div class="personas">
+    <div class="persona-card">
+      <div class="nombre" id="nombre1">—</div>
+      <div class="fecha" id="fecha1">—</div>
+    </div>
+    <div class="vs">⚭</div>
+    <div class="persona-card">
+      <div class="nombre" id="nombre2">—</div>
+      <div class="fecha" id="fecha2">—</div>
+    </div>
+  </div>
+
+  <div class="valor-guess" id="valor-guess">50%</div>
+  <input type="range" min="0" max="100" value="50" class="slider" id="slider"
+    aria-label="Compatibilidad estimada">
+  <div style="display:flex;justify-content:space-between;color:var(--muted);
+    font-size:.75rem;margin-top:-.5rem;font-family:monospace;">
+    <span>0%</span><span>50%</span><span>100%</span>
+  </div>
+
+  <div style="text-align:center;margin-top:1.5rem;">
+    <button id="confirmar" class="btn">✦ Confirmar Estimación ✦</button>
+  </div>
+
+  <div class="feedback" id="feedback"></div>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Adivina la Compatibilidad</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const PYT = {a:1,b:2,c:3,d:4,e:5,f:6,g:7,h:8,i:9,j:1,k:2,l:3,m:4,n:5,o:6,
+  p:7,q:8,r:9,s:1,t:2,u:3,v:4,w:5,x:6,y:7,z:8};
+const VOC = 'aeiou';
+const SIGNOS_RANGOS = [
+  { i:0, n:'Aries', e:'Fuego', f:[3,21], t:[4,19] },
+  { i:1, n:'Tauro', e:'Tierra', f:[4,20], t:[5,20] },
+  { i:2, n:'Géminis', e:'Aire', f:[5,21], t:[6,20] },
+  { i:3, n:'Cáncer', e:'Agua', f:[6,21], t:[7,22] },
+  { i:4, n:'Leo', e:'Fuego', f:[7,23], t:[8,22] },
+  { i:5, n:'Virgo', e:'Tierra', f:[8,23], t:[9,22] },
+  { i:6, n:'Libra', e:'Aire', f:[9,23], t:[10,22] },
+  { i:7, n:'Escorpio', e:'Agua', f:[10,23], t:[11,21] },
+  { i:8, n:'Sagitario', e:'Fuego', f:[11,22], t:[12,21] },
+  { i:9, n:'Capricornio', e:'Tierra', f:[12,22], t:[1,19] },
+  { i:10, n:'Acuario', e:'Aire', f:[1,20], t:[2,18] },
+  { i:11, n:'Piscis', e:'Agua', f:[2,19], t:[3,20] }
+];
+const COMPAT_EL = {
+  'Fuego-Fuego':85, 'Fuego-Aire':95, 'Fuego-Tierra':55, 'Fuego-Agua':60,
+  'Tierra-Tierra':85, 'Tierra-Aire':50, 'Tierra-Agua':90,
+  'Aire-Aire':80, 'Aire-Agua':55, 'Agua-Agua':88
+};
+
+function reduce(n){
+  while(n > 9){
+    if([11,22,33].includes(n)) return n;
+    n = String(n).split('').reduce((a,b) => a + +b, 0);
+  }
+  return n;
+}
+function clean(s){
+  return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z]/g,'');
+}
+function sumName(name){
+  let t = 0;
+  for(const ch of clean(name)) if(PYT[ch]) t += PYT[ch];
+  return t;
+}
+function caminoVida(fecha){
+  const d = new Date(fecha + 'T12:00:00');
+  return reduce(d.getDate() + d.getMonth() + 1 + d.getFullYear());
+}
+function sunSign(fecha){
+  const d = new Date(fecha + 'T12:00:00');
+  const m = d.getMonth() + 1, day = d.getDate();
+  for(const s of SIGNOS_RANGOS){
+    const [fm, fd] = s.f, [tm, td] = s.t;
+    if(fm <= tm){
+      if((m === fm && day >= fd) || (m === tm && day <= td) ||
+        (m > fm && m < tm)) return s;
+    } else {
+      if((m === fm && day >= fd) || (m === tm && day <= td)) return s;
+    }
+  }
+  return SIGNOS_RANGOS[0];
+}
+function compatReal(p1, p2){
+  const cv1 = caminoVida(p1.fecha), cv2 = caminoVida(p2.fecha);
+  const s1 = sunSign(p1.fecha), s2 = sunSign(p2.fecha);
+  let compatNum = 70;
+  if(cv1 === cv2) compatNum = 90;
+  else compatNum = Math.max(40, 90 - Math.abs(cv1 - cv2) * 6);
+  const key = `${s1.e}-${s2.e}`;
+  const key2 = `${s2.e}-${s1.e}`;
+  const compatEl = COMPAT_EL[key] || COMPAT_EL[key2] || 70;
+  return Math.round(compatNum * 0.5 + compatEl * 0.5);
+}
+
+const PAREJAS = [
+  { a:'Abraham', fa:'1812-01-01', b:'Sara', fb:'1812-11-15' },
+  { a:'Isaac', fa:'1850-05-10', b:'Rebeca', fb:'1850-02-20' },
+  { a:'Jacob', fa:'1880-08-14', b:'Raquel', fb:'1880-04-18' },
+  { a:'Moisés', fa:'1400-03-07', b:'Séfora', fb:'1400-06-12' },
+  { a:'David', fa:'1040-06-15', b:'Batsheva', fb:'1040-09-22' },
+  { a:'Salomón', fa:'1000-10-01', b:'Reina de Saba', fb:'1000-01-15' },
+  { a:'Ana', fa:'1990-05-12', b:'Carlos', fb:'1988-11-03' },
+  { a:'Lucía', fa:'1995-07-22', b:'Mateo', fb:'1993-04-18' }
+];
+
+const TOTAL = 8;
+let ronda = 0;
+let puntaje = 0;
+let parejaActual = null;
+
+function iniciar(){
+  ronda = 0;
+  puntaje = 0;
+  document.getElementById('confirmar').style.display = 'inline-block';
+  siguiente();
+}
+
+function siguiente(){
+  if(ronda >= TOTAL){
+    finalizar();
+    return;
+  }
+  parejaActual = PAREJAS[ronda];
+  document.getElementById('ronda').textContent = `${ronda + 1}/${TOTAL}`;
+  document.getElementById('nombre1').textContent = parejaActual.a;
+  document.getElementById('fecha1').textContent = parejaActual.fa;
+  document.getElementById('nombre2').textContent = parejaActual.b;
+  document.getElementById('fecha2').textContent = parejaActual.fb;
+  document.getElementById('slider').value = 50;
+  document.getElementById('valor-guess').textContent = '50%';
+  document.getElementById('feedback').textContent = '';
+}
+
+document.getElementById('slider').addEventListener('input', (e) => {
+  document.getElementById('valor-guess').textContent = e.target.value + '%';
+});
+
+document.getElementById('confirmar').addEventListener('click', () => {
+  const guess = parseInt(document.getElementById('slider').value);
+  const real = compatReal(
+    { fecha:parejaActual.fa },
+    { fecha:parejaActual.fb }
+  );
+  const diff = Math.abs(guess - real);
+  let puntos = 0;
+  if(diff <= 5) puntos = 20;
+  else if(diff <= 10) puntos = 15;
+  else if(diff <= 20) puntos = 10;
+  else if(diff <= 30) puntos = 5;
+  puntaje += puntos;
+  document.getElementById('puntaje').textContent = puntaje;
+  document.getElementById('feedback').innerHTML =
+    `Real: <strong style="color:var(--gold2);">${real}%</strong> · Tu estimación: ${guess}% · <strong style="color:${puntos >= 15 ? 'var(--success)' : 'var(--cyan)'};">+${puntos} puntos</strong>`;
+  setTimeout(() => {
+    ronda++;
+    siguiente();
+  }, 2000);
+});
+
+function finalizar(){
+  document.getElementById('confirmar').style.display = 'none';
+  document.getElementById('feedback').innerHTML = `
+    <div style="text-align:center;padding:2rem;
+      background:radial-gradient(circle, rgba(212,175,55,.15), transparent 70%),
+      rgba(5,6,15,.7);border:2px solid var(--gold);border-radius:16px;">
+      <h3 style="color:var(--gold2);font-size:1.5rem;">✦ Terminado ✦</h3>
+      <div style="color:var(--gold2);font-size:2.5rem;font-family:var(--font-mono);margin:1rem 0;">
+        ${puntaje}/${TOTAL * 20}
+      </div>
+      <p style="color:var(--muted);">${
+        puntaje >= 140 ? 'Intuición excepcional.' :
+        puntaje >= 100 ? 'Buena intuición.' :
+        puntaje >= 60 ? 'Vas aprendiendo.' : 'Sigue afinando tu ojo.'
+      }</p>
+    </div>
+  `;
+}
+
+document.getElementById('reiniciar')?.addEventListener('click', iniciar);
+iniciar();
+</script>
+</body>
+</html>
