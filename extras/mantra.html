@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Tu mantra personal generado desde tu nombre">
+<title>✦ Tu Mantra Personal — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.mantra-card{text-align:center;padding:2.5rem 1.5rem;
+  background:radial-gradient(circle, rgba(212,175,55,.15), transparent 70%),
+  rgba(5,6,15,.7);border:2px solid var(--gold);border-radius:20px;
+  margin:1.5rem 0;box-shadow:0 0 60px rgba(212,175,55,.3);}
+.mantra-card .heb{font-size:2rem;color:var(--gold2);
+  font-family:var(--font-heb);direction:rtl;line-height:1.8;
+  text-shadow:0 0 25px rgba(212,175,55,.8);}
+.mantra-card .translit{color:var(--cyan);margin-top:1rem;
+  font-size:1rem;letter-spacing:.15em;}
+.mantra-card .trad{color:var(--text);margin-top:.8rem;
+  font-style:italic;font-size:1rem;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">מנטרה</div>
+  <h1>✦ Tu Mantra Personal ✦</h1>
+  <p>Una frase sagrada generada desde tu alma</p>
+  <span class="page-number">Extras · Mantra</span>
+</header>
+
+<section>
+  <h2>🎵 ¿Qué es un Mantra Personal?</h2>
+  <p>Un <strong>mantra personal</strong> es una frase sagrada que condensa la
+  esencia de tu alma. Se genera combinando tu nombre, tu Camino de Vida y los
+  Nombres Divinos correspondientes.</p>
+  <form id="mantra-form" autocomplete="off">
+    <div class="form-grid">
+      <div class="form-field full">
+        <label for="nombre">Tu nombre completo</label>
+        <input type="text" id="nombre" required>
+      </div>
+      <div class="form-field full">
+        <label for="fecha">Fecha de nacimiento</label>
+        <input type="date" id="fecha" required>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1.2rem">
+      <button type="submit" class="btn">✦ Generar Mantra ✦</button>
+    </div>
+  </form>
+</section>
+
+<div id="results" style="display:none"></div>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Mantra Personal</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const PYT = {a:1,b:2,c:3,d:4,e:5,f:6,g:7,h:8,i:9,j:1,k:2,l:3,m:4,n:5,o:6,
+  p:7,q:8,r:9,s:1,t:2,u:3,v:4,w:5,x:6,y:7,z:8};
+
+const MANTRA_POR_CAMINO = {
+  1:{ heb:'אני אור העולם', translit:'Aní Or HaOlam', trad:'Soy la luz del mundo.' },
+  2:{ heb:'אני שלום בעולם', translit:'Aní Shalom BaOlam', trad:'Soy paz en el mundo.' },
+  3:{ heb:'אני קול השמחה', translit:'Aní Kol HaSimjá', trad:'Soy la voz de la alegría.' },
+  4:{ heb:'אני יסוד העולם', translit:'Aní Yesod HaOlam', trad:'Soy el fundamento del mundo.' },
+  5:{ heb:'אני רוח החופש', translit:'Aní Ruaj HaJofesh', trad:'Soy el espíritu de la libertad.' },
+  6:{ heb:'אני אהבה אין סוף', translit:'Aní Ahavá Ein Sof', trad:'Soy amor infinito.' },
+  7:{ heb:'אני חכמה נסתרת', translit:'Aní Jojmá Nisteret', trad:'Soy sabiduría oculta.' },
+  8:{ heb:'אני כוח הצדק', translit:'Aní Kóaj HaTzédek', trad:'Soy la fuerza de la justicia.' },
+  9:{ heb:'אני רחמים לכל', translit:'Aní Rajamim LaKol', trad:'Soy compasión para todos.' },
+  11:{ heb:'אני יחידה באור', translit:'Aní Yejidá BaOr', trad:'Soy Yejidá en la luz.' },
+  22:{ heb:'אני בונה עולמות', translit:'Aní Boné Olamot', trad:'Soy constructor de mundos.' },
+  33:{ heb:'אני אהבה אין סופית', translit:'Aní Ahavá Ein-Sofit', trad:'Soy amor universal.' }
+};
+
+function reduce(n){
+  while(n > 9){
+    if([11,22,33].includes(n)) return n;
+    n = String(n).split('').reduce((a,b) => a + +b, 0);
+  }
+  return n;
+}
+
+document.getElementById('mantra-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const nombre = document.getElementById('nombre').value.trim();
+  const f = document.getElementById('fecha').value;
+  if(!nombre || !f) return;
+  const d = new Date(f + 'T12:00:00');
+  const camino = reduce(d.getDate() + d.getMonth() + 1 + d.getFullYear());
+  const m = MANTRA_POR_CAMINO[camino] || MANTRA_POR_CAMINO[1];
+
+  const results = document.getElementById('results');
+  results.style.display = 'block';
+  results.innerHTML = `
+    <section>
+      <div class="mantra-card">
+        <div class="heb">${m.heb}</div>
+        <div class="translit">${m.translit}</div>
+        <div class="trad">"${m.trad}"</div>
+      </div>
+    </section>
+    <section>
+      <h2>🎵 Tu Mantra Sagrado</h2>
+      <p style="text-align:center;color:var(--text);">
+        <strong>${nombre}</strong>, tu Camino de Vida es <strong>${camino}</strong>.
+        Tu mantra personal es:
+      </p>
+      <div class="equation">
+        <div class="big">${m.translit}</div>
+        <div class="heb">${m.heb}</div>
+      </div>
+    </section>
+    <section>
+      <h2>💡 Cómo Practicarlo</h2>
+      <ol>
+        <li>Al despertar, antes de levantarte, repítelo 3 veces en voz baja.</li>
+        <li>Durante el día, cuando sientas ansiedad, repítelo mentalmente.</li>
+        <li>Antes de dormir, recítalo 7 veces lentamente.</li>
+        <li>Escríbelo en tu diario como acto de conexión.</li>
+        <li>Úsalo como "ancla" en momentos de duda.</li>
+      </ol>
+      <blockquote>"La palabra es el canal del alma."</blockquote>
+    </section>
+  `;
+  results.scrollIntoView({ behavior:'smooth' });
+});
+</script>
+</body>
+</html>
