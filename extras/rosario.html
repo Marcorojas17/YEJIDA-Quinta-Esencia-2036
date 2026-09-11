@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Rosario cabalístico: 22 letras para meditar">
+<title>✦ Rosario Cabalístico — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.cuenta{display:flex;flex-direction:column;align-items:center;gap:1.5rem;
+  padding:2rem;background:radial-gradient(circle at 50% 50%,
+  rgba(212,175,55,.12), transparent 70%), rgba(5,6,15,.7);
+  border:2px solid var(--gold);border-radius:20px;
+  box-shadow:0 0 50px rgba(212,175,55,.3);}
+.cuenta .letra-gigante{font-size:6rem;color:var(--gold2);
+  font-family:var(--font-heb);direction:rtl;
+  text-shadow:0 0 40px rgba(212,175,55,.9);line-height:1;
+  animation:pulse-glow 3s ease-in-out infinite;}
+.cuenta .nombre{color:var(--cyan);font-size:1.1rem;letter-spacing:.15em;}
+.cuenta .contador{color:var(--gold2);font-family:var(--font-mono);
+  font-size:1rem;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">מחרוזת</div>
+  <h1>✦ Rosario Cabalístico ✦</h1>
+  <p>Medita con las 22 letras hebreas</p>
+  <span class="page-number">Extras · Rosario</span>
+</header>
+
+<section>
+  <h2>📿 ¿Qué es el Rosario Cabalístico?</h2>
+  <p>Un <strong>rosario</strong> de 22 cuentas, una por cada letra hebrea.
+  Se recorre en orden, meditando cada letra durante 13 segundos
+  (el valor de Ejad, "Uno").</p>
+
+  <div class="cuenta" id="cuenta">
+    <div class="letra-gigante" id="letra-gigante">א</div>
+    <div class="nombre" id="nombre-letra">Alef — Unidad</div>
+    <div class="contador" id="contador-cuenta">1 / 22</div>
+  </div>
+
+  <div style="text-align:center;margin-top:1.5rem;">
+    <button id="iniciar" class="btn">▶️ Iniciar Meditación</button>
+    <button id="detener" class="btn btn-danger" style="display:none;">⏸️ Detener</button>
+    <button id="siguiente" class="btn btn-sm" style="display:none;">Siguiente →</button>
+  </div>
+</section>
+
+<section>
+  <h2>💡 Cómo Meditar</h2>
+  <ol>
+    <li>Siéntate cómodamente, espalda recta.</li>
+    <li>Respira profundo 3 veces.</li>
+    <li>Presiona "Iniciar" y sigue el ritmo.</li>
+    <li>Contempla cada letra durante 13 segundos.</li>
+    <li>Al terminar las 22 letras, permanece en silencio 1 minuto.</li>
+  </ol>
+  <blockquote>"Con 22 letras creó el Santo, bendito sea, Su universo." — Sefer Yetzirá</blockquote>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Rosario Cabalístico</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const LETRAS = [
+  { l:'א', n:'Alef', s:'Unidad, aliento' },
+  { l:'ב', n:'Bet', s:'Casa, dualidad' },
+  { l:'ג', n:'Guimel', s:'Dar, movimiento' },
+  { l:'ד', n:'Dalet', s:'Puerta, apertura' },
+  { l:'ה', n:'He', s:'Revelación, aliento' },
+  { l:'ו', n:'Vav', s:'Conexión, unión' },
+  { l:'ז', n:'Zayin', s:'Discernimiento, espada' },
+  { l:'ח', n:'Jet', s:'Vida, protección' },
+  { l:'ט', n:'Tet', s:'Bondad oculta' },
+  { l:'י', n:'Yud', s:'Potencial, mano' },
+  { l:'כ', n:'Kaf', s:'Canal, palma' },
+  { l:'ל', n:'Lamed', s:'Corazón, estudio' },
+  { l:'מ', n:'Mem', s:'Agua, sabiduría' },
+  { l:'נ', n:'Nun', s:'Fidelidad, pez' },
+  { l:'ס', n:'Samej', s:'Apoyo, círculo' },
+  { l:'ע', n:'Ayin', s:'Ojo, visión' },
+  { l:'פ', n:'Pe', s:'Boca, expresión' },
+  { l:'צ', n:'Tzadi', s:'Justicia, humildad' },
+  { l:'ק', n:'Kuf', s:'Santidad, ciclos' },
+  { l:'ר', n:'Resh', s:'Cabeza, liderazgo' },
+  { l:'ש', n:'Shin', s:'Fuego, transformación' },
+  { l:'ת', n:'Tav', s:'Verdad, completitud' }
+];
+
+let idx = 0;
+let activo = false;
+let timerId = null;
+
+function render(){
+  document.getElementById('letra-gigante').textContent = LETRAS[idx].l;
+  document.getElementById('nombre-letra').textContent =
+    `${LETRAS[idx].n} — ${LETRAS[idx].s}`;
+  document.getElementById('contador-cuenta').textContent =
+    `${idx + 1} / ${LETRAS.length}`;
+}
+
+function siguiente(){
+  if(idx >= LETRAS.length - 1){
+    detener();
+    document.getElementById('nombre-letra').textContent = '✦ Meditación completada ✦';
+    return;
+  }
+  idx++;
+  render();
+  if(activo) timerId = setTimeout(siguiente, 13000);
+}
+
+function iniciar(){
+  activo = true;
+  idx = 0;
+  render();
+  document.getElementById('iniciar').style.display = 'none';
+  document.getElementById('detener').style.display = 'inline-block';
+  document.getElementById('siguiente').style.display = 'inline-block';
+  timerId = setTimeout(siguiente, 13000);
+}
+
+function detener(){
+  activo = false;
+  clearTimeout(timerId);
+  document.getElementById('iniciar').style.display = 'inline-block';
+  document.getElementById('detener').style.display = 'none';
+  document.getElementById('siguiente').style.display = 'none';
+}
+
+document.getElementById('iniciar').addEventListener('click', iniciar);
+document.getElementById('detener').addEventListener('click', detener);
+document.getElementById('siguiente').addEventListener('click', () => {
+  clearTimeout(timerId);
+  siguiente();
+});
+render();
+</script>
+</body>
+</html>
