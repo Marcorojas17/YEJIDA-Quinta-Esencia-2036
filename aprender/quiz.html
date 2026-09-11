@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Quiz de Kabaláh: 20 preguntas para poner a prueba tus conocimientos">
+<title>✦ Quiz de Kabaláh — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.pregunta{background:rgba(10,12,30,.6);border:1px solid var(--line);
+  border-radius:14px;padding:1.5rem;margin-bottom:1.2rem;}
+.pregunta .num{color:var(--gold);font-family:var(--font-mono);
+  font-size:.85rem;letter-spacing:.1em;margin-bottom:.5rem;}
+.pregunta h3{color:var(--gold2);font-size:1.1rem;margin-bottom:1rem;
+  font-weight:500;}
+.opciones{display:grid;gap:.6rem;}
+.opcion{padding:.85rem 1.1rem;background:rgba(5,6,15,.6);
+  border:1px solid var(--line);border-radius:10px;cursor:pointer;
+  transition:all .3s;color:var(--text);font-size:.92rem;
+  font-family:inherit;text-align:left;}
+.opcion:hover{border-color:var(--gold);background:rgba(212,175,55,.08);}
+.opcion.correcta{border-color:var(--success);background:rgba(74,222,128,.15);
+  color:var(--success);font-weight:600;}
+.opcion.incorrecta{border-color:var(--danger);background:rgba(255,107,107,.15);
+  color:var(--danger);}
+.opcion:disabled{cursor:default;}
+.resultado-final{text-align:center;padding:2rem;
+  background:radial-gradient(circle, rgba(212,175,55,.15), transparent 70%),
+  rgba(5,6,15,.7);border:2px solid var(--gold);border-radius:20px;
+  margin-top:1.5rem;display:none;}
+.resultado-final .score{font-size:4rem;color:var(--gold2);
+  font-family:var(--font-heb);text-shadow:0 0 30px rgba(212,175,55,.8);
+  line-height:1;}
+.resultado-final .msj{color:var(--gold2);font-size:1.2rem;margin:.5rem 0;}
+.progreso-quiz{text-align:center;color:var(--muted);font-size:.85rem;
+  margin-bottom:1rem;letter-spacing:.1em;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">חידון</div>
+  <h1>✦ Quiz de Kabaláh ✦</h1>
+  <p>20 preguntas · Pon a prueba tu conocimiento</p>
+  <span class="page-number">Aprender · Quiz</span>
+</header>
+
+<section>
+  <div class="progreso-quiz" id="progreso-quiz">Pregunta 0 / 20</div>
+  <div id="quiz"></div>
+  <div class="resultado-final" id="resultado">
+    <div class="score" id="score">0/20</div>
+    <div class="msj" id="msj"></div>
+    <div id="detalles" style="color:var(--muted);font-size:.9rem;margin-top:1rem;"></div>
+    <div style="margin-top:1.5rem;">
+      <button id="reiniciar" class="btn">🔄 Intentar de nuevo</button>
+      <a href="certificado.html" class="btn" id="link-cert" style="display:none;">
+        🎓 Ir al Certificado
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Quiz</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const PREGUNTAS = [
+  { p:'¿Qué significa Yejidá?', o:['Unidad / Unicidad','Corona','Vida','Aliento'], c:0 },
+  { p:'¿Cuántos niveles tiene el alma?', o:['3','5','7','10'], c:1 },
+  { p:'¿Cuál es el nivel más alto del alma?', o:['Nefesh','Ruaj','Neshamá','Yejidá'], c:3 },
+  { p:'¿Cuántas Sefirot hay en el Árbol de la Vida?', o:['7','10','12','22'], c:1 },
+  { p:'¿Qué Sefirá corresponde a Yejidá?', o:['Maljut','Tiféret','Kéter','Biná'], c:2 },
+  { p:'¿Cuántas letras tiene el alfabeto hebreo?', o:['20','22','24','27'], c:1 },
+  { p:'¿Qué significa Tzimtzum?', o:['Expansión','Contracción','Ruptura','Reparación'], c:1 },
+  { p:'¿Quién introdujo el Tzimtzum?', o:['Baal Shem Tov','Isaac Luria','Moisés de León','Rabí Najman'], c:1 },
+  { p:'¿Qué es la Shevirat HaKelim?', o:['La creación','La ruptura de los vasos','La reparación','La oración'], c:1 },
+  { p:'¿Qué es el Tikkun Olam?', o:['La creación','La ruptura','La reparación del mundo','El exilio'], c:2 },
+  { p:'¿Cuántos mundos hay en la Kabaláh?', o:['3','4','5','7'], c:1 },
+  { p:'¿Qué mundo es el más elevado?', o:['Asiá','Yetzirá','Briá','Atzilut'], c:3 },
+  { p:'¿Qué significa Shejiná?', o:['Corona','Presencia divina','Sabiduría','Juicio'], c:1 },
+  { p:'¿Qué significa Mashiaj?', o:['Rey','Profeta','Ungido','Sacerdote'], c:2 },
+  { p:'¿Qué es la Guematria?', o:['Oración','Valor numérico de las letras','Meditación','Ayuno'], c:1 },
+  { p:'¿Qué valor tiene la letra Alef?', o:['0','1','2','10'], c:1 },
+  { p:'¿Cuántos nombres tiene el Shem HaMephorash?', o:['22','42','72','613'], c:2 },
+  { p:'¿Qué significa Teshuvá?', o:['Oración','Retorno','Ayuno','Estudio'], c:1 },
+  { p:'¿Qué es el Zohar?', o:['Un profeta','El Libro del Esplendor','Una Sefirá','Un ángel'], c:1 },
+  { p:'¿Cuántas Mitzvot hay en la Torá?', o:['248','365','613','1000'], c:2 }
+];
+
+let respuestas = [];
+let idx = 0;
+
+function renderPregunta(){
+  const cont = document.getElementById('quiz');
+  if(idx >= PREGUNTAS.length){
+    mostrarResultado();
+    return;
+  }
+  const q = PREGUNTAS[idx];
+  document.getElementById('progreso-quiz').textContent =
+    `Pregunta ${idx + 1} / ${PREGUNTAS.length}`;
+  cont.innerHTML = `
+    <div class="pregunta">
+      <div class="num">PREGUNTA ${String(idx + 1).padStart(2,'0')}</div>
+      <h3>${q.p}</h3>
+      <div class="opciones">
+        ${q.o.map((op, i) => `
+          <button class="opcion" data-i="${i}">${op}</button>
+        `).join('')}
+      </div>
+    </div>
+  `;
+  cont.querySelectorAll('.opcion').forEach(btn => {
+    btn.addEventListener('click', () => responder(parseInt(btn.dataset.i)));
+  });
+}
+
+function responder(i){
+  const q = PREGUNTAS[idx];
+  const botones = document.querySelectorAll('.opcion');
+  botones.forEach((b, bi) => {
+    b.disabled = true;
+    if(bi === q.c) b.classList.add('correcta');
+    else if(bi === i) b.classList.add('incorrecta');
+  });
+  respuestas.push(i === q.c);
+  setTimeout(() => {
+    idx++;
+    renderPregunta();
+  }, 1200);
+}
+
+function mostrarResultado(){
+  const correctas = respuestas.filter(x => x).length;
+  const total = PREGUNTAS.length;
+  const pct = Math.round(correctas / total * 100);
+  document.getElementById('quiz').innerHTML = '';
+  document.getElementById('progreso-quiz').textContent = '';
+  const res = document.getElementById('resultado');
+  res.style.display = 'block';
+  document.getElementById('score').textContent = `${correctas}/${total}`;
+  document.getElementById('detalles').textContent = `${pct}% correcto`;
+  let msj = '';
+  if(pct >= 90) msj = '✦ ¡Maestro de la Kabaláh! ✦';
+  else if(pct >= 75) msj = '✦ Excelente conocimiento ✦';
+  else if(pct >= 50) msj = '◈ Buen camino, sigue estudiando ◈';
+  else msj = '⚠️ Repasa los fundamentos';
+  document.getElementById('msj').textContent = msj;
+  if(pct >= 75){
+    document.getElementById('link-cert').style.display = 'inline-block';
+    localStorage.setItem('yejida_quiz_passed', 'true');
+    localStorage.setItem('yejida_quiz_score', `${correctas}/${total}`);
+  }
+  // Guardar intento
+  const intentos = JSON.parse(localStorage.getItem('yejida_quiz_intentos') || '[]');
+  intentos.push({ fecha: new Date().toISOString(), score: correctas, total });
+  localStorage.setItem('yejida_quiz_intentos', JSON.stringify(intentos));
+}
+
+document.getElementById('reiniciar').addEventListener('click', () => {
+  respuestas = [];
+  idx = 0;
+  document.getElementById('resultado').style.display = 'none';
+  renderPregunta();
+});
+
+renderPregunta();
+</script>
+</body>
+</html>
