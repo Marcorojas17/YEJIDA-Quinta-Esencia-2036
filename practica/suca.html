@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Sucá: la cabaña frágil y las 7 Sefirot de Sucot">
+<title>✦ La Sucá — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.suca-visual{width:100%;max-width:400px;margin:2rem auto;display:block;
+  filter:drop-shadow(0 0 30px rgba(212,175,55,.4));}
+.suca-visual .techo{fill:none;stroke:var(--gold);stroke-width:2;
+  stroke-linecap:round;}
+.suca-visual .ramas{stroke:var(--gold2);stroke-width:1.5;opacity:.7;}
+.suca-visual .pared{fill:rgba(212,175,55,.1);stroke:var(--gold);stroke-width:2;}
+.suca-visual .invitado{fill:var(--gold2);font-size:14px;
+  font-family:var(--font-heb);text-anchor:middle;font-weight:600;
+  filter:drop-shadow(0 0 8px rgba(212,175,55,.7));}
+.usHP-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:.7rem;margin:1rem 0;}
+.ushpizin{border:1px solid var(--line);border-radius:10px;padding:.9rem;
+  background:rgba(10,12,30,.6);text-align:center;transition:all .3s;cursor:pointer;}
+.ushpizin:hover{border-color:var(--gold);background:rgba(212,175,55,.08);
+  transform:translateY(-3px);}
+.ushpizin .num{display:inline-block;width:24px;height:24px;
+  background:var(--gold);color:var(--bg);border-radius:50%;
+  font-size:.7rem;font-weight:700;line-height:24px;margin-bottom:.4rem;}
+.ushpizin .nombre{color:var(--gold2);font-weight:600;font-size:.9rem;}
+.ushpizin .sefira{color:var(--cyan);font-size:.72rem;letter-spacing:.08em;
+  text-transform:uppercase;margin-top:.2rem;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">סוכה</div>
+  <h1>✦ La Sucá ✦</h1>
+  <p>La cabaña frágil · Sucot</p>
+  <span class="page-number">Práctica · Festividad</span>
+</header>
+
+<section>
+  <h2>🌿 ¿Qué es la Sucá?</h2>
+  <p>La <strong>Sucá (סוכה)</strong> es una cabaña temporal en la que se vive
+  durante los 7 días de la festividad de <strong>Sucot</strong>. Su techo debe
+  ser de <strong>ramas</strong> (<em>sejaj</em>), suficientemente densas para
+  dar sombra pero que permitan ver las estrellas.</p>
+  <p>Simboliza la <strong>fragilidad de la vida</strong> y la
+  <strong>protección divina</strong> que nos acompaña en el desierto.</p>
+
+  <svg class="suca-visual" viewBox="0 0 400 300" role="img"
+    aria-label="Estructura de la Sucá">
+    <!-- Techo -->
+    <line x1="100" y1="80" x2="300" y2="80" class="techo"/>
+    <!-- Ramas del techo -->
+    <line x1="110" y1="75" x2="290" y2="75" class="ramas"/>
+    <line x1="110" y1="70" x2="290" y2="70" class="ramas"/>
+    <line x1="110" y1="65" x2="290" y2="65" class="ramas"/>
+    <line x1="110" y1="85" x2="290" y2="85" class="ramas"/>
+    <!-- Paredes -->
+    <rect x="100" y="80" width="200" height="180" class="pared" rx="4"/>
+    <!-- Puerta -->
+    <rect x="180" y="180" width="40" height="80" fill="rgba(5,6,15,.8)"
+      stroke="var(--gold)" stroke-width="1.5"/>
+    <!-- Estrellas -->
+    <text x="200" y="55" style="fill:var(--gold2);font-size:12px;
+      text-anchor:middle;">✦ ✧ ✦</text>
+  </svg>
+</section>
+
+<section>
+  <h2>👥 Los 7 Ushpizin (Invitados)</h2>
+  <p>Cada noche de Sucot, un <strong>invitado ancestral</strong> (Ushpizin)
+  viene a habitar la Sucá, correspondiendo a las <strong>7 Sefirot
+  inferiores</strong>:</p>
+  <div class="ushpizin-grid">
+    <div class="ushpizin">
+      <span class="num">1</span>
+      <div class="nombre">Abraham</div>
+      <div class="sefira">Jesed · Amor</div>
+    </div>
+    <div class="ushpizin">
+      <span class="num">2</span>
+      <div class="nombre">Isaac</div>
+      <div class="sefira">Guevurá · Rigor</div>
+    </div>
+    <div class="ushpizin">
+      <span class="num">3</span>
+      <div class="nombre">Jacob</div>
+      <div class="sefira">Tiféret · Belleza</div>
+    </div>
+    <div class="ushpizin">
+      <span class="num">4</span>
+      <div class="nombre">Moisés</div>
+      <div class="sefira">Netzaj · Eternidad</div>
+    </div>
+    <div class="ushpizin">
+      <span class="num">5</span>
+      <div class="nombre">Aarón</div>
+      <div class="sefira">Hod · Esplendor</div>
+    </div>
+    <div class="ushpizin">
+      <span class="num">6</span>
+      <div class="nombre">José</div>
+      <div class="sefira">Yesod · Fundamento</div>
+    </div>
+    <div class="ushpizin">
+      <span class="num">7</span>
+      <div class="nombre">David</div>
+      <div class="sefira">Maljut · Reino</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>💡 Significado Cabalístico</h2>
+  <p>La Sucá es la <strong>Shejiná</strong> misma: la Presencia divina que nos
+  envuelve y protege. Al entrar en ella, entramos en el <strong>útero
+  cósmico</strong> de la Madre divina (Biná).</p>
+
+  <table>
+    <thead><tr><th>Elemento</th><th>Símbolo</th><th>Sefirá</th></tr></thead>
+    <tbody>
+      <tr><td>Techo de ramas</td><td>Sombra y cobertura</td><td>Jojmá (sabiduría)</td></tr>
+      <tr><td>Paredes</td><td>Estructura</td><td>Biná (entendimiento)</td></tr>
+      <tr><td>7 días</td><td>7 Sefirot inferiores</td><td>Jesed → Maljut</td></tr>
+      <tr><td>7 Ushpizin</td><td>Los 7 pastores</td><td>Los 7 atributos</td></tr>
+      <tr><td>La Sucá misma</td><td>Shejiná</td><td>Maljut</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>🎯 Práctica</h2>
+  <ol>
+    <li>Construye tu Sucá (o visita una).</li>
+    <li>Cada noche, invita mentalmente a un Ushpizin.</li>
+    <li>Medita en la Sefirá correspondiente.</li>
+    <li>Come en la Sucá, estudia en la Sucá, duerme en la Sucá.</li>
+    <li>Al terminar, agradece la protección divina.</li>
+  </ol>
+  <div class="equation">
+    <div class="big">Habitar en la fragilidad · Confiar en la protección</div>
+    <div class="heb">לשבת בסוכה · לבטוח בהשגחה</div>
+  </div>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Sucá</p>
+</footer>
+<script src="../shared.js"></script>
+</body>
+</html>
