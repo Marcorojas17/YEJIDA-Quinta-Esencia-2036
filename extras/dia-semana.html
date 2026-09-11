@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Los 7 días de la semana y sus correspondencias cabalísticas">
+<title>✦ Días de la Semana — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">ימי השבוע</div>
+  <h1>✦ Días de la Semana ✦</h1>
+  <p>Los 7 días y sus Sefirot</p>
+  <span class="page-number">Extras · Días</span>
+</header>
+
+<section>
+  <h2>📅 Hoy es</h2>
+  <div class="equation" id="hoy-card">
+    <div class="big" id="hoy-dia">—</div>
+    <div class="heb" id="hoy-heb"></div>
+  </div>
+  <div class="result-grid" id="hoy-detalles"></div>
+</section>
+
+<section>
+  <h2>🔯 Los 7 Días</h2>
+  <table>
+    <thead><tr><th>Día</th><th>Hebreo</th><th>Planeta</th><th>Sefirá</th><th>Energía</th></tr></thead>
+    <tbody id="tabla-dias"></tbody>
+  </table>
+</section>
+
+<section>
+  <h2>💡 Práctica del Día</h2>
+  <p>Cada día de la semana está regido por una Sefirá. Alinear tus acciones
+  con la energía del día multiplica su efecto.</p>
+  <ul>
+    <li><strong>Domingo (Jesed)</strong> — Actos de bondad, dar.</li>
+    <li><strong>Lunes (Guevurá)</strong> — Disciplina, orden.</li>
+    <li><strong>Martes (Tiféret)</strong> — Belleza, armonía.</li>
+    <li><strong>Miércoles (Netzaj)</strong> — Perseverancia, victoria.</li>
+    <li><strong>Jueves (Hod)</strong> — Gratitud, humildad.</li>
+    <li><strong>Viernes (Yesod)</strong> — Conexión, preparación del Shabat.</li>
+    <li><strong>Sábado (Maljut)</strong> — Shabat, Shejiná, descanso sagrado.</li>
+  </ul>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Días de la Semana</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const DIAS = [
+  { n:'Domingo',  heb:'יום ראשון', p:'Sol',      sym:'☉', sef:'Jesed',   d:'Bondad, misericordia, dar' },
+  { n:'Lunes',    heb:'יום שני',   p:'Luna',     sym:'☾', sef:'Guevurá', d:'Disciplina, orden, rigor' },
+  { n:'Martes',   heb:'יום שלישי', p:'Marte',    sym:'♂', sef:'Tiféret', d:'Belleza, armonía, equilibrio' },
+  { n:'Miércoles',heb:'יום רביעי', p:'Mercurio', sym:'☿', sef:'Netzaj',  d:'Perseverancia, victoria, eternidad' },
+  { n:'Jueves',   heb:'יום חמישי', p:'Júpiter',  sym:'♃', sef:'Hod',     d:'Esplendor, gratitud, humildad' },
+  { n:'Viernes',  heb:'יום שישי',  p:'Venus',    sym:'♀', sef:'Yesod',   d:'Fundamento, conexión, preparación' },
+  { n:'Sábado',   heb:'שבת',       p:'Saturno',  sym:'♄', sef:'Maljut',  d:'Reino, Shejiná, descanso sagrado' }
+];
+
+function actualizar(){
+  const hoy = DIAS[new Date().getDay()];
+  document.getElementById('hoy-dia').textContent = hoy.n;
+  document.getElementById('hoy-heb').textContent = hoy.heb;
+  document.getElementById('hoy-detalles').innerHTML = `
+    <div class="result-card">
+      <div class="label">Planeta</div>
+      <div class="value">${hoy.sym}</div>
+      <div class="name">${hoy.p}</div>
+    </div>
+    <div class="result-card">
+      <div class="label">Sefirá</div>
+      <div class="value" style="font-size:1.3rem;">${hoy.sef}</div>
+    </div>
+    <div class="result-card" style="grid-column:1/-1;">
+      <div class="label">Energía del día</div>
+      <div class="desc" style="font-size:.95rem;">${hoy.d}</div>
+    </div>
+  `;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('tabla-dias').innerHTML = DIAS.map(d => `
+    <tr>
+      <td>${d.n}</td>
+      <td class="hebrew-inline">${d.heb}</td>
+      <td>${d.sym} ${d.p}</td>
+      <td>${d.sef}</td>
+      <td>${d.d}</td>
+    </tr>
+  `).join('');
+  actualizar();
+});
+</script>
+</body>
+</html>
