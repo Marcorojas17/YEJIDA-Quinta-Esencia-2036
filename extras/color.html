@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Tu color sagrado según tu Sefirá dominante">
+<title>✦ Tu Color Sagrado — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.color-pantalla{width:100%;max-width:400px;height:220px;margin:1.5rem auto;
+  border-radius:20px;border:3px solid var(--gold);
+  box-shadow:0 0 60px currentColor;display:flex;align-items:center;
+  justify-content:center;position:relative;overflow:hidden;}
+.color-pantalla .hebrew{font-size:5rem;color:rgba(255,255,255,.9);
+  font-family:var(--font-heb);direction:rtl;
+  text-shadow:0 0 30px rgba(0,0,0,.5);}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">צבע</div>
+  <h1>✦ Tu Color Sagrado ✦</h1>
+  <p>Los colores de las 10 Sefirot</p>
+  <span class="page-number">Extras · Color</span>
+</header>
+
+<section>
+  <h2>🎨 ¿Qué es el Color Sagrado?</h2>
+  <p>En la Kabaláh, cada Sefirá tiene un <strong>color correspondiente</strong>,
+  asociado a su vibración particular. Tu Camino de Vida determina qué Sefirá
+  rige tu alma, y por tanto, qué color te acompaña.</p>
+  <form id="color-form" autocomplete="off">
+    <div class="form-grid">
+      <div class="form-field full">
+        <label for="fecha">Fecha de nacimiento</label>
+        <input type="date" id="fecha" required>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1.2rem">
+      <button type="submit" class="btn">✦ Revelar mi Color ✦</button>
+    </div>
+  </form>
+</section>
+
+<div id="results" style="display:none"></div>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Color Sagrado</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const COLORES = {
+  1:{ n:'Rojo Rubí',     hex:'#e63946', sefira:'Kéter',   heb:'כתר',   d:'Voluntad, liderazgo, poder sagrado.' },
+  2:{ n:'Azul Zafiro',   hex:'#3498db', sefira:'Jojmá',   heb:'חכמה',  d:'Sabiduría, revelación, creatividad.' },
+  3:{ n:'Amarillo Oro',  hex:'#f4c430', sefira:'Biná',    heb:'בינה',  d:'Entendimiento, análisis, claridad.' },
+  4:{ n:'Azul Celeste',  hex:'#7ac8ff', sefira:'Jesed',   heb:'חסד',   d:'Amor, misericordia, expansión.' },
+  5:{ n:'Rojo Fuego',    hex:'#c0392b', sefira:'Guevurá', heb:'גבורה', d:'Rigor, justicia, disciplina.' },
+  6:{ n:'Violeta Púrpura',hex:'#9b59b6',sefira:'Tiféret', heb:'תפארת', d:'Belleza, armonía, compasión.' },
+  7:{ n:'Verde Esmeralda',hex:'#2ecc71',sefira:'Netzaj',  heb:'נצח',   d:'Victoria, perseverancia, eternidad.' },
+  8:{ n:'Naranja',       hex:'#e67e22', sefira:'Hod',     heb:'הוד',   d:'Esplendor, gratitud, humildad.' },
+  9:{ n:'Índigo',        hex:'#4a4a8a', sefira:'Yesod',   heb:'יסוד',  d:'Fundamento, conexión, canal.' },
+  11:{ n:'Blanco Luminoso',hex:'#f5f5f5',sefira:'Kéter',  heb:'כתר',   d:'Maestro. Unidad, pureza.' },
+  22:{ n:'Dorado Brillante',hex:'#d4af37',sefira:'Todas', heb:'כל',    d:'Maestro. Síntesis de todos los colores.' },
+  33:{ n:'Blanco Radiante',hex:'#ffffff',sefira:'Todas',  heb:'כל',    d:'Maestro. Compasión universal.' }
+};
+
+function reduce(n){
+  while(n > 9){
+    if([11,22,33].includes(n)) return n;
+    n = String(n).split('').reduce((a,b) => a + +b, 0);
+  }
+  return n;
+}
+
+document.getElementById('color-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const f = document.getElementById('fecha').value;
+  if(!f) return;
+  const d = new Date(f + 'T12:00:00');
+  const camino = reduce(d.getDate() + d.getMonth() + 1 + d.getFullYear());
+  const c = COLORES[camino] || COLORES[1];
+  const results = document.getElementById('results');
+  results.style.display = 'block';
+  results.innerHTML = `
+    <section>
+      <div class="color-pantalla" style="background:${c.hex};color:${c.hex};">
+        <div class="hebrew">${c.heb}</div>
+      </div>
+    </section>
+    <section>
+      <h2>🎨 Tu Color Sagrado</h2>
+      <div class="result-grid">
+        <div class="result-card">
+          <div class="label">Color</div>
+          <div class="value" style="font-size:1.3rem;">${c.n}</div>
+        </div>
+        <div class="result-card">
+          <div class="label">Código</div>
+          <div class="value" style="font-family:var(--font-mono);font-size:1.3rem;">${c.hex}</div>
+        </div>
+        <div class="result-card">
+          <div class="label">Sefirá</div>
+          <div class="value" style="font-size:1.3rem;">${c.sefira}</div>
+        </div>
+        <div class="result-card">
+          <div class="label">Camino de Vida</div>
+          <div class="value">${camino}</div>
+        </div>
+      </div>
+      <p style="text-align:center;margin-top:1rem;color:var(--text);font-size:.95rem;">
+        ${c.d}
+      </p>
+    </section>
+    <section>
+      <h2>💡 Cómo Usar tu Color</h2>
+      <ul>
+        <li>Viste una prenda de tu color al meditar.</li>
+        <li>Visualízalo al respirar profundamente.</li>
+        <li>Rodéate de objetos de tu color sagrado.</li>
+        <li>En momentos de duda, invócalo mentalmente.</li>
+        <li>Úsalo en tu diario, altar o espacio de estudio.</li>
+      </ul>
+    </section>
+  `;
+  results.scrollIntoView({ behavior:'smooth' });
+});
+</script>
+</body>
+</html>
