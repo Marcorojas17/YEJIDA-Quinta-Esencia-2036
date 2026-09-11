@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Mapa numerológico completo: Camino de Vida, Expresión, Alma, Personalidad, Kármicos">
+<title>✦ Mapa Numerológico — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">נומרולוגיה</div>
+  <h1>✦ Mapa Numerológico Completo ✦</h1>
+  <p>14 números sagrados · Kármicos · Ciclos personales</p>
+  <span class="page-number">Herramienta · Numerología</span>
+</header>
+
+<section>
+  <h2>🜁 Tus Datos</h2>
+  <form id="num-form" autocomplete="off">
+    <div class="form-grid">
+      <div class="form-field full">
+        <label for="nombre">Nombre completo de nacimiento</label>
+        <input type="text" id="nombre" placeholder="Ej: María García López" required>
+      </div>
+      <div class="form-field full">
+        <label for="fecha">Fecha de nacimiento</label>
+        <input type="date" id="fecha" required>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1.2rem">
+      <button type="submit" class="btn">✦ Revelar mi Mapa Numerológico ✦</button>
+    </div>
+  </form>
+</section>
+
+<div id="results" style="display:none"></div>
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Numerología</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const PYT = {a:1,b:2,c:3,d:4,e:5,f:6,g:7,h:8,i:9,j:1,k:2,l:3,m:4,n:5,o:6,
+  p:7,q:8,r:9,s:1,t:2,u:3,v:4,w:5,x:6,y:7,z:8};
+const VOC = 'aeiou';
+const HEB = {1:'א',2:'ב',3:'ג',4:'ד',5:'ה',6:'ו',7:'ז',8:'ח',9:'ט',
+  11:'כ',22:'ל',33:'מ'};
+const SIGNIF = {
+  1:{n:'Líder',d:'Individualidad, iniciativa, pionero. Abre caminos.'},
+  2:{n:'Diplomático',d:'Sensibilidad, cooperación, puente entre opuestos.'},
+  3:{n:'Comunicador',d:'Expresión, creatividad, alegría que inspira.'},
+  4:{n:'Constructor',d:'Orden, esfuerzo, estructura paciente.'},
+  5:{n:'Explorador',d:'Libertad, cambio, aventura, experiencia.'},
+  6:{n:'Sanador',d:'Amor, responsabilidad, hogar, armonía.'},
+  7:{n:'Sabio',d:'Introspección, análisis, misticismo, verdad oculta.'},
+  8:{n:'Poderoso',d:'Abundancia, autoridad, justicia material.'},
+  9:{n:'Humanitario',d:'Compasión, universalidad, servicio.'},
+  11:{n:'Visionario',d:'Maestro. Intuición elevada, inspiración.'},
+  22:{n:'Arquitecto Maestro',d:'Maestro. Construye sueños en realidad.'},
+  33:{n:'Maestro Compasivo',d:'Maestro. Amor universal en acción.'}
+};
+const KARMIC_DEBTS = [13,14,16,19];
+
+function reduce(n){
+  while(n > 9){
+    if([11,22,33].includes(n)) return n;
+    n = String(n).split('').reduce((a,b) => a + +b, 0);
+  }
+  return n;
+}
+function clean(s){
+  return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z]/g,'');
+}
+function sumName(name, filter){
+  const c = clean(name); let t = 0;
+  for(const ch of c){
+    if(filter === 'v' && !VOC.includes(ch)) continue;
+    if(filter === 'c' && VOC.includes(ch)) continue;
+    if(PYT[ch]) t += PYT[ch];
+  }
+  return t;
+}
+function checkKarmic(n){
+  let temp = n;
+  while(temp > 9){
+    if(KARMIC_DEBTS.includes(temp)) return temp;
+    temp = String(temp).split('').reduce((a,b) => a + +b, 0);
+  }
+  return null;
+}
+
+document.getElementById('num-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const nombre = document.getElementById('nombre').value.trim();
+  const fechaStr = document.getElementById('fecha').value;
+  if(!nombre || !fechaStr) return alert('Completa todos los campos.');
+  const d = new Date(fechaStr + 'T12:00:00');
+  const dd = d.getDate(), mm = d.getMonth() + 1, yyyy = d.getFullYear();
+
+  // Números principales
+  const caminoVida = reduce(dd + mm + yyyy);
+  const expresion = reduce(sumName(nombre));
+  const alma = reduce(sumName(nombre, 'v'));
+  const personalidad = reduce(sumName(nombre, 'c'));
+  const diaNac = reduce(dd);
+  const madurez = reduce(caminoVida + expresion);
+  const ser = reduce(alma + personalidad);
+
+  // Ciclos personales
+  const now = new Date();
+  const anioPersonal = reduce(dd + mm + now.getFullYear());
+  const mesPersonal = reduce(anioPersonal + (now.getMonth() + 1));
+  const diaPersonal = reduce(mesPersonal + now.getDate());
+
+  // Kármicos (buscar en el proceso de suma, no en el reducido)
+  const karmicPath = checkKarmic(dd + mm + yyyy);
+  const karmicExp = checkKarmic(sumName(nombre));
+
+  // Deuda kármica por día de nacimiento
+  const karmicDay = KARMIC_DEBTS.includes(dd) ? dd : null;
+
+  // Número de Poder (primera letra del nombre)
+  const primeraLetra = clean(nombre)[0];
+  const numeroPoder = PYT[primeraLetra] || 0;
+
+  // Número oculto (letras repetidas)
+  const frecuencia = {};
+  for(const ch of clean(nombre)){
+    if(PYT[ch]) frecuencia[ch] = (frecuencia[ch] || 0) + 1;
+  }
+  const ocultoNum = Object.entries(frecuencia)
+    .sort((a,b) => b[1] - a[1])
+    .slice(0,1)
+    .map(([ch, count]) => ({ letra: ch.toUpperCase(), valor: PYT[ch], veces: count }))[0];
+
+  const tarjeta = (label, valor, extra = '') => `
+    <div class="result-card">
+      <div class="label">${label}</div>
+      <div class="value">${valor}<span class="hebrew-letter">${HEB[valor]||''}</span></div>
+      ${SIGNIF[valor] ? `<div class="name">${SIGNIF[valor].n}</div>
+        <div class="desc">${SIGNIF[valor].d}</div>` : ''}
+      ${extra ? `<div class="desc" style="color:var(--cyan)">${extra}</div>` : ''}
+    </div>
+  `;
+
+  const results = document.getElementById('results');
+  results.style.display = 'block';
+  results.innerHTML = `
+    <section>
+      <h2>✦ Números Principales</h2>
+      <div class="result-grid">
+        ${tarjeta('Camino de Vida', caminoVida)}
+        ${tarjeta('Expresión', expresion)}
+        ${tarjeta('Alma', alma)}
+        ${tarjeta('Personalidad', personalidad)}
+        ${tarjeta('Día de Nacimiento', diaNac)}
+        ${tarjeta('Madurez', madurez)}
+        ${tarjeta('Número del Ser', ser)}
+      </div>
+    </section>
+
+    <section>
+      <h2>🔄 Ciclos Personales Actuales</h2>
+      <div class="result-grid">
+        ${tarjeta('Año Personal', anioPersonal)}
+        ${tarjeta('Mes Personal', mesPersonal)}
+        ${tarjeta('Día Personal', diaPersonal)}
+      </div>
+    </section>
+
+    ${karmicPath || karmicExp || karmicDay ? `
+      <section>
+        <h2>⚖️ Deudas Kármicas</h2>
+        <div class="notice">
+          <strong>Las deudas kármicas (13, 14, 16, 19) no se reducen</strong> hasta que
+          se aprende la lección. Indican desafíos que el alma trae de vidas anteriores.
+        </div>
+        <div class="result-grid">
+          ${karmicPath ? `<div class="result-card">
+            <div class="label">Camino de Vida Kármico</div>
+            <div class="value">${karmicPath}</div>
+            <div class="desc">${karmicPath === 13 ? 'Trabajo, disciplina, superación.'
+              : karmicPath === 14 ? 'Libertad con responsabilidad, moderación.'
+              : karmicPath === 16 ? 'Ego trascendido, humildad.'
+              : 'Fe, poder personal, liderazgo ético.'}</div>
+          </div>` : ''}
+          ${karmicExp ? `<div class="result-card">
+            <div class="label">Expresión Kármica</div>
+            <div class="value">${karmicExp}</div>
+            <div class="desc">Desafío en la comunicación.</div>
+          </div>` : ''}
+          ${karmicDay ? `<div class="result-card">
+            <div class="label">Día Kármico</div>
+            <div class="value">${karmicDay}</div>
+            <div class="desc">Lección específica de este nacimiento.</div>
+          </div>` : ''}
+        </div>
+      </section>
+    ` : ''}
+
+    <section>
+      <h2>⚡ Números Especiales</h2>
+      <div class="result-grid">
+        <div class="result-card">
+          <div class="label">Número de Poder</div>
+          <div class="value">${numeroPoder}<span class="hebrew-letter">${HEB[numeroPoder]||''}</span></div>
+          <div class="desc">Primera letra: ${primeraLetra.toUpperCase()} — cómo ejerces tu fuerza.</div>
+        </div>
+        ${ocultoNum ? `<div class="result-card">
+          <div class="label">Pasión Oculta</div>
+          <div class="value">${ocultoNum.valor}<span class="hebrew-letter">${HEB[ocultoNum.valor]||''}</span></div>
+          <div class="desc">Letra "${ocultoNum.letra}" aparece ${ocultoNum.veces} veces.</div>
+        </div>` : ''}
+      </div>
+    </section>
+
+    <section>
+      <h2>📚 Referencia Rápida</h2>
+      <table>
+        <thead><tr><th>#</th><th>Hebreo</th><th>Arquetipo</th></tr></thead>
+        <tbody>
+          ${[1,2,3,4,5,6,7,8,9,11,22,33].map(n =>
+            `<tr><td>${n}</td><td class="hebrew-inline">${HEB[n]}</td>
+            <td>${SIGNIF[n].n}</td></tr>`
+          ).join('')}
+        </tbody>
+      </table>
+    </section>
+  `;
+  results.scrollIntoView({ behavior:'smooth' });
+});
+</script>
+</body>
+</html>
