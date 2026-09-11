@@ -21,4 +21,331 @@
   margin:1rem 0;font-style:italic;}
 .opciones-av{display:grid;gap:.7rem;margin-top:1.5rem;}
 .op-av{text-align:left;padding:1rem 1.2rem;background:rgba(10,12,30,.7);
-  border
+  border:1px solid var(--line);border-radius:10px;color:var(--text);
+  cursor:pointer;transition:all .3s;font-family:inherit;font-size:.92rem;
+  line-height:1.5;}
+.op-av:hover{border-color:var(--gold);background:rgba(212,175,55,.08);
+  transform:translateX(4px);}
+.op-av .arrow{color:var(--gold);margin-right:.5rem;}
+.stats-av{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;
+  margin:1rem 0;}
+.stat{text-align:center;padding:.6rem 1.2rem;background:rgba(10,12,30,.6);
+  border:1px solid var(--line);border-radius:10px;min-width:90px;}
+.stat .num{color:var(--gold2);font-size:1.2rem;font-family:var(--font-mono);}
+.stat .lbl{color:var(--muted);font-size:.68rem;letter-spacing:.15em;
+  text-transform:uppercase;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">מסע</div>
+  <h1>✦ Aventura Narrativa ✦</h1>
+  <p>Elige tu camino a través de los mundos</p>
+  <span class="page-number">Juegos · Narrativa</span>
+</header>
+
+<section>
+  <div class="stats-av">
+    <div class="stat"><div class="num" id="paso">0</div><div class="lbl">Paso</div></div>
+    <div class="stat"><div class="num" id="luz">100</div><div class="lbl">Luz</div></div>
+    <div class="stat"><div class="num" id="sabiduria">0</div><div class="lbl">Sabiduría</div></div>
+  </div>
+
+  <div class="escena" id="escena">
+    <div class="hebrew-titulo">אור</div>
+    <div class="titulo">El Viaje del Alma</div>
+    <div class="texto">
+      Eres una chispa de luz que acaba de descender al mundo de Asiá.
+      Has olvidado tu origen. Tu tarea: recordar, ascender, retornar.
+      <br><br>
+      Ante ti hay tres caminos.
+    </div>
+    <div class="opciones-av" id="opciones"></div>
+  </div>
+
+  <div style="text-align:center;margin-top:1.5rem;">
+    <button id="reiniciar" class="btn">🔄 Nueva Aventura</button>
+  </div>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Aventura Narrativa</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const ESCENAS = {
+  inicio: {
+    h:'אור', t:'El Descenso',
+    txt:'Eres una chispa de luz. Acabas de descender al mundo de Asiá. Has olvidado tu origen. Ante ti hay tres caminos.',
+    ops:[
+      { txt:'Caminar hacia el Este, buscando el amanecer', next:'este', luz:-5, sab:5 },
+      { txt:'Sentarte a meditar en silencio', next:'meditacion', luz:10, sab:10 },
+      { txt:'Buscar un maestro que te guíe', next:'maestro', luz:0, sab:15 }
+    ]
+  },
+  este: {
+    h:'מזרח', t:'El Camino del Este',
+    txt:'Caminas hacia el amanecer. Encuentras un río de agua cristalina. Al otro lado ves una ciudad dorada. Pero el agua es profunda.',
+    ops:[
+      { txt:'Sumergirte y nadar al otro lado', next:'ciudad', luz:-10, sab:20 },
+      { txt:'Seguir el río hacia el norte', next:'norte', luz:5, sab:10 },
+      { txt:'Sentarte en la orilla y contemplar', next:'contemplar', luz:15, sab:15 }
+    ]
+  },
+  meditacion: {
+    h:'התבודדות', t:'El Silencio',
+    txt:'Te sientas en silencio. Poco a poco, el ruido del mundo se disuelve. Escuchas una voz interior que dice: "Recuerda quién eres".',
+    ops:[
+      { txt:'Escuchar más profundamente', next:'voz', luz:20, sab:25 },
+      { txt:'Abrir los ojos y seguir caminando', next:'camino', luz:0, sab:10 },
+      { txt:'Preguntar a la voz quién eres', next:'pregunta', luz:10, sab:30 }
+    ]
+  },
+  maestro: {
+    h:'רב', t:'El Encuentro con el Maestro',
+    txt:'Encuentras a un anciano junto a un árbol. Te mira y dice: "Llegaste. Te estaba esperando. ¿Qué buscas?"',
+    ops:[
+      { txt:'"Busco la verdad"', next:'verdad', luz:15, sab:25 },
+      { txt:'"Busco el poder"', next:'poder', luz:-20, sab:5 },
+      { txt:'"No lo sé"', next:'no-se', luz:10, sab:20 }
+    ]
+  },
+  ciudad: {
+    h:'עיר', t:'La Ciudad Dorada',
+    txt:'Llegas a la ciudad. Sus habitantes te reciben con alegría. Te ofrecen riquezas y honores. Pero algo en ti sabe que esto no es lo que buscas.',
+    ops:[
+      { txt:'Aceptar los honores', next:'honores', luz:-30, sab:0 },
+      { txt:'Rechazar y seguir tu camino', next:'camino', luz:20, sab:20 },
+      { txt:'Preguntar por el Templo', next:'templo', luz:10, sab:15 }
+    ]
+  },
+  norte: {
+    h:'צפון', t:'El Camino del Norte',
+    txt:'Caminas hacia el norte. El frío aumenta. Encuentras una cueva con una luz tenue al fondo.',
+    ops:[
+      { txt:'Entrar en la cueva', next:'cueva', luz:10, sab:20 },
+      { txt:'Regresar al río', next:'este', luz:0, sab:5 },
+      { txt:'Sentarte a descansar', next:'contemplar', luz:5, sab:10 }
+    ]
+  },
+  contemplar: {
+    h:'התבוננות', t:'La Contemplación',
+    txt:'Contemplas el paisaje. De pronto, todo se vuelve transparente. Ves la unidad detrás de las formas. Una comprensión profunda te llena.',
+    ops:[
+      { txt:'Permanecer en este estado', next:'unidad', luz:25, sab:30 },
+      { txt:'Compartir lo que ves con otros', next:'compartir', luz:15, sab:20 },
+      { txt:'Volver al camino', next:'camino', luz:5, sab:15 }
+    ]
+  },
+  voz: {
+    h:'קול', t:'La Voz Interior',
+    txt:'La voz dice: "Soy Yejidá, tu esencia. Nunca te separaste de mí. Solo lo olvidaste. Ahora recuerda."',
+    ops:[
+      { txt:'Aceptar y disolverte en la voz', next:'yejida', luz:40, sab:40 },
+      { txt:'Preguntar cómo recordar siempre', next:'recordar', luz:20, sab:30 },
+      { txt:'Dudar de la voz', next:'duda', luz:-10, sab:10 }
+    ]
+  },
+  pregunta: {
+    h:'שאלה', t:'La Gran Pregunta',
+    txt:'La voz responde: "Eres una chispa del Infinito. Tu alma es Yejidá, nunca separada de Mí. Todo lo demás son velos."',
+    ops:[
+      { txt:'Aceptar y meditar en esto', next:'yejida', luz:30, sab:35 },
+      { txt:'Pedir una señal', next:'senal', luz:10, sab:15 }
+    ]
+  },
+  verdad: {
+    h:'אמת', t:'La Verdad',
+    txt:'El maestro sonríe. "La verdad no se busca, se reconoce. Está en ti desde siempre."',
+    ops:[
+      { txt:'Sentarte a estudiar con él', next:'estudio', luz:20, sab:30 },
+      { txt:'Agradecer y partir', next:'camino', luz:10, sab:15 }
+    ]
+  },
+  poder: {
+    h:'כח', t:'El Poder',
+    txt:'El maestro frunce el ceño. "El poder sin sabiduría destruye. ¿Estás seguro?"',
+    ops:[
+      { txt:'"Sí, dame el poder"', next:'honores', luz:-30, sab:0 },
+      { txt:'"Tienes razón, busco sabiduría"', next:'verdad', luz:15, sab:20 }
+    ]
+  },
+  'no-se': {
+    h:'לא יודע', t:'El No Saber',
+    txt:'"El no saber es el comienzo de la sabiduría", dice el maestro. "Quédate conmigo. Te enseñaré."',
+    ops:[
+      { txt:'Aceptar y quedarte', next:'estudio', luz:20, sab:25 },
+      { txt:'Agradecer y seguir', next:'camino', luz:5, sab:10 }
+    ]
+  },
+  honores: {
+    h:'כבוד', t:'Los Honores',
+    txt:'Recibes honores y riquezas. Pero cuanto más tienes, más vacío te sientes. Has olvidado algo esencial.',
+    ops:[
+      { txt:'Renunciar a todo y volver', next:'camino', luz:-10, sab:15 },
+      { txt:'Quedarte con las riquezas', next:'final-vacio', luz:-50, sab:0 }
+    ]
+  },
+  templo: {
+    h:'בית המקדש', t:'El Templo',
+    txt:'Te conducen a un templo antiguo. En el centro hay una luz que no ilumina, sino que muestra. Te muestras a ti mismo.',
+    ops:[
+      { txt:'Contemplar tu reflejo', next:'reflejo', luz:20, sab:30 },
+      { txt:'Apartar la mirada', next:'duda', luz:-10, sab:10 }
+    ]
+  },
+  cueva: {
+    h:'מערה', t:'La Cueva',
+    txt:'Dentro de la cueva hay un anciano que medita. Abre los ojos y dice: "El silencio es la puerta. El aliento es la llave."',
+    ops:[
+      { txt:'Sentarte a meditar con él', next:'voz', luz:25, sab:30 },
+      { txt:'Preguntar por el secreto', next:'verdad', luz:15, sab:20 }
+    ]
+  },
+  unidad: {
+    h:'אחדות', t:'La Unidad',
+    txt:'Todo se disuelve. Las formas, los nombres, el tiempo. Solo queda la Unidad. Eres Uno con Todo.',
+    ops:[
+      { txt:'Permanecer aquí', next:'yejida', luz:50, sab:50 },
+      { txt:'Volver para ayudar a otros', next:'compartir', luz:20, sab:30 }
+    ]
+  },
+  compartir: {
+    h:'לשתף', t:'Compartir',
+    txt:'Vuelves al mundo con la sabiduría adquirida. Enseñas a otros. Cada uno comienza su propio viaje.',
+    ops:[
+      { txt:'Seguir enseñando', next:'yejida', luz:30, sab:35 },
+      { txt:'Volver a meditar', next:'voz', luz:20, sab:25 }
+    ]
+  },
+  recordar: {
+    h:'לזכור', t:'Recordar',
+    txt:'La voz dice: "Cada vez que respiras, recuerdas. Cada vez que amas, recuerdas. Cada vez que perdonas, recuerdas."',
+    ops:[
+      { txt:'Prometer recordar', next:'yejida', luz:40, sab:40 }
+    ]
+  },
+  duda: {
+    h:'ספק', t:'La Duda',
+    txt:'La duda te paraliza. El camino se vuelve oscuro. Pero incluso la duda es parte del viaje.',
+    ops:[
+      { txt:'Aceptar la duda y seguir', next:'voz', luz:10, sab:20 },
+      { txt:'Rendirte', next:'final-vacio', luz:-30, sab:5 }
+    ]
+  },
+  senal: {
+    h:'סימן', t:'La Señal',
+    txt:'El cielo se abre. Una luz desciende sobre ti. La voz dice: "Esta es mi señal. Ahora sabes."',
+    ops:[
+      { txt:'Aceptar y meditar', next:'yejida', luz:30, sab:35 }
+    ]
+  },
+  estudio: {
+    h:'לימוד', t:'El Estudio',
+    txt:'Estudias durante años con el maestro. Aprendes las letras, las Sefirot, los mundos. Poco a poco, todo cobra sentido.',
+    ops:[
+      { txt:'Continuar estudiando', next:'yejida', luz:30, sab:40 },
+      { txt:'Enseñar a otros', next:'compartir', luz:20, sab:25 }
+    ]
+  },
+  camino: {
+    h:'דרך', t:'El Camino',
+    txt:'Sigues caminando. El camino se vuelve cada vez más claro. La luz del horizonte te llama.',
+    ops:[
+      { txt:'Acelerar el paso', next:'yejida', luz:20, sab:25 },
+      { txt:'Sentarte a descansar', next:'contemplar', luz:10, sab:15 }
+    ]
+  },
+  reflejo: {
+    h:'מראה', t:'El Reflejo',
+    txt:'Te ves a ti mismo. No como creías ser, sino como realmente eres: una chispa eterna, un fragmento de lo Infinito.',
+    ops:[
+      { txt:'Aceptar tu verdadera naturaleza', next:'yejida', luz:40, sab:40 },
+      { txt:'Dudar de lo que ves', next:'duda', luz:-10, sab:10 }
+    ]
+  },
+  yejida: {
+    h:'יחידה', t:'Yejidá',
+    txt:'Has llegado. No hay separación. Siempre estuviste en Casa. Solo lo olvidaste. Ahora lo recuerdas. Eres Yejidá.',
+    final: true, finalMsg: '✦ Has retornado a la Unidad ✦'
+  },
+  'final-vacio': {
+    h:'ריק', t:'El Vacío',
+    txt:'Te pierdes en el vacío de tus elecciones. Pero incluso aquí, una chispa de luz te acompaña. Nunca es tarde para volver.',
+    final: true, finalMsg: '◈ El viaje continúa · Prueba otro camino ◈'
+  }
+};
+
+let luz = 100, sab = 0, paso = 0;
+let escenaActual = 'inicio';
+
+function iniciar(){
+  luz = 100;
+  sab = 0;
+  paso = 0;
+  escenaActual = 'inicio';
+  mostrarEscena();
+}
+
+function mostrarEscena(){
+  const esc = ESCENAS[escenaActual];
+  if(!esc){
+    document.getElementById('escena').innerHTML = '<p>Error: escena no encontrada.</p>';
+    return;
+  }
+  paso++;
+  document.getElementById('paso').textContent = paso;
+  document.getElementById('luz').textContent = Math.max(0, Math.min(100, luz));
+  document.getElementById('sabiduria').textContent = sab;
+
+  const cont = document.getElementById('escena');
+  cont.innerHTML = `
+    <div class="hebrew-titulo">${esc.h}</div>
+    <div class="titulo">${esc.t}</div>
+    <div class="texto">${esc.txt}</div>
+    <div class="opciones-av" id="opciones"></div>
+  `;
+
+  const ops = document.getElementById('opciones');
+  if(esc.final){
+    ops.innerHTML = `
+      <div style="text-align:center;padding:1.5rem;
+        background:radial-gradient(circle, rgba(212,175,55,.15), transparent 70%),
+        rgba(10,12,30,.7);border-radius:14px;margin-top:1rem;">
+        <div style="font-size:1.3rem;color:var(--gold2);margin-bottom:1rem;">
+          ${esc.finalMsg}
+        </div>
+        <div style="color:var(--muted);font-size:.9rem;">
+          Pasos: ${paso} · Luz final: ${Math.max(0, Math.min(100, luz))} · Sabiduría: ${sab}
+        </div>
+      </div>
+    `;
+  } else if(esc.ops){
+    esc.ops.forEach(o => {
+      const btn = document.createElement('button');
+      btn.className = 'op-av';
+      btn.innerHTML = `<span class="arrow">✦</span>${o.txt}`;
+      btn.addEventListener('click', () => elegir(o));
+      ops.appendChild(btn);
+    });
+  }
+}
+
+function elegir(opcion){
+  luz = Math.max(0, Math.min(100, luz + (opcion.luz || 0)));
+  sab += (opcion.sab || 0);
+  escenaActual = opcion.next;
+  setTimeout(mostrarEscena, 200);
+}
+
+document.getElementById('reiniciar').addEventListener('click', iniciar);
+iniciar();
+</script>
+</body>
+</html>
