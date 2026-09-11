@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Ciclos personales: año, mes y día personal según numerología">
+<title>✦ Ciclos Personales — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">מחזורים</div>
+  <h1>✦ Ciclos Personales ✦</h1>
+  <p>Año · Mes · Día personal</p>
+  <span class="page-number">Herramienta · Ciclos</span>
+</header>
+
+<section>
+  <h2>🔄 ¿Qué son los Ciclos Personales?</h2>
+  <p>Cada persona vive en un <strong>ciclo numerológico de 9 años</strong>. Saber
+  en qué punto estás te ayuda a fluir con la energía del momento en lugar de
+  resistirla.</p>
+  <p>También hay ciclos mensuales y diarios que matizan la energía.</p>
+</section>
+
+<section>
+  <h2>🜁 Tus Datos</h2>
+  <form id="ciclos-form" autocomplete="off">
+    <div class="form-grid">
+      <div class="form-field full">
+        <label for="fecha">Fecha de nacimiento</label>
+        <input type="date" id="fecha" required>
+      </div>
+      <div class="form-field full">
+        <label for="consulta">Fecha a consultar (opcional, por defecto hoy)</label>
+        <input type="date" id="consulta">
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1.2rem">
+      <button type="submit" class="btn">✦ Ver mis Ciclos ✦</button>
+    </div>
+  </form>
+</section>
+
+<div id="results" style="display:none"></div>
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Ciclos Personales</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const HEB = {1:'א',2:'ב',3:'ג',4:'ד',5:'ה',6:'ו',7:'ז',8:'ח',9:'ט'};
+const CICLO = {
+  1:{n:'Inicio',d:'Nuevos comienzos, siembra. Año de iniciativas y liderazgo.'},
+  2:{n:'Gestación',d:'Paciencia, cooperación. Tiempo de espera y asociaciones.'},
+  3:{n:'Expansión',d:'Creatividad, expresión. Año social y alegre.'},
+  4:{n:'Cimiento',d:'Trabajo, orden. Construir bases sólidas.'},
+  5:{n:'Cambio',d:'Libertad, movimiento. Año impredecible y dinámico.'},
+  6:{n:'Responsabilidad',d:'Hogar, amor, servicio. Año familiar.'},
+  7:{n:'Introspección',d:'Análisis, espiritualidad. Año interno.'},
+  8:{n:'Cosecha',d:'Poder, abundancia. Año de logros materiales.'},
+  9:{n:'Cierre',d:'Finales, limpieza. Año de soltar y perdonar.'}
+};
+const MES = {
+  1:{n:'Iniciativa',d:'Comienza proyectos.'},
+  2:{n:'Diplomacia',d:'Colabora, espera.'},
+  3:{n:'Social',d:'Comunica, crea.'},
+  4:{n:'Trabajo',d:'Organiza, ordena.'},
+  5:{n:'Movimiento',d:'Viaja, cambia.'},
+  6:{n:'Hogar',d:'Cuida, ama.'},
+  7:{n:'Reflexión',d:'Medita, estudia.'},
+  8:{n:'Acción',d:'Decide, ejecuta.'},
+  9:{n:'Cierre',d:'Suelta, perdona.'}
+};
+
+function reduce(n){
+  while(n > 9){
+    if([11,22,33].includes(n)) return n;
+    n = String(n).split('').reduce((a,b) => a + +b, 0);
+  }
+  return n;
+}
+
+document.getElementById('ciclos-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const fechaStr = document.getElementById('fecha').value;
+  const consultaStr = document.getElementById('consulta').value;
+  if(!fechaStr) return alert('Ingresa tu fecha de nacimiento.');
+
+  const nacimiento = new Date(fechaStr + 'T12:00:00');
+  const consulta = consultaStr
+    ? new Date(consultaStr + 'T12:00:00')
+    : new Date();
+
+  const dd = nacimiento.getDate(), mm = nacimiento.getMonth() + 1;
+  const anioActual = consulta.getFullYear();
+  const mesActual = consulta.getMonth() + 1;
+  const diaActual = consulta.getDate();
+
+  const anioPersonal = reduce(dd + mm + anioActual);
+  const mesPersonal = reduce(anioPersonal + mesActual);
+  const diaPersonal = reduce(mesPersonal + diaActual);
+
+  // Camino de vida para contexto
+  const caminoVida = reduce(dd + mm + nacimiento.getFullYear());
+
+  const tarjeta = (label, valor, dic) => `
+    <div class="result-card">
+      <div class="label">${label}</div>
+      <div class="value">${valor}<span class="hebrew-letter">${HEB[valor]||''}</span></div>
+      ${dic[valor] ? `<div class="name">${dic[valor].n}</div>
+        <div class="desc">${dic[valor].d}</div>` : ''}
+    </div>
+  `;
+
+  const results = document.getElementById('results');
+  results.style.display = 'block';
+  results.innerHTML = `
+    <section>
+      <h2>📅 Ciclos para ${consulta.toLocaleDateString('es-MX', {
+        day:'numeric', month:'long', year:'numeric'})}</h2>
+      <div class="result-grid">
+        ${tarjeta('Año Personal', anioPersonal, CICLO)}
+        ${tarjeta('Mes Personal', mesPersonal, MES)}
+        ${tarjeta('Día Personal', diaPersonal, MES)}
+        ${tarjeta('Camino de Vida', caminoVida, CICLO)}
+      </div>
+    </section>
+
+    <section>
+      <h2>🎯 Guía del Año Personal ${anioPersonal}</h2>
+      <div class="equation">
+        <div class="big">${CICLO[anioPersonal]?.n}</div>
+        <div class="heb">${HEB[anioPersonal]}</div>
+      </div>
+      <p>${CICLO[anioPersonal]?.d}</p>
+      <h3>Recomendaciones</h3>
+      <ul>
+        ${anioPersonal === 1 ? '<li>Comienza proyectos nuevos</li><li>Sé proactivo</li><li>Confía en tu iniciativa</li>' : ''}
+        ${anioPersonal === 2 ? '<li>Cultiva la paciencia</li><li>Fortalece relaciones</li><li>Espera el momento adecuado</li>' : ''}
+        ${anioPersonal === 3 ? '<li>Exprésate creativamente</li><li>Socializa</li><li>Disfruta y comparte</li>' : ''}
+        ${anioPersonal === 4 ? '<li>Trabaja con constancia</li><li>Organiza tus finanzas</li><li>Construye a largo plazo</li>' : ''}
+        ${anioPersonal === 5 ? '<li>Viaja si puedes</li><li>Acepta los cambios</li><li>Rompe la rutina</li>' : ''}
+        ${anioPersonal === 6 ? '<li>Cuida a tu familia</li><li>Haz servicio</li><li>Embellece tu hogar</li>' : ''}
+        ${anioPersonal === 7 ? '<li>Estudia, medita</li><li>Busca soledad sagrada</li><li>Analiza antes de actuar</li>' : ''}
+        ${anioPersonal === 8 ? '<li>Asume liderazgo</li><li>Negocia, invierte</li><li>Concreta metas materiales</li>' : ''}
+        ${anioPersonal === 9 ? '<li>Suelta lo viejo</li><li>Perdona y despide</li><li>Limpia tu vida</li>' : ''}
+      </ul>
+    </section>
+
+    <section>
+      <h2>📖 Los 9 Años del Ciclo</h2>
+      <table>
+        <thead><tr><th>Año</th><th>Nombre</th><th>Energía</th></tr></thead>
+        <tbody>
+          ${[1,2,3,4,5,6,7,8,9].map(n =>
+            `<tr><td>${n}</td><td>${CICLO[n].n}</td><td>${CICLO[n].d}</td></tr>`
+          ).join('')}
+        </tbody>
+      </table>
+    </section>
+  `;
+  results.scrollIntoView({ behavior:'smooth' });
+});
+</script>
+</body>
+</html>
