@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Las 12 Tribus de Israel: símbolos, piedras, colores y bendiciones">
+<title>✦ Rueda de las 12 Tribus — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.rueda-tribus{width:100%;max-width:600px;margin:2rem auto;display:block;
+  filter:drop-shadow(0 0 30px rgba(212,175,55,.35));}
+.rueda-tribus .sector{fill:none;stroke:rgba(212,175,55,.25);stroke-width:1;
+  cursor:pointer;transition:all .3s;}
+.rueda-tribus .sector:hover{fill:rgba(212,175,55,.1);stroke:var(--gold);}
+.rueda-tribus .sym{font-size:22px;text-anchor:middle;dominant-baseline:middle;
+  pointer-events:none;}
+.rueda-tribus .nom{fill:var(--gold2);font-size:11px;text-anchor:middle;
+  font-family:var(--font-heb);pointer-events:none;font-weight:600;}
+.rueda-tribus .piedra{fill:var(--muted);font-size:8px;text-anchor:middle;
+  pointer-events:none;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">י"ב שבטים</div>
+  <h1>✦ Las 12 Tribus de Israel ✦</h1>
+  <p>Símbolos · Piedras · Colores · Bendiciones</p>
+  <span class="page-number">Visualización · Ruedas</span>
+</header>
+
+<section>
+  <h2>👥 La Rueda Tribal</h2>
+  <p>Las 12 tribus corresponden a los 12 signos, los 12 meses hebreos y las
+  12 piedras del <strong>Hoshen</strong> (pectoral del Sumo Sacerdote).</p>
+
+  <svg class="rueda-tribus" id="rueda-svg" viewBox="0 0 500 500" role="img"
+    aria-label="Rueda de las 12 Tribus">
+    <g id="rueda-g" transform="translate(250,250)"></g>
+  </svg>
+
+  <div id="info-tribu" style="margin-top:1.5rem;padding:1.5rem;
+    background:rgba(5,6,15,.5);border:1px solid var(--line);border-radius:12px;
+    min-height:100px;">
+    <p style="color:var(--muted);text-align:center;">Selecciona una tribu.</p>
+  </div>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Rueda de las Tribus</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const TRIBUS = [
+  { n:'Yehudá',    heb:'יהודה',  sym:'🦁', piedra:'Rubí',       color:'Rojo',        signo:'Aries',       bend:'Liderazgo y realeza' },
+  { n:'Isajar',    heb:'יששכר',  sym:'🐂', piedra:'Topacio',    color:'Verde',       signo:'Tauro',       bend:'Estudio y sabiduría' },
+  { n:'Zevulún',   heb:'זבולון', sym:'⛵', piedra:'Esmeralda',  color:'Verde claro', signo:'Géminis',     bend:'Comercio y sostén' },
+  { n:'Reubén',    heb:'ראובן',  sym:'🌊', piedra:'Carbunclo',  color:'Rojo oscuro', signo:'Cáncer',      bend:'Visión y compasión' },
+  { n:'Shimón',    heb:'שמעון',  sym:'⚔️', piedra:'Zafiro',     color:'Azul',        signo:'Leo',         bend:'Coraje y celo' },
+  { n:'Gad',       heb:'גד',     sym:'⛺', piedra:'Ágata',      color:'Gris',        signo:'Virgo',       bend:'Orden y fidelidad' },
+  { n:'Efraim',    heb:'אפרים',  sym:'🌾', piedra:'Amatista',   color:'Violeta',     signo:'Libra',       bend:'Fertilidad y bendición' },
+  { n:'Menashé',   heb:'מנשה',   sym:'🏹', piedra:'Ónice',      color:'Negro',       signo:'Escorpio',    bend:'Transformación y poder' },
+  { n:'Biniamín',  heb:'בנימין', sym:'🐺', piedra:'Jaspe',      color:'Multicolor',  signo:'Sagitario',   bend:'Intuición y valentía' },
+  { n:'Dan',       heb:'דן',     sym:'⚖️', piedra:'Crisólito',  color:'Amarillo',    signo:'Capricornio', bend:'Justicia y juicio' },
+  { n:'Asher',     heb:'אשר',    sym:'🌿', piedra:'Berilo',     color:'Azul claro',  signo:'Acuario',     bend:'Prosperidad y alegría' },
+  { n:'Naftalí',   heb:'נפתלי',  sym:'🦌', piedra:'Ámbar',      color:'Naranja',     signo:'Piscis',      bend:'Libertad y poesía' }
+];
+
+document.addEventListener('DOMContentLoaded', () => {
+  const g = document.getElementById('rueda-g');
+  const R1 = 80, R2 = 200;
+  const info = document.getElementById('info-tribu');
+
+  TRIBUS.forEach((t, i) => {
+    const a1 = (Math.PI * 2 / 12) * i - Math.PI / 2;
+    const a2 = (Math.PI * 2 / 12) * (i + 1) - Math.PI / 2;
+    const am = (a1 + a2) / 2;
+
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    const x1 = Math.cos(a1) * R2, y1 = Math.sin(a1) * R2;
+    const x2 = Math.cos(a2) * R2, y2 = Math.sin(a2) * R2;
+    const x3 = Math.cos(a2) * R1, y3 = Math.sin(a2) * R1;
+    const x4 = Math.cos(a1) * R1, y4 = Math.sin(a1) * R1;
+    const d = `M ${x1} ${y1} A ${R2} ${R2} 0 0 1 ${x2} ${y2} L ${x3} ${y3} A ${R1} ${R1} 0 0 0 ${x4} ${y4} Z`;
+    path.setAttribute('d', d);
+    path.setAttribute('class', 'sector');
+    path.setAttribute('tabindex', '0');
+    path.setAttribute('role', 'button');
+    path.setAttribute('aria-label', t.n);
+    path.addEventListener('click', () => show(t));
+    path.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); show(t); }
+    });
+    g.appendChild(path);
+
+    // Símbolo
+    const sym = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    sym.setAttribute('x', Math.cos(am) * (R2 - 25));
+    sym.setAttribute('y', Math.sin(am) * (R2 - 25));
+    sym.setAttribute('class', 'sym');
+    sym.textContent = t.sym;
+    g.appendChild(sym);
+
+    // Nombre hebreo
+    const nom = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    nom.setAttribute('x', Math.cos(am) * (R1 + 40));
+    nom.setAttribute('y', Math.sin(am) * (R1 + 40));
+    nom.setAttribute('class', 'nom');
+    nom.textContent = t.heb;
+    g.appendChild(nom);
+
+    // Piedra
+    const piedra = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    piedra.setAttribute('x', Math.cos(am) * (R1 + 20));
+    piedra.setAttribute('y', Math.sin(am) * (R1 + 20) + 12);
+    piedra.setAttribute('class', 'piedra');
+    piedra.textContent = t.piedra;
+    g.appendChild(piedra);
+  });
+
+  [R1, R2].forEach(r => {
+    const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    c.setAttribute('r', r);
+    c.setAttribute('fill', 'none');
+    c.setAttribute('stroke', 'rgba(212,175,55,.3)');
+    c.setAttribute('stroke-width', '1');
+    g.appendChild(c);
+  });
+
+  function show(t){
+    info.innerHTML = `
+      <h3 style="color:var(--gold2);font-size:1.4rem;text-align:center;margin-bottom:.5rem;">
+        ${t.sym} ${t.n}
+      </h3>
+      <p style="text-align:center;font-size:1.4rem;color:var(--gold);
+        font-family:var(--font-heb);direction:rtl;margin-bottom:1rem;">
+        ${t.heb}
+      </p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+        gap:.8rem;">
+        <div><span style="color:var(--muted);font-size:.72rem;">SIGNO</span><br>
+          <span style="color:var(--gold2);font-weight:600;">${t.signo}</span></div>
+        <div><span style="color:var(--muted);font-size:.72rem;">PIEDRA</span><br>
+          <span style="color:var(--cyan);font-weight:600;">${t.piedra}</span></div>
+        <div><span style="color:var(--muted);font-size:.72rem;">COLOR</span><br>
+          <span style="color:var(--gold2);font-weight:600;">${t.color}</span></div>
+        <div><span style="color:var(--muted);font-size:.72rem;">BENDICIÓN</span><br>
+          <span style="color:var(--text);font-weight:600;">${t.bend}</span></div>
+      </div>
+    `;
+  }
+});
+</script>
+</body>
+</html>
