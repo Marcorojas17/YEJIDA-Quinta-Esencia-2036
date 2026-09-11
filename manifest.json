@@ -1,0 +1,19 @@
+{
+  "name": "Yejidá Kabaláh — La Quinta Esencia del Alma",
+  "short_name": "Yejidá",
+  "description": "Kabaláh, numerología, astrología y geometría sagrada",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#05060f",
+  "theme_color": "#d4af37",
+  "orientation": "portrait-primary",
+  "lang": "es",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%2305060f'/%3E%3Ctext x='50%25' y='70%25' font-size='350' text-anchor='middle' fill='%23d4af37'%3E%E2%9C%A1%3C/text%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
