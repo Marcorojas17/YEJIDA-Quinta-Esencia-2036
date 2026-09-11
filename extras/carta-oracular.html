@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Carta oracular: saca una carta de las 22 letras hebreas">
+<title>✦ Carta Oracular — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.carta-oral{max-width:400px;margin:1.5rem auto;padding:2.5rem 1.5rem;
+  background:radial-gradient(circle at 50% 30%,
+  rgba(212,175,55,.15), transparent 70%), rgba(5,6,15,.8);
+  border:3px double var(--gold);border-radius:20px;
+  box-shadow:0 0 60px rgba(212,175,55,.4);
+  text-align:center;min-height:400px;
+  display:flex;flex-direction:column;justify-content:center;
+  align-items:center;gap:1rem;
+  transition:all .8s cubic-bezier(.4,0,.2,1);}
+.carta-oral.oculta{background:linear-gradient(135deg,
+  rgba(212,175,55,.2), rgba(108,92,231,.2)), rgba(5,6,15,.9);
+  color:transparent;}
+.carta-oral .simbolo{font-size:5rem;color:var(--gold2);
+  font-family:var(--font-heb);direction:rtl;
+  text-shadow:0 0 40px rgba(212,175,55,.9);line-height:1;
+  animation:pulse-glow 3s ease-in-out infinite;}
+.carta-oral .nombre{color:var(--gold2);font-size:1.5rem;
+  letter-spacing:.2em;}
+.carta-oral .mensaje{color:var(--text);font-size:1rem;
+  line-height:1.7;font-style:italic;}
+.carta-oral .palabra-clave{color:var(--cyan);font-size:.85rem;
+  letter-spacing:.2em;text-transform:uppercase;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">קלף</div>
+  <h1>✦ Carta Oracular ✦</h1>
+  <p>Las 22 letras como oráculo</p>
+  <span class="page-number">Extras · Oráculo</span>
+</header>
+
+<section>
+  <h2>🎴 Saca tu Carta</h2>
+  <p style="color:var(--muted);font-size:.9rem;text-align:center;">
+    Concéntrate en una pregunta o intención. Luego saca una carta.
+  </p>
+
+  <div class="carta-oral oculta" id="carta">
+    <div class="simbolo">✡</div>
+    <div class="nombre">Yejidá</div>
+    <div class="palabra-clave">Concéntrate...</div>
+    <div class="mensaje">Presiona el botón para sacar tu carta.</div>
+  </div>
+
+  <div style="text-align:center;margin-top:1.5rem;">
+    <button id="sacar" class="btn">✦ Sacar Carta ✦</button>
+  </div>
+</section>
+
+<section>
+  <h2>📖 Las 22 Cartas</h2>
+  <p>Cada letra hebrea es una carta del oráculo, con su mensaje particular.</p>
+  <table>
+    <thead><tr><th>Letra</th><th>Nombre</th><th>Mensaje</th></tr></thead>
+    <tbody id="tabla-cartas"></tbody>
+  </table>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Carta Oracular</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const CARTAS = [
+  { l:'א', n:'Alef', k:'Unidad', m:'Todo está conectado. Lo que buscas ya está en ti.' },
+  { l:'ב', n:'Bet', k:'Hogar', m:'Vuelve a tus raíces. La respuesta está en tu casa interior.' },
+  { l:'ג', n:'Guimel', k:'Dar', m:'Da sin esperar. La abundancia llega al que comparte.' },
+  { l:'ד', n:'Dalet', k:'Puerta', m:'Una puerta se abre. Atraviesa con valentía.' },
+  { l:'ה', n:'He', k:'Revelación', m:'Lo oculto se revelará. Presta atención a las señales.' },
+  { l:'ו', n:'Vav', k:'Conexión', m:'Conecta lo separado. Une lo que el miedo dividió.' },
+  { l:'ז', n:'Zayin', k:'Discernimiento', m:'Corta lo que ya no sirve. La espada del alma decide.' },
+  { l:'ח', n:'Jet', k:'Vida', m:'Elige la vida. Cada momento es una nueva oportunidad.' },
+  { l:'ט', n:'Tet', k:'Bondad oculta', m:'El bien está presente, aunque no lo veas. Confía.' },
+  { l:'י', n:'Yud', k:'Potencial', m:'Un pequeño gesto puede cambiar todo. Empieza pequeño.' },
+  { l:'כ', n:'Kaf', k:'Canal', m:'Eres un canal. Deja fluir la bendición a través de ti.' },
+  { l:'ל', n:'Lamed', k:'Estudio', m:'Aprende algo nuevo. La sabiduría llega al que busca.' },
+  { l:'מ', n:'Mem', k:'Sabiduría', m:'Las aguas profundas te llaman. Sumérgete en tu interior.' },
+  { l:'נ', n:'Nun', k:'Fidelidad', m:'Mantente fiel. Lo que comenzaste dará fruto.' },
+  { l:'ס', n:'Samej', k:'Apoyo', m:'No estás solo. Permite que otros te sostengan.' },
+  { l:'ע', n:'Ayin', k:'Visión', m:'Abre los ojos del alma. Ve más allá de las apariencias.' },
+  { l:'פ', n:'Pe', k:'Expresión', m:'Habla tu verdad. Tu voz es necesaria.' },
+  { l:'צ', n:'Tzadi', k:'Justicia', m:'Actúa con rectitud. La justicia divina está contigo.' },
+  { l:'ק', n:'Kuf', k:'Santidad', m:'Eleva lo mundano. Cada acto puede ser sagrado.' },
+  { l:'ר', n:'Resh', k:'Liderazgo', m:'Asume tu lugar. Otros esperan tu guía.' },
+  { l:'ש', n:'Shin', k:'Fuego', m:'La transformación duele pero purifica. Acepta el cambio.' },
+  { l:'ת', n:'Tav', k:'Verdad', m:'La verdad te hará libre. Búscala sin miedo.' }
+];
+
+let bloqueado = false;
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('tabla-cartas').innerHTML = CARTAS.map(c => `
+    <tr>
+      <td class="hebrew-inline" style="font-size:1.3rem;">${c.l}</td>
+      <td><strong>${c.n}</strong></td>
+      <td>${c.m}</td>
+    </tr>
+  `).join('');
+});
+
+document.getElementById('sacar').addEventListener('click', () => {
+  if(bloqueado) return;
+  bloqueado = true;
+  const carta = CARTAS[Math.floor(Math.random() * CARTAS.length)];
+  const el = document.getElementById('carta');
+
+  // Animación de salida
+  el.classList.add('oculta');
+  el.innerHTML = `
+    <div class="simbolo">✡</div>
+    <div class="nombre">✦</div>
+    <div class="palabra-clave">Revelando...</div>
+  `;
+
+  setTimeout(() => {
+    el.classList.remove('oculta');
+    el.innerHTML = `
+      <div class="simbolo">${carta.l}</div>
+      <div class="nombre">${carta.n}</div>
+      <div class="palabra-clave">${carta.k}</div>
+      <div class="mensaje">"${carta.m}"</div>
+    `;
+    bloqueado = false;
+  }, 800);
+});
+</script>
+</body>
+</html>
