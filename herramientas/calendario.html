@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Calendario hebreo: meses, festividades y correspondencias">
+<title>✦ Calendario Hebreo — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">לוח שנה</div>
+  <h1>✦ Calendario Hebreo ✦</h1>
+  <p>12 meses · Festividades · Letras · Tribus</p>
+  <span class="page-number">Herramienta · Calendario</span>
+</header>
+
+<section>
+  <h2>📅 Los 12 Meses Hebreos</h2>
+  <p>El calendario hebreo es <strong>lunar-solar</strong>: cada mes comienza con
+  luna nueva, y cada 2-3 años se añade un <strong>mes bisiesto (Adar II)</strong>
+  para alinear con el sol.</p>
+
+  <table>
+    <thead>
+      <tr><th>#</th><th>Mes</th><th>Hebreo</th><th>Signo</th><th>Tribu</th><th>Letra</th></tr>
+    </thead>
+    <tbody id="tabla-meses"></tbody>
+  </table>
+</section>
+
+<section>
+  <h2>🎉 Festividades Principales</h2>
+  <table>
+    <thead><tr><th>Festividad</th><th>Mes</th><th>Significado</th></tr></thead>
+    <tbody>
+      <tr><td>Rosh Hashaná</td><td>Tishrei</td><td>Año Nuevo</td></tr>
+      <tr><td>Yom Kipur</td><td>Tishrei</td><td>Día del Perdón</td></tr>
+      <tr><td>Sucot</td><td>Tishrei</td><td>Cabañas</td></tr>
+      <tr><td>Janucá</td><td>Kislev</td><td>Luz, dedicación</td></tr>
+      <tr><td>Tu BiShvat</td><td>Shevat</td><td>Año Nuevo de los árboles</td></tr>
+      <tr><td>Purim</td><td>Adar</td><td>Salvación de Ester</td></tr>
+      <tr><td>Pésaj</td><td>Nisán</td><td>Éxodo de Egipto</td></tr>
+      <tr><td>Lag BaOmer</td><td>Iyar</td><td>Rabí Shimón Bar Yojái</td></tr>
+      <tr><td>Shavuot</td><td>Siván</td><td>Entrega de la Torá</td></tr>
+      <tr><td>Tishá B'Av</td><td>Av</td><td>Destrucción del Templo</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>🔯 Correspondencias Sagradas</h2>
+  <p>Cada mes hebreo corresponde a:</p>
+  <ul>
+    <li>Un <strong>signo zodiacal</strong> (mazal)</li>
+    <li>Una <strong>tribu de Israel</strong></li>
+    <li>Una <strong>letra hebrea</strong></li>
+    <li>Un <strong>sentido del alma</strong></li>
+    <li>Un <strong>nombre divino</strong></li>
+  </ul>
+</section>
+
+<section>
+  <h2>📖 Sobre el Año Hebreo</h2>
+  <p>El año hebreo actual es <strong id="anio-hebreo">—</strong>. Se calcula
+  desde la creación de Adam, según la tradición. El año gregoriano actual
+  se obtiene sumando <strong>3760</strong> o <strong>3761</strong>.</p>
+  <div class="equation">
+    <div class="big">Año Hebreo = Año Gregoriano + 3760</div>
+    <div class="heb" id="eq-hebreo"></div>
+  </div>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Calendario</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const MESES = [
+  { n:'Nisán',   h:'ניסן',   signo:'Aries',       tribu:'Yehudá',    letra:'ה', sentido:'Habla' },
+  { n:'Iyar',    h:'אייר',   signo:'Tauro',       tribu:'Isajar',    letra:'ו', sentido:'Pensamiento' },
+  { n:'Siván',   h:'סיון',   signo:'Géminis',     tribu:'Zevulún',   letra:'ז', sentido:'Movimiento' },
+  { n:'Tamuz',   h:'תמוז',   signo:'Cáncer',      tribu:'Reubén',    letra:'ח', sentido:'Vista' },
+  { n:'Av',      h:'אב',     signo:'Leo',         tribu:'Shimón',    letra:'ט', sentido:'Oído' },
+  { n:'Elul',    h:'אלול',   signo:'Virgo',       tribu:'Gad',       letra:'י', sentido:'Acción' },
+  { n:'Tishrei', h:'תשרי',   signo:'Libra',       tribu:'Efraim',    letra:'ל', sentido:'Coito' },
+  { n:'Jeshván', h:'חשון',   signo:'Escorpio',    tribu:'Menashé',   letra:'נ', sentido:'Olfato' },
+  { n:'Kislev',  h:'כסלו',   signo:'Sagitario',   tribu:'Biniamín',  letra:'ס', sentido:'Sueño' },
+  { n:'Tevet',   h:'טבת',    signo:'Capricornio', tribu:'Dan',       letra:'ע', sentido:'Ira' },
+  { n:'Shevat',  h:'שבט',    signo:'Acuario',     tribu:'Asher',     letra:'צ', sentido:'Gusto' },
+  { n:'Adar',    h:'אדר',    signo:'Piscis',      tribu:'Naftalí',   letra:'ק', sentido:'Risa' }
+];
+
+document.addEventListener('DOMContentLoaded', () => {
+  const tbody = document.getElementById('tabla-meses');
+  MESES.forEach((m, i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${i + 1}</td>
+      <td>${m.n}</td>
+      <td class="hebrew-inline">${m.h}</td>
+      <td>${m.signo}</td>
+      <td>${m.tribu}</td>
+      <td class="hebrew-inline">${m.letra}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+  const ahora = new Date();
+  const anioHeb = ahora.getFullYear() + 3760;
+  document.getElementById('anio-hebreo').textContent = anioHeb;
+  document.getElementById('eq-hebreo').textContent =
+    `${ahora.getFullYear()} + 3760 = ${anioHeb}`;
+});
+</script>
+</body>
+</html>
