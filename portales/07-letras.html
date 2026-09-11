@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Las 22 letras hebreas: canales de energía divina, valor numérico y significado">
+<title>✦ Las 22 Letras Hebreas — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.letter-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:.7rem;margin:1rem 0;}
+.letter-card{border:1px solid var(--line);border-radius:12px;padding:1rem .6rem;
+  text-align:center;background:rgba(10,12,30,.6);transition:all .4s;cursor:default;}
+.letter-card:hover{border-color:var(--gold);box-shadow:0 0 25px rgba(212,175,55,.35);transform:translateY(-4px);}
+.letter-card .lt{font-size:2.2rem;color:var(--gold2);font-family:var(--font-heb);
+  direction:rtl;text-shadow:0 0 15px rgba(212,175,55,.7);line-height:1;}
+.letter-card .val{font-size:.75rem;color:var(--cyan);font-family:var(--font-mono);margin-top:.4rem;}
+.letter-card .nm{font-size:.7rem;color:var(--muted);letter-spacing:.08em;margin-top:.2rem;}
+.letter-card .sg{font-size:.68rem;color:var(--gold);margin-top:.3rem;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">אותיות</div>
+  <h1>✦ Las 22 Letras Hebreas ✦</h1>
+  <p>Canales de la energía divina</p>
+  <span class="page-number">Portal 07 de 20</span>
+</header>
+
+<section>
+  <h2>📖 El Alfabeto Sagrado</h2>
+  <p>Según el <strong>Sefer Yetzirá</strong>, Dios creó el universo mediante
+  <strong>32 caminos</strong>: <em>10 Sefirot</em> y <em>22 letras hebreas</em>.
+  Cada letra es un <strong>canal de energía divina</strong>, un molde a través
+  del cual la luz infinita se manifiesta.</p>
+  <p>Las 22 letras se dividen en tres grupos:</p>
+  <ul>
+    <li><strong>3 Madres</strong>: Alef, Mem, Shin — Aire, Agua, Fuego</li>
+    <li><strong>7 Dobles</strong>: Bet, Guimel, Dalet, Kaf, Pe, Resh, Tav — Los 7 días, los 7 planetas</li>
+    <li><strong>12 Simples</strong>: Las restantes — Los 12 signos, los 12 meses, las 12 tribus</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🔤 Las 22 Letras</h2>
+  <div class="letter-grid" id="letras-grid"></div>
+</section>
+
+<section>
+  <h2>💡 Las 3 Letras Madres</h2>
+  <table>
+    <thead><tr><th>Madre</th><th>Hebreo</th><th>Elemento</th><th>Función</th></tr></thead>
+    <tbody>
+      <tr><td>Alef</td><td class="hebrew-inline">א</td><td>Aire</td><td>Aliento, espíritu, silencio</td></tr>
+      <tr><td>Mem</td><td class="hebrew-inline">מ</td><td>Agua</td><td>Sabiduría, fluidez, gestación</td></tr>
+      <tr><td>Shin</td><td class="hebrew-inline">ש</td><td>Fuego</td><td>Transformación, pasión, juicio</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>🌿 Las 7 Letras Dobles</h2>
+  <p>Se llaman <em>dobles</em> porque cada una puede pronunciarse de dos formas
+  (suave/fuerte) y representan una dualidad: bien/mal, vida/muerte, paz/guerra.</p>
+  <table>
+    <thead><tr><th>Letra</th><th>Hebreo</th><th>Planeta</th><th>Día</th></tr></thead>
+    <tbody>
+      <tr><td>Bet</td><td class="hebrew-inline">ב</td><td>Saturno</td><td>Domingo</td></tr>
+      <tr><td>Guimel</td><td class="hebrew-inline">ג</td><td>Júpiter</td><td>Lunes</td></tr>
+      <tr><td>Dalet</td><td class="hebrew-inline">ד</td><td>Marte</td><td>Martes</td></tr>
+      <tr><td>Kaf</td><td class="hebrew-inline">כ</td><td>Sol</td><td>Miércoles</td></tr>
+      <tr><td>Pe</td><td class="hebrew-inline">פ</td><td>Venus</td><td>Jueves</td></tr>
+      <tr><td>Resh</td><td class="hebrew-inline">ר</td><td>Mercurio</td><td>Viernes</td></tr>
+      <tr><td>Tav</td><td class="hebrew-inline">ת</td><td>Luna</td><td>Sábado</td></tr>
+    </tbody>
+  </table>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Portal 07 de 20</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const LETRAS = [
+  ['א','Alef',1,'Espíritu'],[  'ב','Bet',2,'Sabiduría'],['ג','Guimel',3,'Riqueza'],
+  ['ד','Dalet',4,'Pobreza'],['ה','He',5,'Vida'],['ו','Vav',6,'Gracia'],
+  ['ז','Zayin',7,'Semilla'],['ח','Jet',8,'Vida superior'],['ט','Tet',9,'Bondad'],
+  ['י','Yud',10,'Mano'],['כ','Kaf',20,'Palma'],['ל','Lamed',30,'Corazón'],
+  ['מ','Mem',40,'Agua'],['נ','Nun',50,'Fidelidad'],['ס','Samej',60,'Apoyo'],
+  ['ע','Ayin',70,'Ojo'],['פ','Pe',80,'Boca'],['צ','Tzadi',90,'Justicia'],
+  ['ק','Kuf',100,'Santidad'],['ר','Resh',200,'Cabeza'],['ש','Shin',300,'Fuego'],
+  ['ת','Tav',400,'Verdad']
+];
+document.addEventListener('DOMContentLoaded', () => {
+  const grid = document.getElementById('letras-grid');
+  LETRAS.forEach(([l, n, v, s]) => {
+    const c = document.createElement('div');
+    c.className = 'letter-card';
+    c.innerHTML = `<div class="lt">${l}</div>
+      <div class="val">${v}</div>
+      <div class="nm">${n}</div>
+      <div class="sg">${s}</div>`;
+    grid.appendChild(c);
+  });
+  const p = Yejida.buildPager(7);
+  if(p) document.getElementById('main').appendChild(p);
+});
+</script>
+</body>
+</html>
