@@ -61,4 +61,71 @@
 <script>
 const ANGELES = {
   1:{ n:'Gabriel',     h:'גבריאל',  d:'Ángel de la fuerza y el anuncio. Te protege con poder.' },
-  2:{ n:'Rafael',      h:'רפאל',    d:'Ángel de la sanación.
+  2:{ n:'Rafael',      h:'רפאל',    d:'Ángel de la sanación. Cuida tu salud física y emocional.' },
+  3:{ n:'Miguel',      h:'מיכאל',   d:'Ángel de la misericordia y el liderazgo. Te guía a defender lo justo.' },
+  4:{ n:'Uriel',       h:'אוריאל',  d:'Ángel de la luz y la sabiduría. Ilumina tu camino.' },
+  5:{ n:'Sandalphon',  h:'סנדלפון', d:'Ángel de las oraciones. Lleva tus plegarias al cielo.' },
+  6:{ n:'Metatrón',    h:'מטטרון',  d:'El ángel más cercano a Dios. Conocimiento supremo.' },
+  7:{ n:'Jofiel',      h:'יופיאל',  d:'Ángel de la belleza y la armonía. Embellece tu vida.' },
+  8:{ n:'Zadkiel',     h:'צדקיאל',  d:'Ángel de la justicia. Corrige lo que está mal.' },
+  9:{ n:'Haniel',      h:'חניאל',   d:'Ángel de la gracia y el amor. Te enseña a amar.' },
+  10:{ n:'Raziel',     h:'רזיאל',   d:'Ángel de los misterios. Revela secretos ocultos.' },
+  11:{ n:'Azrael',     h:'עזראל',   d:'Ángel de la transición. Acompaña los cambios profundos.' },
+  12:{ n:'Israfel',    h:'אסרפל',   d:'Ángel de la música y la resurrección. Canta tu despertar.' }
+};
+
+document.getElementById('angel-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const f = document.getElementById('fecha').value;
+  if(!f) return;
+  const d = new Date(f + 'T12:00:00');
+  const mes = d.getMonth() + 1;
+  const a = ANGELES[mes];
+
+  const results = document.getElementById('results');
+  results.style.display = 'block';
+  results.innerHTML = `
+    <section>
+      <div class="angel-card">
+        <div class="simbolo">👼</div>
+        <div class="nombre">${a.n}</div>
+        <div class="heb">${a.h}</div>
+      </div>
+    </section>
+    <section>
+      <h2>👼 Tu Ángel Guardián</h2>
+      <table>
+        <tbody>
+          <tr><td><strong>Ángel</strong></td><td>${a.n}</td></tr>
+          <tr><td><strong>Hebreo</strong></td><td class="hebrew-inline">${a.h}</td></tr>
+          <tr><td><strong>Función</strong></td><td>${a.d}</td></tr>
+          <tr><td><strong>Mes de nacimiento</strong></td><td>${mes}</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <section>
+      <h2>💡 Cómo Conectar</h2>
+      <ol>
+        <li><strong>Invócalo al despertar</strong> — "Buenos días, ${a.n}."</li>
+        <li><strong>Pídele protección</strong> al salir de casa.</li>
+        <li><strong>Agradece</strong> cada noche sus cuidados.</li>
+        <li><strong>Escríbele</strong> en tu diario cuando necesites guía.</li>
+        <li><strong>Confía</strong> en sus señales sutiles.</li>
+      </ol>
+      <div class="equation">
+        <div class="big">✦ ${a.n} te acompaña ✦</div>
+        <div class="heb">${a.h}</div>
+      </div>
+    </section>
+    <section>
+      <h2>📜 Sobre los Ángeles</h2>
+      <p>La Torá menciona ángeles (malajim) en múltiples pasajes. La tradición
+      cabalística los organiza en jerarquías y les asigna funciones específicas.</p>
+      <blockquote>"Él ordenará a Sus ángeles que te guarden en todos tus caminos." — Salmo 91:11</blockquote>
+    </section>
+  `;
+  results.scrollIntoView({ behavior:'smooth' });
+});
+</script>
+</body>
+</html>
