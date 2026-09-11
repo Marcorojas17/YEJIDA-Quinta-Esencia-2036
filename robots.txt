@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://TU-USUARIO.github.io/yejida-kabalah/sitemap.xml
+https://github.com/Marcorojas17/YEJIDA-Quinta-Esencia-2036/tree/main
