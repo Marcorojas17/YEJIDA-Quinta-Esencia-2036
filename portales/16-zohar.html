@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="El Zohar: el Libro del Esplendor, texto central de la Kabaláh">
+<title>✦ El Zohar — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">זוהר</div>
+  <h1>✦ El Zohar ✦</h1>
+  <p>El Libro del Esplendor</p>
+  <span class="page-number">Portal 16 de 20</span>
+</header>
+
+<section>
+  <h2>📕 ¿Qué es el Zohar?</h2>
+  <p>El <strong>Sefer HaZohar (סֵפֶר הַזֹּהַר)</strong> — el
+  <em>"Libro del Esplendor"</em> — es el texto central de la Kabaláh.
+  Es un comentario místico de la Torá, escrito en arameo con una
+  profundidad simbólica inagotable.</p>
+  <p>Se atribuye al <strong>Rabí Shimón Bar Yojái</strong> (siglo II), aunque
+  su forma actual fue redactada por <strong>Moisés de León</strong> en el
+  siglo XIII en España.</p>
+</section>
+
+<section>
+  <h2>🔯 Estructura</h2>
+  <table>
+    <thead><tr><th>Sección</th><th>Contenido</th></tr></thead>
+    <tbody>
+      <tr><td>Comentario de la Torá</td><td>Porciones semanales (parashot)</td></tr>
+      <tr><td>Midrash HaNeelam</td><td>Comentarios ocultos sobre la Torá</td></tr>
+      <tr><td>Sifra DiTzniuta</td><td>El "Libro de lo Oculto"</td></tr>
+      <tr><td>Idra Rabba</td><td>La "Gran Asamblea"</td></tr>
+      <tr><td>Idra Zuta</td><td>La "Pequeña Asamblea"</td></tr>
+      <tr><td>Raaya Meheimna</td><td>El "Pastor Fiel"</td></tr>
+      <tr><td>Midrash HaNeelam</td><td>Sección final</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>💡 Enseñanzas Centrales</h2>
+  <ul>
+    <li><strong>La Torá como nombre de Dios</strong> — Cada letra es un aspecto divino.</li>
+    <li><strong>La Shejiná</strong> — La Presencia femenina de Dios en el exilio.</li>
+    <li><strong>Reencarnación (Gilgul)</strong> — Las almas vuelven a completar su tarea.</li>
+    <li><strong>El poder de la intención</strong> — La kavaná transforma la acción.</li>
+    <li><strong>La unidad de todo</strong> — No hay separación real entre lo sagrado y lo profano.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>✦ Yejidá y el Zohar</h2>
+  <p>El Zohar describe la <strong>chispa divina</strong> en cada alma como
+  <em>"una parte de Dios desde lo alto"</em>. Esa chispa es Yejidá,
+  y su reconocimiento es el fin último de todo estudio.</p>
+  <blockquote>"Ven y ve: cuando el alma sale del Jardín del Edén, se le da una chispa del mundo superior." — Zohar I:97a</blockquote>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Portal 16 de 20</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const p = Yejida.buildPager(16);
+  if(p) document.getElementById('main').appendChild(p);
+});
+</script>
+</body>
+</html>
