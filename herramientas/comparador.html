@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Comparador de guematrias: encuentra palabras con el mismo valor numérico">
+<title>✦ Comparador de Guematrias — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">השוואה</div>
+  <h1>✦ Comparador de Guematrias ✦</h1>
+  <p>Palabras con el mismo valor numérico</p>
+  <span class="page-number">Herramienta · Comparador</span>
+</header>
+
+<section>
+  <h2>🔢 Ingresa dos palabras en hebreo</h2>
+  <form id="comp-form" autocomplete="off">
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="p1">Palabra 1 (hebreo)</label>
+        <input type="text" id="p1" placeholder="Ej: אהבה" required>
+      </div>
+      <div class="form-field">
+        <label for="p2">Palabra 2 (hebreo)</label>
+        <input type="text" id="p2" placeholder="Ej: אחד" required>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1.2rem">
+      <button type="submit" class="btn">✦ Comparar ✦</button>
+    </div>
+  </form>
+</section>
+
+<section>
+  <h2>📚 Pares Famosos</h2>
+  <table>
+    <thead><tr><th>Palabra 1</th><th>Valor</th><th>Palabra 2</th><th>Valor</th></tr></thead>
+    <tbody>
+      <tr><td class="hebrew-inline">אהבה</td><td>13</td><td class="hebrew-inline">אחד</td><td>13</td></tr>
+      <tr><td class="hebrew-inline">אמת</td><td>441</td><td class="hebrew-inline">תאמ</td><td>441</td></tr>
+      <tr><td class="hebrew-inline">חי</td><td>18</td><td class="hebrew-inline">טוב</td><td>17</td></tr>
+      <tr><td class="hebrew-inline">שדי</td><td>314</td><td class="hebrew-inline">מטטרון</td><td>314</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<div id="results" style="display:none"></div>
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Comparador</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const GEM = {
+  'א':1,'ב':2,'ג':3,'ד':4,'ה':5,'ו':6,'ז':7,'ח':8,'ט':9,
+  'י':10,'כ':20,'ל':30,'מ':40,'נ':50,'ס':60,'ע':70,'פ':80,'צ':90,
+  'ק':100,'ר':200,'ש':300,'ת':400,
+  'ך':20,'ם':40,'ן':50,'ף':80,'ץ':90
+};
+
+function calc(str){
+  let total = 0;
+  const desglose = [];
+  for(const ch of str){
+    if(GEM[ch]){
+      total += GEM[ch];
+      desglose.push(`${ch}(${GEM[ch]})`);
+    }
+  }
+  return { total, desglose };
+}
+
+document.getElementById('comp-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const p1 = document.getElementById('p1').value.trim();
+  const p2 = document.getElementById('p2').value.trim();
+  if(!p1 || !p2) return alert('Ingresa dos palabras en hebreo.');
+
+  const r1 = calc(p1);
+  const r2 = calc(p2);
+  const iguales = r1.total === r2.total;
+  const diferencia = Math.abs(r1.total - r2.total);
+
+  const results = document.getElementById('results');
+  results.style.display = 'block';
+  results.innerHTML = `
+    <section>
+      <h2>📊 Resultado</h2>
+      <div class="result-grid">
+        <div class="result-card">
+          <div class="label">${p1}</div>
+          <div class="value">${r1.total}</div>
+          <div class="desc" style="font-family:var(--font-mono);font-size:.75rem;">
+            ${r1.desglose.join(' + ')}
+          </div>
+        </div>
+        <div class="result-card">
+          <div class="label">${p2}</div>
+          <div class="value">${r2.total}</div>
+          <div class="desc" style="font-family:var(--font-mono);font-size:.75rem;">
+            ${r2.desglose.join(' + ')}
+          </div>
+        </div>
+      </div>
+      <div class="equation">
+        <div class="big" style="color:${iguales ? 'var(--success)' : 'var(--gold2)'}">
+          ${iguales ? '✦ ¡Misma guematria! ✦' : `Diferencia: ${diferencia}`}
+        </div>
+        <div class="heb">${p1} ${iguales ? '=' : '≠'} ${p2}</div>
+      </div>
+      ${iguales ? `
+        <blockquote>
+          En la tradición cabalística, dos palabras con la misma guematria están
+          <strong>espiritualmente conectadas</strong>: comparten una raíz en el
+          mundo superior.
+        </blockquote>
+      ` : `
+        <p style="text-align:center;color:var(--muted);">
+          Las palabras no comparten valor numérico. Prueba con otras.
+        </p>
+      `}
+    </section>
+  `;
+  results.scrollIntoView({ behavior:'smooth' });
+});
+</script>
+</body>
+</html>
