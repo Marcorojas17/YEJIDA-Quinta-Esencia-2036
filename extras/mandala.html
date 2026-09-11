@@ -126,4 +126,92 @@ document.getElementById('mandala-form').addEventListener('submit', (e) => {
       const x2 = 250 + Math.cos(a) * rOut;
       const y2 = 250 + Math.sin(a) * rOut;
       const color = rand() > 0.5 ? 'rgba(212,175,55,.5)' :
-        rand() > 0.5 ? 'rgba(108,92,
+        rand() > 0.5 ? 'rgba(108,92,231,.5)' : 'rgba(79,209,197,.5)';
+      petalos.push(`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"
+        stroke="${color}" stroke-width="${1 + rand() * 2}" stroke-linecap="round"/>`);
+    }
+  }
+
+  // Estrella central
+  const estrella = [];
+  const puntas = 6 + Math.floor(rand() * 6);
+  const R = 60;
+  for(let i = 0; i < puntas; i++){
+    const a = (Math.PI * 2 / puntas) * i;
+    const x = 250 + Math.cos(a) * R;
+    const y = 250 + Math.sin(a) * R;
+    estrella.push(`${x},${y}`);
+  }
+  const estrellaPath = `M ${estrella.join(' L ')} Z`;
+
+  const results = document.getElementById('results');
+  results.style.display = 'block';
+  results.innerHTML = `
+    <section>
+      <h2>🌀 Tu Mandala</h2>
+      <div class="mandala-container">
+        <svg class="mandala-svg" viewBox="0 0 500 500" role="img"
+          aria-label="Mandala personal de ${nombre}">
+          <defs>
+            <radialGradient id="halo-mandala">
+              <stop offset="0%" stop-color="rgba(212,175,55,.25)"/>
+              <stop offset="100%" stop-color="transparent"/>
+            </radialGradient>
+          </defs>
+          <circle cx="250" cy="250" r="240" fill="url(#halo-mandala)"/>
+          <g class="mandala-rot">
+            ${circulos.join('')}
+            ${petalos.join('')}
+          </g>
+          <path d="${estrellaPath}" fill="rgba(212,175,55,.15)"
+            stroke="var(--gold2)" stroke-width="2"
+            filter="drop-shadow(0 0 20px var(--gold))"/>
+          <circle cx="250" cy="250" r="8" fill="var(--gold2)"
+            filter="drop-shadow(0 0 15px var(--gold))"/>
+        </svg>
+      </div>
+      <p style="text-align:center;color:var(--muted);font-size:.85rem;">
+        Mandala de <strong>${nombre}</strong> · ${camino} × ${expresion}
+      </p>
+    </section>
+    <section>
+      <h2>💡 Cómo Usar tu Mandala</h2>
+      <ul>
+        <li><strong>Contemplación</strong> — Míralo 3-5 minutos en silencio.</li>
+        <li><strong>Visualización</strong> — Ciérralo en los ojos y recréalo.</li>
+        <li><strong>Meditación</strong> — Úsalo como objeto de concentración.</li>
+        <li><strong>Impresión</strong> — Descárgalo y colócalo en tu altar.</li>
+        <li><strong>Fondo de pantalla</strong> — Recuérdalo durante el día.</li>
+      </ul>
+      <div style="text-align:center;margin-top:1rem;">
+        <button id="descargar-mandala" class="btn">📥 Descargar SVG</button>
+      </div>
+    </section>
+    <section>
+      <h2>📊 Tus Números</h2>
+      <table>
+        <tbody>
+          <tr><td><strong>Camino de Vida</strong></td><td>${camino}</td></tr>
+          <tr><td><strong>Expresión</strong></td><td>${expresion}</td></tr>
+          <tr><td><strong>Semilla</strong></td><td>${semilla}</td></tr>
+        </tbody>
+      </table>
+    </section>
+  `;
+  results.scrollIntoView({ behavior:'smooth' });
+
+  document.getElementById('descargar-mandala').addEventListener('click', () => {
+    const svg = results.querySelector('.mandala-svg');
+    const data = new XMLSerializer().serializeToString(svg);
+    const blob = new Blob([data], { type:'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `mandala-${clean(nombre)}.svg`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+});
+</script>
+</body>
+</html>
