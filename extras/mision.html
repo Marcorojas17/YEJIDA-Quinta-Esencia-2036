@@ -26,4 +26,120 @@
   Kabaláh, se cree que cada persona tiene una porción específica del
   Tikkun (reparación) que solo ella puede realizar. Tu misión se revela
   combinando tu nombre y tu fecha.</p>
-  <form id="mision
+  <form id="mision-form" autocomplete="off">
+    <div class="form-grid">
+      <div class="form-field full">
+        <label for="nombre">Nombre completo</label>
+        <input type="text" id="nombre" required>
+      </div>
+      <div class="form-field full">
+        <label for="fecha">Fecha de nacimiento</label>
+        <input type="date" id="fecha" required>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1.2rem">
+      <button type="submit" class="btn">✦ Revelar mi Misión ✦</button>
+    </div>
+  </form>
+</section>
+
+<div id="results" style="display:none"></div>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Misión de Vida</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const PYT = {a:1,b:2,c:3,d:4,e:5,f:6,g:7,h:8,i:9,j:1,k:2,l:3,m:4,n:5,o:6,
+  p:7,q:8,r:9,s:1,t:2,u:3,v:4,w:5,x:6,y:7,z:8};
+
+const MISIONES = {
+  1:{ t:'El Pionero', d:'Tu misión es abrir caminos donde no los hay. Liderar con visión, no con poder. Inspirar a otros a comenzar sus propios viajes.', accion:'Inicia un proyecto nuevo cada año. No esperes permiso.' },
+  2:{ t:'El Pacificador', d:'Tu misión es unir lo que está dividido. Servir de puente entre personas, ideas, mundos. Sanar relaciones y crear armonía.', accion:'Escucha más de lo que hablas. Practica la empatía radical.' },
+  3:{ t:'El Comunicador', d:'Tu misión es dar voz a lo que está silenciado. Crear belleza, expresar verdad, inspirar alegría.', accion:'Escribe o crea algo cada semana. Comparte sin miedo.' },
+  4:{ t:'El Constructor', d:'Tu misión es establecer estructuras sólidas. Construir comunidades, empresas, familias duraderas.', accion:'Piensa a largo plazo. Construye con paciencia.' },
+  5:{ t:'El Liberador', d:'Tu misión es enseñar libertad. Liberarte de creencias limitantes y ayudar a otros a hacer lo mismo.', accion:'Viaja, aprende, rompe rutinas. Sé el cambio.' },
+  6:{ t:'El Sanador', d:'Tu misión es sanar. Cuidar de otros, crear hogares, traer belleza y amor al mundo.', accion:'Cuida a alguien cada día. Embellece tu entorno.' },
+  7:{ t:'El Sabio', d:'Tu misión es buscar la verdad y compartirla. Estudiar, meditar, revelar los misterios.', accion:'Estudia diariamente. Busca la soledad sagrada.' },
+  8:{ t:'El Poderoso', d:'Tu misión es dominar el mundo material con ética. Crear abundancia y usarla para el bien.', accion:'Aprende de negocios. Genera recursos. Comparte.' },
+  9:{ t:'El Humanitario', d:'Tu misión es servir a todos. Trascender lo individual. Amar sin distinción.', accion:'Sirve a los demás. Practica la compasión universal.' },
+  11:{ t:'El Visionario', d:'Tu misión es canalizar visiones del futuro. Inspirar a millones. Ser la luz que guía.', accion:'Confía en tu intuición. Comparte tu visión.' },
+  22:{ t:'El Arquitecto Maestro', d:'Tu misión es construir el mundo del futuro. Manifestar grandes sueños en realidad concreta.', accion:'Sueña en grande. Construye paso a paso.' },
+  33:{ t:'El Maestro Compasivo', d:'Tu misión es el amor universal en acción. Enseñar con el ejemplo. Sanar almas.', accion:'Ama sin condiciones. Enseña con presencia.' }
+};
+
+function reduce(n){
+  while(n > 9){
+    if([11,22,33].includes(n)) return n;
+    n = String(n).split('').reduce((a,b) => a + +b, 0);
+  }
+  return n;
+}
+function clean(s){
+  return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z]/g,'');
+}
+function sumName(name){
+  let t = 0;
+  for(const ch of clean(name)) if(PYT[ch]) t += PYT[ch];
+  return t;
+}
+
+document.getElementById('mision-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const nombre = document.getElementById('nombre').value.trim();
+  const f = document.getElementById('fecha').value;
+  if(!nombre || !f) return;
+  const d = new Date(f + 'T12:00:00');
+  const camino = reduce(d.getDate() + d.getMonth() + 1 + d.getFullYear());
+  const expresion = reduce(sumName(nombre));
+  const mision = MISIONES[camino] || MISIONES[1];
+  const arquetipo = MISIONES[expresion] || MISIONES[1];
+
+  const results = document.getElementById('results');
+  results.style.display = 'block';
+  results.innerHTML = `
+    <section>
+      <h2>🎯 Tu Misión Principal</h2>
+      <div class="equation">
+        <div class="big">${mision.t}</div>
+        <div class="heb">${['','א','ב','ג','ד','ה','ו','ז','ח','ט','','כ','','','','','','','','','','ל','','','','','','','','','','','מ'][camino] || 'א'}</div>
+      </div>
+      <p style="text-align:center;color:var(--text);font-size:1rem;line-height:1.8;">
+        ${mision.d}
+      </p>
+    </section>
+    <section>
+      <h2>⚡ Cómo Cumplirla</h2>
+      <div class="nivel-card">
+        <p><span class="num">1</span><strong>Acción concreta:</strong> ${mision.accion}</p>
+      </div>
+      <div class="nivel-card">
+        <p><span class="num">2</span><strong>Tu expresión:</strong> ${arquetipo.t} — ${arquetipo.d}</p>
+      </div>
+    </section>
+    <section>
+      <h2>📊 Tu Mapa</h2>
+      <table>
+        <tbody>
+          <tr><td><strong>Nombre</strong></td><td>${nombre}</td></tr>
+          <tr><td><strong>Camino de Vida</strong></td><td>${camino} — ${mision.t}</td></tr>
+          <tr><td><strong>Expresión</strong></td><td>${expresion} — ${arquetipo.t}</td></tr>
+          <tr><td><strong>Fecha</strong></td><td>${d.toLocaleDateString('es-MX')}</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <section>
+      <h2>💡 Reflexión</h2>
+      <blockquote>"Cada persona debe decir: 'El mundo fue creado para mí'. Y luego actuar como si fuera cierto." — Mishná</blockquote>
+      <p style="text-align:center;color:var(--muted);font-size:.9rem;">
+        Tu misión no es algo que descubres; es algo que <em>eliges recordar</em>.
+      </p>
+    </section>
+  `;
+  results.scrollIntoView({ behavior:'smooth' });
+});
+</script>
+</body>
+</html>
