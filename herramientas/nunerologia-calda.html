@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Numerología caldea: el sistema babilónico basado en sonidos">
+<title>✦ Numerología Caldea — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">נומרולוגיה כלדית</div>
+  <h1>✦ Numerología Caldea ✦</h1>
+  <p>El sistema babilónico · Basado en sonidos</p>
+  <span class="page-number">Herramienta · Numerología</span>
+</header>
+
+<section>
+  <h2>📖 ¿Qué es la Caldea?</h2>
+  <p>A diferencia de la <strong>numerología pitagórica</strong> (que asigna valores
+  1-9 en orden alfabético), la <strong>caldea</strong> asigna valores según el
+  <em>sonido vibratorio</em> de cada letra. Es el sistema más antiguo conocido,
+  originado en Babilonia.</p>
+  <p>No usa el número <strong>9</strong> (considerado sagrado) y su valor máximo
+  por letra es 8.</p>
+</section>
+
+<section>
+  <h2>🜁 Tus Datos</h2>
+  <form id="calda-form" autocomplete="off">
+    <div class="form-grid">
+      <div class="form-field full">
+        <label for="nombre">Nombre completo de nacimiento</label>
+        <input type="text" id="nombre" placeholder="Ej: María García López" required>
+      </div>
+      <div class="form-field full">
+        <label for="fecha">Fecha de nacimiento</label>
+        <input type="date" id="fecha" required>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1.2rem">
+      <button type="submit" class="btn">✦ Calcular mi Mapa Caldeo ✦</button>
+    </div>
+  </form>
+</section>
+
+<div id="results" style="display:none"></div>
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Numerología Caldea</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+// Valores caldeos según sonido vibratorio
+const CALDEO = {
+  a:1,b:2,c:3,d:4,e:5,f:8,g:3,h:5,i:1,j:1,k:2,l:3,m:4,
+  n:5,o:7,p:8,q:1,r:2,s:3,t:4,u:6,v:6,w:6,x:5,y:1,z:7
+};
+const VOC = 'aeiou';
+const HEB = {1:'א',2:'ב',3:'ג',4:'ד',5:'ה',6:'ו',7:'ז',8:'ח',9:'ט',
+  11:'כ',22:'ל',33:'מ'};
+const SIGNIF = {
+  1:{n:'Individualista',d:'Líder independiente, pionero, creativo.'},
+  2:{n:'Cooperador',d:'Diplomático, sensible, unificador.'},
+  3:{n:'Expresivo',d:'Artístico, sociable, inspirador.'},
+  4:{n:'Constructor',d:'Sistemático, trabajador, confiable.'},
+  5:{n:'Aventurero',d:'Libre, versátil, curioso.'},
+  6:{n:'Responsable',d:'Protector, hogareño, sanador.'},
+  7:{n:'Espiritual',d:'Analítico, intuitivo, contemplativo.'},
+  8:{n:'Ejecutivo',d:'Ambicioso, organizado, materialista positivo.'},
+  11:{n:'Vidente',d:'Maestro número. Intuición elevada.'},
+  22:{n:'Constructor Maestro',d:'Maestro número. Sueños en realidad.'},
+  33:{n:'Maestro Compasivo',d:'Maestro número. Amor universal.'}
+};
+
+function reduceCaldeo(n){
+  while(n > 9){
+    if([11,22,33].includes(n)) return n;
+    n = String(n).split('').reduce((a,b) => a + +b, 0);
+  }
+  return n;
+}
+function clean(s){
+  return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z]/g,'');
+}
+function sumCaldeo(name, filter){
+  const c = clean(name); let t = 0;
+  for(const ch of c){
+    if(filter === 'v' && !VOC.includes(ch)) continue;
+    if(filter === 'c' && VOC.includes(ch)) continue;
+    if(CALDEO[ch]) t += CALDEO[ch];
+  }
+  return t;
+}
+
+document.getElementById('calda-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const nombre = document.getElementById('nombre').value.trim();
+  const fechaStr = document.getElementById('fecha').value;
+  if(!nombre || !fechaStr) return alert('Completa todos los campos.');
+
+  const d = new Date(fechaStr + 'T12:00:00');
+  const dd = d.getDate(), mm = d.getMonth() + 1, yyyy = d.getFullYear();
+
+  // En caldeo, la fecha se calcula igual que en pitagórico (reducción directa)
+  const caminoVida = reduceCaldeo(dd + mm + yyyy);
+  const expresion = reduceCaldeo(sumCaldeo(nombre));
+  const alma = reduceCaldeo(sumCaldeo(nombre, 'v'));
+  const personalidad = reduceCaldeo(sumCaldeo(nombre, 'c'));
+  const diaNac = reduceCaldeo(dd);
+  const madurez = reduceCaldeo(caminoVida + expresion);
+
+  const tarjeta = (label, valor) => `
+    <div class="result-card">
+      <div class="label">${label}</div>
+      <div class="value">${valor}<span class="hebrew-letter">${HEB[valor]||''}</span></div>
+      ${SIGNIF[valor] ? `<div class="name">${SIGNIF[valor].n}</div>
+        <div class="desc">${SIGNIF[valor].d}</div>` : ''}
+    </div>
+  `;
+
+  const results = document.getElementById('results');
+  results.style.display = 'block';
+  results.innerHTML = `
+    <section>
+      <h2>✦ Números Caldeos</h2>
+      <div class="result-grid">
+        ${tarjeta('Camino de Vida', caminoVida)}
+        ${tarjeta('Expresión', expresion)}
+        ${tarjeta('Alma (vocales)', alma)}
+        ${tarjeta('Personalidad (consonantes)', personalidad)}
+        ${tarjeta('Día de Nacimiento', diaNac)}
+        ${tarjeta('Madurez', madurez)}
+      </div>
+    </section>
+
+    <section>
+      <h2>📊 Comparación con Pitagórico</h2>
+      <p>El sistema caldeo suele dar números diferentes al pitagórico. Ambos
+      son válidos según la tradición consultada.</p>
+      <table>
+        <thead><tr><th>Número</th><th>Caldeo</th><th>Significado</th></tr></thead>
+        <tbody>
+          ${[1,2,3,4,5,6,7,8,11,22,33].filter(n =>
+            [caminoVida, expresion, alma, personalidad, diaNac, madurez].includes(n)
+          ).map(n =>
+            `<tr><td>${n}</td><td class="hebrew-inline">${HEB[n]||''}</td>
+            <td>${SIGNIF[n]?.n} — ${SIGNIF[n]?.d}</td></tr>`
+          ).join('')}
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>📜 Tabla de Valores Caldeos</h2>
+      <table>
+        <thead><tr><th>Valor</th><th>Letras</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>A, I, J, Q, Y</td></tr>
+          <tr><td>2</td><td>B, K, R</td></tr>
+          <tr><td>3</td><td>C, G, L, S</td></tr>
+          <tr><td>4</td><td>D, M, T</td></tr>
+          <tr><td>5</td><td>E, H, N, X</td></tr>
+          <tr><td>6</td><td>U, V, W</td></tr>
+          <tr><td>7</td><td>O, Z</td></tr>
+          <tr><td>8</td><td>F, P</td></tr>
+        </tbody>
+      </table>
+      <p style="color:var(--muted);font-size:.85rem;text-align:center;">
+        El 9 no aparece: es el número sagrado, presente solo como resultado de reducciones.
+      </p>
+    </section>
+  `;
+  results.scrollIntoView({ behavior:'smooth' });
+});
+</script>
+</body>
+</html>
