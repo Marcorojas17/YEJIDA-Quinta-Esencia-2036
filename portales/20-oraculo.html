@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Oráculo personal: numerología, astrología y Kabaláh">
+<title>✦ Portal del Oráculo — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+</head>
+<body>
+
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+
+<main id="main" class="container" role="main">
+
+  <header class="page-header">
+    <div class="hebrew-title">אורקל</div>
+    <h1>✦ Portal del Oráculo ✦</h1>
+    <p>Numerología · Astrología · Kabaláh</p>
+    <span class="page-number">Portal 20 de 20</span>
+  </header>
+
+  <section>
+    <h2>🜁 Ingresa tus Datos</h2>
+    <p>Todo se calcula <strong>localmente en tu navegador</strong>. Nada se envía a servidores.</p>
+
+    <form id="oracle-form" autocomplete="off">
+      <div class="form-grid">
+        <div class="form-field full">
+          <label for="nombre">Nombre completo de nacimiento</label>
+          <input type="text" id="nombre" placeholder="Ej: María García López" required>
+        </div>
+        <div class="form-field">
+          <label for="fecha">Fecha de nacimiento</label>
+          <input type="date" id="fecha" required>
+        </div>
+        <div class="form-field">
+          <label for="hora">Hora de nacimiento</label>
+          <input type="time" id="hora" value="12:00">
+        </div>
+        <div class="form-field full">
+          <label for="lugar">Lugar de nacimiento</label>
+          <input type="text" id="lugar" placeholder="Ej: Ciudad de México">
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:1.2rem">
+        <button type="submit" class="btn">✦ Revelar mi Mapa Sagrado ✦</button>
+      </div>
+    </form>
+  </section>
+
+  <div id="results" style="display:none"></div>
+
+</main>
+
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Portal 20 de 20</p>
+</footer>
+
+<script src="../shared.js"></script>
+<script>
+const PYT = {a:1,b:2,c:3,d:4,e:5,f:6,g:7,h:8,i:9,j:1,k:2,l:3,m:4,n:5,o:6,
+  p:7,q:8,r:9,s:1,t:2,u:3,v:4,w:5,x:6,y:7,z:8};
+const VOC = 'aeiou';
+const HEB = {1:'א',2:'ב',3:'ג',4:'ד',5:'ה',6:'ו',7:'ז',8:'ח',9:'ט',
+  11:'כ',22:'ל',33:'מ'};
+const SIGN = [
+  {n:'Aries',s:'♈',f:[3,21],t:[4,19],e:'Fuego'},
+  {n:'Tauro',s:'♉',f:[4,20],t:[5,20],e:'Tierra'},
+  {n:'Géminis',s:'♊',f:[5,21],t:[6,20],e:'Aire'},
+  {n:'Cáncer',s:'♋',f:[6,21],t:[7,22],e:'Agua'},
+  {n:'Leo',s:'♌',f:[7,23],t:[8,22],e:'Fuego'},
+  {n:'Virgo',s:'♍',f:[8,23],t:[9,22],e:'Tierra'},
+  {n:'Libra',s:'♎',f:[9,23],t:[10,22],e:'Aire'},
+  {n:'Escorpio',s:'♏',f:[10,23],t:[11,21],e:'Agua'},
+  {n:'Sagitario',s:'♐',f:[11,22],t:[12,21],e:'Fuego'},
+  {n:'Capricornio',s:'♑',f:[12,22],t:[1,19],e:'Tierra'},
+  {n:'Acuario',s:'♒',f:[1,20],t:[2,18],e:'Aire'},
+  {n:'Piscis',s:'♓',f:[2,19],t:[3,20],e:'Agua'}
+];
+
+function reduce(n){
+  while(n > 9){
+    if([11,22,33].includes(n)) return n;
+    n = String(n).split('').reduce((a,b)=>a+ +b, 0);
+  }
+  return n;
+}
+function clean(s){
+  return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z]/g,'');
+}
+function sumName(name, filter){
+  const c = clean(name); let t = 0;
+  for(const ch of c){
+    if(filter === 'v' && !VOC.includes(ch)) continue;
+    if(filter === 'c' && VOC.includes(ch)) continue;
+    if(PYT[ch]) t += PYT[ch];
+  }
+  return t;
+}
+function sunSign(d){
+  const m = d.getMonth()+1, day = d.getDate();
+  for(const s of SIGN){
+    const [fm,fd] = s.f, [tm,td] = s.t;
+    if(fm <= tm){
+      if((m === fm && day >= fd) || (m === tm && day <= td) ||
+        (m > fm && m < tm)) return s;
+    } else {
+      if((m === fm && day >= fd) || (m === tm && day <= td)) return s;
+    }
+  }
+  return SIGN[0];
+}
+
+document.getElementById('oracle-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const nombre = document.getElementById('nombre').value.trim();
+  const fechaStr = document.getElementById('fecha').value;
+  const horaStr = document.getElementById('hora').value || '12:00';
+  const lugar = document.getElementById('lugar').value.trim();
+  if(!nombre || !fechaStr) return alert('Completa tu nombre y fecha.');
+
+  const d = new Date(fechaStr + 'T12:00:00');
+  const vidaPath = reduce(d.getDate() + d.getMonth() + 1 + d.getFullYear());
+  const expresion = reduce(sumName(nombre));
+  const alma = reduce(sumName(nombre, 'v'));
+  const personalidad = reduce(sumName(nombre, 'c'));
+  const sun = sunSign(d);
+  const hora = parseInt(horaStr.split(':')[0], 10);
+  const sunIdx = SIGN.findIndex(s => s.n === sun.n);
+  const ascIdx = (sunIdx + Math.round(((hora - 6 + 24) % 24) / 2)) % 12;
+  const asc = SIGN[ascIdx];
+  const letra = HEB[vidaPath] || 'א';
+
+  const results = document.getElementById('results');
+  results.style.display = 'block';
+  results.innerHTML = `
+    <section>
+      <h2>🔢 Mapa Numerológico</h2>
+      <div class="result-grid">
+        ${[
+          ['Camino de Vida', vidaPath],
+          ['Expresión', expresion],
+          ['Alma', alma],
+          ['Personalidad', personalidad]
+        ].map(([lbl, v]) => `
+          <div class="result-card">
+            <div class="label">${lbl}</div>
+            <div class="value">${v}<span class="hebrew-letter">${HEB[v]||''}</span></div>
+          </div>
+        `).join('')}
+      </div>
+    </section>
+
+    <section>
+      <h2>✦ Carta Astral</h2>
+      <div class="result-grid">
+        <div class="result-card">
+          <div class="label">☉ Sol</div>
+          <div class="value" style="font-size:2rem">${sun.s}</div>
+          <div class="name">${sun.n}</div>
+          <div class="desc">${sun.e}</div>
+        </div>
+        <div class="result-card">
+          <div class="label">↑ Ascendente</div>
+          <div class="value" style="font-size:2rem">${asc.s}</div>
+          <div class="name">${asc.n}</div>
+          <div class="desc">${asc.e}</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>✡ Resonancia Kabalística</h2>
+      <div class="equation">
+        <div class="big">Tu letra: ${letra}</div>
+        <div class="heb">${nombre} → Camino ${vidaPath}</div>
+      </div>
+      <p style="text-align:center;color:var(--muted)">
+        ${nombre}${lugar ? ' nacido en ' + lugar : ''}, tu Camino de Vida
+        <strong>${vidaPath}</strong> resuena con <strong>${letra}</strong>.
+      </p>
+    </section>
+  `;
+  results.scrollIntoView({ behavior:'smooth' });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const pager = Yejida.buildPager(20);
+  if(pager) document.getElementById('main').appendChild(pager);
+});
+</script>
+</body>
+</html>
