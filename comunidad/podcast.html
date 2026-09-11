@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Podcast Yejidá: conversaciones sobre Kabaláh, mística y práctica">
+<title>✦ Podcast — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.episodio{display:flex;gap:1rem;padding:1.2rem;background:rgba(10,12,30,.6);
+  border:1px solid var(--line);border-radius:12px;margin-bottom:.8rem;
+  transition:all .3s;}
+.episodio:hover{border-color:var(--gold);transform:translateX(4px);}
+.episodio .play{flex-shrink:0;width:56px;height:56px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.4rem;color:var(--bg);cursor:pointer;
+  box-shadow:0 0 20px rgba(212,175,55,.5);transition:all .3s;}
+.episodio .play:hover{transform:scale(1.1);}
+.episodio .info{flex:1;}
+.episodio h3{color:var(--gold2);font-size:1rem;margin-bottom:.3rem;}
+.episodio .meta{color:var(--muted);font-size:.78rem;margin-bottom:.4rem;}
+.episodio .desc{color:var(--text);font-size:.88rem;line-height:1.6;}
+.episodio .duracion{color:var(--cyan);font-family:var(--font-mono);
+  font-size:.75rem;}
+.plataformas{display:flex;gap:.7rem;flex-wrap:wrap;justify-content:center;
+  margin:1.5rem 0;}
+.plataforma{padding:.6rem 1.2rem;background:rgba(10,12,30,.6);
+  border:1px solid var(--line);border-radius:30px;color:var(--gold2);
+  text-decoration:none;font-size:.85rem;transition:all .3s;}
+.plataforma:hover{border-color:var(--gold);box-shadow:0 0 20px rgba(212,175,55,.3);}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">פודקאסט</div>
+  <h1>✦ Podcast Yejidá ✦</h1>
+  <p>Conversaciones sobre Kabaláh</p>
+  <span class="page-number">Comunidad · Podcast</span>
+</header>
+
+<section>
+  <h2>🎙️ Escucha en tu Plataforma</h2>
+  <div class="plataformas">
+    <a href="#" class="plataforma">🎧 Spotify</a>
+    <a href="#" class="plataforma">🍎 Apple Podcasts</a>
+    <a href="#" class="plataforma">📻 Google Podcasts</a>
+    <a href="#" class="plataforma">▶️ YouTube</a>
+    <a href="#" class="plataforma">📡 RSS Feed</a>
+  </div>
+</section>
+
+<section>
+  <h2>📻 Episodios</h2>
+  <div id="episodios"></div>
+</section>
+
+<section>
+  <h2>💡 Sobre el Podcast</h2>
+  <p>El <strong>Podcast Yejidá</strong> explora la Kabaláh desde una
+  perspectiva contemporánea. Cada episodio combina:</p>
+  <ul>
+    <li>Enseñanza tradicional</li>
+    <li>Reflexión moderna</li>
+    <li>Práctica concreta</li>
+    <li>Preguntas de la audiencia</li>
+  </ul>
+  <blockquote>"La Kabaláh no es un objeto de curiosidad, sino un camino de transformación."</blockquote>
+</section>
+
+<section>
+  <h2>🎤 Participa</h2>
+  <p>¿Tienes preguntas para el podcast? ¿Quieres ser entrevistado?
+  Escríbenos a través de la sección de contacto.</p>
+  <div class="cta-wrap">
+    <a href="contribuir.html" class="btn">✦ Enviar Pregunta ✦</a>
+  </div>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Podcast</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const EPISODIOS = [
+  { n:1, titulo:'¿Qué es la Kabaláh?', d:'Introducción al estudio místico. De dónde viene, qué busca, cómo estudiarla.', dur:'32:15' },
+  { n:2, titulo:'Yejidá: la quinta esencia', d:'El nivel más alto del alma y su revelación.', dur:'45:20' },
+  { n:3, titulo:'Las 10 Sefirot', d:'Recorrido por el Árbol de la Vida y sus emanaciones.', dur:'52:10' },
+  { n:4, titulo:'Tzimtzum: la contracción divina', d:'Cómo Dios hizo espacio para el mundo.', dur:'38:45' },
+  { n:5, titulo:'La letra Alef', d:'El silencio primordial y el aliento divino.', dur:'28:30' },
+  { n:6, titulo:'Meditación cabalística', d:'Prácticas de otiot, yijudim e hitbodedut.', dur:'41:00' },
+  { n:7, titulo:'El Mashiaj y la redención', d:'La Yejidá colectiva de Israel.', dur:'47:15' },
+  { n:8, titulo:'Kabaláh y ciencia', d:'Física cuántica, fractales y geometría sagrada.', dur:'55:00' }
+];
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('episodios').innerHTML = EPISODIOS.map(e => `
+    <div class="episodio">
+      <div class="play">▶</div>
+      <div class="info">
+        <h3>Ep. ${e.n}: ${e.titulo}</h3>
+        <div class="meta"><span class="duracion">⏱️ ${e.dur}</span> · Yejidá Podcast</div>
+        <div class="desc">${e.d}</div>
+      </div>
+    </div>
+  `).join('');
+});
+</script>
+</body>
+</html>
