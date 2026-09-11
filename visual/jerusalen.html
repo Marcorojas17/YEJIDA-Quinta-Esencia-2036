@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Jerusalén Celestial: la ciudad sagrada en geometría cabalística">
+<title>✦ Jerusalén Celestial — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.jerusalen-svg{width:100%;max-width:540px;margin:2rem auto;display:block;
+  filter:drop-shadow(0 0 30px rgba(212,175,55,.4));}
+.jerusalen-svg .base{fill:rgba(212,175,55,.08);stroke:var(--gold);stroke-width:2;}
+.jerusalen-svg .puerta{fill:var(--gold2);opacity:.8;transition:all .4s;cursor:pointer;}
+.jerusalen-svg .puerta:hover{fill:#fff;filter:drop-shadow(0 0 15px var(--gold));}
+.jerusalen-svg .torre{fill:none;stroke:var(--gold);stroke-width:1.5;}
+.jerusalen-svg .label{fill:var(--muted);font-size:9px;text-anchor:middle;
+  font-family:monospace;}
+.jerusalen-svg .heb{fill:var(--gold2);font-size:14px;
+  font-family:var(--font-heb);text-anchor:middle;font-weight:600;
+  filter:drop-shadow(0 0 8px rgba(212,175,55,.6));}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">ירושלים של מעלה</div>
+  <h1>✦ Jerusalén Celestial ✦</h1>
+  <p>La Ciudad Sagrada en geometría cabalística</p>
+  <span class="page-number">Visualización · Ciudad</span>
+</header>
+
+<section>
+  <h2>🏛️ La Ciudad Santa</h2>
+  <p>La <strong>Jerusalén celestial</strong> (Yerushalayim shel Maalá) es el
+  arquetipo divino de la ciudad terrenal. El <strong>Zohar</strong> describe
+  su estructura como perfectamente cúbica, con <strong>12 puertas</strong>
+  orientadas a los 4 puntos cardinales.</p>
+
+  <svg class="jerusalen-svg" viewBox="0 0 500 500" role="img"
+    aria-label="Jerusalén Celestial con 12 puertas">
+    <g id="jerusalen-g" transform="translate(250,270)"></g>
+  </svg>
+
+  <div id="info-puerta" style="margin-top:1.5rem;padding:1.5rem;
+    background:rgba(5,6,15,.5);border:1px solid var(--line);border-radius:12px;
+    min-height:80px;">
+    <p style="color:var(--muted);text-align:center;">
+      Haz clic en cada puerta.
+    </p>
+  </div>
+</section>
+
+<section>
+  <h2>📖 Las 12 Puertas</h2>
+  <p>Apocalipsis 21:12-14 describe las 12 puertas, cada una con el nombre
+  de una tribu de Israel, y los 12 cimientos con los nombres de los apóstoles.</p>
+  <table>
+    <thead><tr><th>Punto cardinal</th><th>Puertas</th><th>Tribus</th></tr></thead>
+    <tbody>
+      <tr><td>Norte</td><td>3</td><td>Dan, Asher, Naftalí</td></tr>
+      <tr><td>Este</td><td>3</td><td>Yehudá, Isajar, Zevulún</td></tr>
+      <tr><td>Sur</td><td>3</td><td>Reubén, Shimón, Gad</td></tr>
+      <tr><td>Oeste</td><td>3</td><td>Efraim, Menashé, Biniamín</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>💡 Simbolismo</h2>
+  <ul>
+    <li><strong>Cúbica perfecta</strong> — Simboliza la perfección de la creación.</li>
+    <li><strong>Oro puro</strong> — La sustancia divina sin mezcla.</li>
+    <li><strong>12 puertas</strong> — Accesible desde toda dirección.</li>
+    <li><strong>Centro: la Shejiná</strong> — La Presencia divina habita en el centro.</li>
+  </ul>
+  <div class="equation">
+    <div class="big">12 puertas · 12 tribus · 12 cimientos</div>
+    <div class="heb">י"ב שערים · י"ב שבטים · י"ב יסודות</div>
+  </div>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Jerusalén Celestial</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const PUERTAS = [
+  // Norte
+  { tribu:'Dan',      heb:'דן',      x:-70, y:-70, lado:'Norte' },
+  { tribu:'Asher',    heb:'אשר',     x:0,   y:-70, lado:'Norte' },
+  { tribu:'Naftalí',  heb:'נפתלי',   x:70,  y:-70, lado:'Norte' },
+  // Este
+  { tribu:'Yehudá',   heb:'יהודה',   x:70,  y:-25, lado:'Este' },
+  { tribu:'Isajar',   heb:'יששכר',   x:70,  y:25,  lado:'Este' },
+  { tribu:'Zevulún',  heb:'זבולון',  x:70,  y:70,  lado:'Este' },
+  // Sur
+  { tribu:'Reubén',   heb:'ראובן',   x:70,  y:110, lado:'Sur' },
+  { tribu:'Shimón',   heb:'שמעון',   x:0,   y:110, lado:'Sur' },
+  { tribu:'Gad',      heb:'גד',      x:-70, y:110, lado:'Sur' },
+  // Oeste
+  { tribu:'Efraim',   heb:'אפרים',   x:-70, y:70,  lado:'Oeste' },
+  { tribu:'Menashé',  heb:'מנשה',    x:-70, y:25,  lado:'Oeste' },
+  { tribu:'Biniamín', heb:'בנימין',  x:-70, y:-25, lado:'Oeste' }
+];
+
+document.addEventListener('DOMContentLoaded', () => {
+  const g = document.getElementById('jerusalen-g');
+  const info = document.getElementById('info-puerta');
+
+  // Base cúbica
+  const base = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  base.setAttribute('d', 'M -100 -100 L 100 -100 L 100 140 L -100 140 Z');
+  base.setAttribute('class', 'base');
+  g.appendChild(base);
+
+  // Círculo central (Shejiná)
+  const centro = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  centro.setAttribute('r', 25);
+  centro.setAttribute('fill', 'rgba(212,175,55,.2)');
+  centro.setAttribute('stroke', 'var(--gold2)');
+  centro.setAttribute('stroke-width', '2');
+  centro.setAttribute('filter', 'drop-shadow(0 0 15px var(--gold))');
+  g.appendChild(centro);
+
+  const shejina = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  shejina.setAttribute('y', 5);
+  shejina.setAttribute('class', 'heb');
+  shejina.textContent = 'שכינה';
+  g.appendChild(shejina);
+
+  // Puertas
+  PUERTAS.forEach(p => {
+    const puerta = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    puerta.setAttribute('x', p.x - 18);
+    puerta.setAttribute('y', p.y - 8);
+    puerta.setAttribute('width', 36);
+    puerta.setAttribute('height', 16);
+    puerta.setAttribute('rx', 3);
+    puerta.setAttribute('class', 'puerta');
+    puerta.setAttribute('tabindex', '0');
+    puerta.setAttribute('role', 'button');
+    puerta.setAttribute('aria-label', p.tribu);
+    puerta.addEventListener('click', () => show(p));
+    puerta.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); show(p); }
+    });
+    g.appendChild(puerta);
+
+    const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    label.setAttribute('x', p.x);
+    label.setAttribute('y', p.y + 28);
+    label.setAttribute('class', 'label');
+    label.textContent = p.tribu;
+    g.appendChild(label);
+  });
+
+  function show(p){
+    info.innerHTML = `
+      <h3 style="color:var(--gold2);font-size:1.2rem;text-align:center;">
+        Puerta de ${p.tribu} ·
+        <span class="hebrew-inline">${p.heb}</span>
+      </h3>
+      <p style="text-align:center;color:var(--cyan);margin-top:.5rem;">
+        Lado ${p.lado}
+      </p>
+      <p style="text-align:center;color:var(--text);margin-top:.5rem;font-size:.9rem;">
+        Cada puerta es una entrada al conocimiento de una tribu de Israel.
+      </p>
+    `;
+  }
+});
+</script>
+</body>
+</html>
