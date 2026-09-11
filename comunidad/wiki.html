@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Wiki colaborativa de Kabaláh: artículos editables por la comunidad">
+<title>✦ Wiki de Kabaláh — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.articulo{border:1px solid var(--line);border-radius:12px;padding:1.5rem;
+  margin-bottom:1rem;background:rgba(10,12,30,.6);transition:all .4s;}
+.articulo:hover{border-color:var(--gold);}
+.articulo h3{color:var(--gold2);font-size:1.15rem;margin-bottom:.5rem;}
+.articulo .contenido{color:var(--text);font-size:.9rem;line-height:1.7;
+  margin:.5rem 0;white-space:pre-wrap;}
+.articulo .meta{color:var(--muted);font-size:.78rem;
+  padding-top:.5rem;border-top:1px solid var(--line);margin-top:.8rem;}
+.busqueda input{width:100%;padding:1rem 1.2rem;background:rgba(10,12,30,.7);
+  border:1px solid var(--line);border-radius:12px;color:var(--text);
+  font-family:inherit;font-size:1rem;margin-bottom:1rem;}
+.busqueda input:focus{outline:none;border-color:var(--gold);
+  box-shadow:0 0 25px rgba(212,175,55,.3);}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">ויקי</div>
+  <h1>✦ Wiki de Kabaláh ✦</h1>
+  <p>Artículos colaborativos</p>
+  <span class="page-number">Comunidad · Wiki</span>
+</header>
+
+<section>
+  <h2>📖 Artículos</h2>
+  <div class="busqueda">
+    <input type="search" id="busqueda" placeholder="Buscar artículo..." aria-label="Buscar">
+  </div>
+  <div id="articulos"></div>
+</section>
+
+<section>
+  <h2>✍️ Contribuir un Artículo</h2>
+  <p style="color:var(--muted);font-size:.9rem;">
+    Añade tu conocimiento a la wiki. Los artículos se guardan localmente
+    en tu navegador.
+  </p>
+  <form id="nuevo-articulo">
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="autor">Autor</label>
+        <input type="text" id="autor" placeholder="Tu nombre" required maxlength="40">
+      </div>
+      <div class="form-field">
+        <label for="tema">Tema</label>
+        <select id="tema">
+          <option>Sefirot</option>
+          <option>Letras</option>
+          <option>Mundos</option>
+          <option>Partzufim</option>
+          <option>Prácticas</option>
+          <option>Textos</option>
+          <option>Historia</option>
+        </select>
+      </div>
+      <div class="form-field full">
+        <label for="titulo">Título</label>
+        <input type="text" id="titulo" placeholder="Ej: Kéter: la Corona" required maxlength="100">
+      </div>
+      <div class="form-field full">
+        <label for="contenido">Contenido</label>
+        <textarea id="contenido" rows="6" placeholder="Escribe tu artículo..." required></textarea>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1rem;">
+      <button type="submit" class="btn">✦ Publicar Artículo ✦</button>
+    </div>
+  </form>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Wiki</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const KEY = 'yejida_wiki';
+const ARTICULOS_EJEMPLO = [
+  { id:'1', autor:'Yejidá', tema:'Sefirot', titulo:'Kéter — La Corona',
+    contenido:'Kéter es la primera Sefirá, la más cercana a Ein Sof. Corresponde a la voluntad divina primordial. En el alma, es Yejidá. En el cuerpo, la coronilla. En el Nombre YHVH, el ápice del Yud.',
+    fecha: Date.now() - 86400000*5 },
+  { id:'2', autor:'Yejidá', tema:'Letras', titulo:'La letra Alef (א)',
+    contenido:'Alef es la primera letra hebrea. Representa el aliento, el silencio, y la unidad. Su valor numérico es 1. Está formada por un Vav arriba, un Vav abajo, y una diagonal que los une, simbolizando el cielo y la tierra unidos.',
+    fecha: Date.now() - 86400000*3 },
+  { id:'3', autor:'Yejidá', tema:'Mundos', titulo:'Los cuatro mundos',
+    contenido:'Atzilut (Emanación), Briá (Creación), Yetzirá (Formación) y Asiá (Acción). Cada mundo es un velo que oculta y revela al siguiente. La luz desciende contrayéndose.',
+    fecha: Date.now() - 86400000 }
+];
+
+function cargar(){
+  try{
+    const g = JSON.parse(localStorage.getItem(KEY) || '[]');
+    return [...g, ...ARTICULOS_EJEMPLO];
+  } catch(e){ return ARTICULOS_EJEMPLO; }
+}
+
+let filtro = '';
+
+function render(){
+  const articulos = cargar()
+    .filter(a => !filtro ||
+      a.titulo.toLowerCase().includes(filtro) ||
+      a.contenido.toLowerCase().includes(filtro) ||
+      a.tema.toLowerCase().includes(filtro))
+    .sort((a, b) => b.fecha - a.fecha);
+
+  const cont = document.getElementById('articulos');
+  if(!articulos.length){
+    cont.innerHTML = '<p style="text-align:center;color:var(--muted);padding:2rem;">Sin resultados.</p>';
+    return;
+  }
+  cont.innerHTML = articulos.map(a => `
+    <article class="articulo">
+      <h3>${esc(a.titulo)}</h3>
+      <div class="meta" style="margin-bottom:.5rem;">
+        <span style="color:var(--cyan);">${esc(a.tema)}</span> ·
+        por ${esc(a.autor)} · ${new Date(a.fecha).toLocaleDateString('es-MX')}
+      </div>
+      <div class="contenido">${esc(a.contenido)}</div>
+    </article>
+  `).join('');
+}
+
+function esc(s){
+  return String(s).replace(/[&<>"']/g, c =>
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+document.getElementById('busqueda').addEventListener('input', (e) => {
+  filtro = e.target.value.toLowerCase().trim();
+  render();
+});
+
+document.getElementById('nuevo-articulo').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const nuevo = {
+    id: Date.now().toString(),
+    autor: document.getElementById('autor').value.trim(),
+    tema: document.getElementById('tema').value,
+    titulo: document.getElementById('titulo').value.trim(),
+    contenido: document.getElementById('contenido').value.trim(),
+    fecha: Date.now()
+  };
+  if(!nuevo.autor || !nuevo.titulo || !nuevo.contenido) return;
+  const guardados = JSON.parse(localStorage.getItem(KEY) || '[]');
+  guardados.push(nuevo);
+  localStorage.setItem(KEY, JSON.stringify(guardados));
+  e.target.reset();
+  render();
+  alert('✓ Artículo publicado');
+});
+
+render();
+</script>
+</body>
+</html>
