@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Juego: encuentra los 72 Nombres del Shem HaMephorash">
+<title>✦ Match de los 72 Nombres — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.nombre-tablero{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));
+  gap:.5rem;margin:1.5rem 0;}
+.nombre-btn{padding:.8rem .3rem;background:rgba(10,12,30,.6);
+  border:1px solid var(--line);border-radius:10px;color:var(--gold);
+  font-family:var(--font-heb);font-size:1.1rem;cursor:pointer;
+  transition:all .3s;direction:rtl;font-weight:600;}
+.nombre-btn:hover{border-color:var(--gold);transform:scale(1.05);}
+.nombre-btn.usado{border-color:var(--success);background:rgba(74,222,128,.15);
+  color:var(--success);pointer-events:none;opacity:.6;}
+.objetivo{text-align:center;padding:1.5rem;
+  background:radial-gradient(circle, rgba(212,175,55,.12), transparent 70%),
+  rgba(5,6,15,.7);border:2px solid var(--gold);border-radius:16px;
+  margin:1rem 0;}
+.objetivo .label{color:var(--muted);font-size:.8rem;letter-spacing:.2em;
+  text-transform:uppercase;}
+.objetivo .valor{font-size:2rem;color:var(--gold2);
+  font-family:var(--font-mono);text-shadow:0 0 20px rgba(212,175,55,.7);
+  margin-top:.3rem;}
+.stats-juego{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;
+  margin:1rem 0;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">שם ע"ב</div>
+  <h1>✦ Match de los 72 Nombres ✦</h1>
+  <p>Encuentra los 5 Nombres cuyo valor coincide con el objetivo</p>
+  <span class="page-number">Juegos · Match</span>
+</header>
+
+<section>
+  <h2>🎯 Encuentra el valor</h2>
+  <p style="color:var(--muted);font-size:.9rem;text-align:center;">
+    Se te muestra un valor objetivo. Debes hacer clic en el nombre cuyo
+    valor en guematria coincida.
+  </p>
+
+  <div class="objetivo">
+    <div class="label">Valor objetivo</div>
+    <div class="valor" id="objetivo">—</div>
+  </div>
+
+  <div class="stats-juego">
+    <div class="stat" style="text-align:center;padding:.6rem 1.2rem;
+      background:rgba(10,12,30,.6);border:1px solid var(--line);
+      border-radius:10px;min-width:100px;">
+      <div style="color:var(--gold2);font-size:1.3rem;font-family:var(--font-mono);"
+        id="aciertos">0</div>
+      <div style="color:var(--muted);font-size:.7rem;letter-spacing:.15em;
+        text-transform:uppercase;">Aciertos</div>
+    </div>
+    <div class="stat" style="text-align:center;padding:.6rem 1.2rem;
+      background:rgba(10,12,30,.6);border:1px solid var(--line);
+      border-radius:10px;min-width:100px;">
+      <div style="color:var(--gold2);font-size:1.3rem;font-family:var(--font-mono);"
+        id="ronda">1/5</div>
+      <div style="color:var(--muted);font-size:.7rem;letter-spacing:.15em;
+        text-transform:uppercase;">Ronda</div>
+    </div>
+  </div>
+
+  <div class="nombre-tablero" id="tablero"></div>
+
+  <div style="text-align:center;margin-top:1rem;">
+    <button id="reiniciar" class="btn">🔄 Nuevo Juego</button>
+  </div>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Match de los 72 Nombres</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const NOMBRES = [
+  { n:'והו', v:17 }, { n:'ילי', v:50 }, { n:'סיט', v:79 }, { n:'עלמ', v:140 },
+  { n:'מהש', v:345 }, { n:'ללה', v:65 }, { n:'אכא', v:22 }, { n:'כהת', v:425 },
+  { n:'הזי', v:22 }, { n:'אלד', v:35 }, { n:'לאו', v:37 }, { n:'ההע', v:16 },
+  { n:'יזל', v:47 }, { n:'מבה', v:47 }, { n:'הרי', v:215 }, { n:'הקם', v:145 },
+  { n:'כלי', v:60 }, { n:'לוו', v:42 }, { n:'פהל', v:115 }, { n:'נלכ', v:80 }
+];
+
+const GEM = { 'א':1,'ב':2,'ג':3,'ד':4,'ה':5,'ו':6,'ז':7,'ח':8,'ט':9,
+  'י':10,'כ':20,'ל':30,'מ':40,'נ':50,'ס':60,'ע':70,'פ':80,'צ':90,
+  'ק':100,'ר':200,'ש':300,'ת':400 };
+
+function calc(str){
+  let t = 0;
+  for(const ch of str) if(GEM[ch]) t += GEM[ch];
+  return t;
+}
+
+let ronda = 0;
+let aciertos = 0;
+let objetivoValor = 0;
+let nombresActuales = [];
+
+const TOTAL_RONDAS = 5;
+
+function iniciar(){
+  ronda = 0;
+  aciertos = 0;
+  siguienteRonda();
+}
+
+function siguienteRonda(){
+  if(ronda >= TOTAL_RONDAS){
+    finalizar();
+    return;
+  }
+  // Elegir 8 nombres al azar
+  const pool = [...NOMBRES].sort(() => Math.random() - 0.5).slice(0, 8);
+  nombresActuales = pool;
+  // Elegir uno como objetivo
+  const objetivoIdx = Math.floor(Math.random() * pool.length);
+  objetivoValor = calc(pool[objetivoIdx].n);
+  document.getElementById('objetivo').textContent = objetivoValor;
+  document.getElementById('ronda').textContent = `${ronda + 1}/${TOTAL_RONDAS}`;
+
+  document.getElementById('tablero').innerHTML = pool.map((nm, i) => `
+    <button class="nombre-btn" data-i="${i}">${nm.n}</button>
+  `).join('');
+  document.querySelectorAll('.nombre-btn').forEach(btn => {
+    btn.addEventListener('click', () => elegir(parseInt(btn.dataset.i), objetivoIdx));
+  });
+}
+
+function elegir(i, correcto){
+  const btns = document.querySelectorAll('.nombre-btn');
+  btns.forEach(b => b.style.pointerEvents = 'none');
+  if(i === correcto){
+    aciertos++;
+    document.getElementById('aciertos').textContent = aciertos;
+    btns[i].classList.add('usado');
+  } else {
+    btns[correcto].classList.add('usado');
+    btns[i].style.borderColor = 'var(--danger)';
+  }
+  setTimeout(() => {
+    ronda++;
+    siguienteRonda();
+  }, 900);
+}
+
+function finalizar(){
+  document.getElementById('objetivo').textContent = '—';
+  document.getElementById('tablero').innerHTML = `
+    <div style="grid-column:1/-1;text-align:center;padding:2rem;
+      background:radial-gradient(circle, rgba(212,175,55,.15), transparent 70%),
+      rgba(5,6,15,.7);border:2px solid var(--gold);border-radius:16px;">
+      <h3 style="color:var(--gold2);font-size:1.5rem;">✦ Completado ✦</h3>
+      <p style="color:var(--gold2);font-size:2.5rem;font-family:var(--font-mono);
+        margin:1rem 0;">${aciertos}/${TOTAL_RONDAS}</p>
+      <p style="color:var(--muted);">
+        ${aciertos === 5 ? '¡Perfecto! Conoces los 72 Nombres.' :
+          aciertos >= 3 ? 'Bien hecho.' : 'Sigue estudiando.'}
+      </p>
+    </div>
+  `;
+}
+
+document.getElementById('reiniciar').addEventListener('click', iniciar);
+iniciar();
+</script>
+</body>
+</html>
