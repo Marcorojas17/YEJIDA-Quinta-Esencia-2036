@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Conversor de fechas entre calendario gregoriano, hebreo y juliano">
+<title>✦ Conversor de Fechas — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">המרת תאריכים</div>
+  <h1>✦ Conversor de Fechas ✦</h1>
+  <p>Gregoriano · Hebreo · Juliano</p>
+  <span class="page-number">Herramienta · Fechas</span>
+</header>
+
+<section>
+  <h2>📅 Fecha a convertir</h2>
+  <form id="conv-form" autocomplete="off">
+    <div class="form-grid">
+      <div class="form-field full">
+        <label for="fecha">Fecha gregoriana</label>
+        <input type="date" id="fecha" required>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1.2rem">
+      <button type="submit" class="btn">✦ Convertir ✦</button>
+    </div>
+  </form>
+</section>
+
+<div id="results" style="display:none"></div>
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Conversor</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const MESES_HEB = ['Nisán','Iyar','Siván','Tamuz','Av','Elul','Tishrei',
+  'Jeshván','Kislev','Tevet','Shevat','Adar'];
+const MESES_HEB_HEB = ['ניסן','אייר','סיון','תמוז','אב','אלול','תשרי',
+  'חשון','כסלו','טבת','שבט','אדר'];
+
+// Aproximación de conversión hebrea (1 Tishrei ≈ sept/oct)
+function aHebreo(fecha){
+  const y = fecha.getFullYear();
+  const m = fecha.getMonth() + 1;
+  const d = fecha.getDate();
+
+  // Año hebreo: comienza en Tishrei (sept/oct)
+  let anioHeb;
+  let mesHeb;
+  let diaHeb;
+  if(m >= 9){ // sept-dic: año hebreo = y + 3761, mes Tishrei+
+    anioHeb = y + 3761;
+    // Posición aproximada en el año hebreo (Tishrei = mes 7 del conteo religioso, 1 del civil)
+    // Aproximación: sept = Tishrei (idx 6), oct = Jeshván (7), etc.
+    const offset = m - 9; // 0 = sept
+    mesHeb = (6 + offset) % 12;
+    diaHeb = d;
+  } else { // ene-ago: año hebreo = y + 3760
+    anioHeb = y + 3760;
+    // ene = Tevet (9), feb = Shevat (10), mar = Adar (11), abr = Nisán (0)...
+    if(m === 1){ mesHeb = 9; }
+    else if(m === 2){ mesHeb = 10; }
+    else if(m === 3){ mesHeb = 11; }
+    else { mesHeb = m - 4; } // abr = 0 (Nisán)
+    diaHeb = d;
+  }
+
+  return {
+    anio: anioHeb,
+    mes: MESES_HEB[mesHeb],
+    mesHeb: MESES_HEB_HEB[mesHeb],
+    dia: diaHeb,
+    texto: `${diaHeb} ${MESES_HEB[mesHeb]} ${anioHeb}`
+  };
+}
+
+// Año juliano (para fechas antes del 15 oct 1582)
+function aJuliano(fecha){
+  // Diferencia actual: 13 días (gregoriano = juliano + 13)
+  const juliano = new Date(fecha);
+  juliano.setDate(juliano.getDate() - 13);
+  return juliano;
+}
+
+document.getElementById('conv-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const fechaStr = document.getElementById('fecha').value;
+  if(!fechaStr) return alert('Ingresa una fecha.');
+  const d = new Date(fechaStr + 'T12:00:00');
+
+  const heb = aHebreo(d);
+  const jul = aJuliano(d);
+
+  const results = document.getElementById('results');
+  results.style.display = 'block';
+  results.innerHTML = `
+    <section>
+      <h2>📅 Fecha Gregoriana</h2>
+      <div class="equation">
+        <div class="big">${d.toLocaleDateString('es-MX', {
+          day:'numeric', month:'long', year:'numeric'
+        })}</div>
+        <div class="heb">${fechaStr}</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>✡ Fecha Hebrea</h2>
+      <div class="equation">
+        <div class="big">${heb.dia} ${heb.mes} ${heb.anio}</div>
+        <div class="heb">${heb.dia} ${heb.mesHeb} ${heb.anio}</div>
+      </div>
+      <p style="text-align:center;color:var(--muted);font-size:.85rem;">
+        Aproximación · El calendario hebreo es lunar-solar y varía por año.
+      </p>
+    </section>
+
+    <section>
+      <h2>📜 Fecha Juliana</h2>
+      <div class="equation">
+        <div class="big">${jul.toLocaleDateString('es-MX', {
+          day:'numeric', month:'long', year:'numeric'
+        })}</div>
+        <div class="heb">Calendario juliano (-13 días)</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>📖 Sobre los Calendarios</h2>
+      <ul>
+        <li><strong>Gregoriano</strong> — El actual. Reformado por el Papa Gregorio XIII en 1582.</li>
+        <li><strong>Juliano</strong> — Anterior al gregoriano. Aún usado en algunas iglesias ortodoxas.</li>
+        <li><strong>Hebreo</strong> — Lunar-solar. Cuenta desde la creación según la tradición.</li>
+      </ul>
+    </section>
+  `;
+  results.scrollIntoView({ behavior:'smooth' });
+});
+</script>
+</body>
+</html>
