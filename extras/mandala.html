@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Generador de mandalas cabalísticos personalizados">
+<title>✦ Tu Mandala Sagrado — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.mandala-container{display:flex;justify-content:center;margin:1.5rem 0;}
+.mandala-svg{width:100%;max-width:520px;filter:drop-shadow(0 0 40px rgba(212,175,55,.5));}
+@keyframes spin-mandala{to{transform:rotate(360deg);}}
+.mandala-rot{animation:spin-mandala 120s linear infinite;
+  transform-origin:center;transform-box:fill-box;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">מנדלה</div>
+  <h1>✦ Mandala Sagrado ✦</h1>
+  <p>Generado desde tu nombre y fecha</p>
+  <span class="page-number">Extras · Mandala</span>
+</header>
+
+<section>
+  <h2>🌀 ¿Qué es un Mandala Cabalístico?</h2>
+  <p>Un <strong>mandala (מנדלה)</strong> es una imagen circular que condensa
+  la energía del alma. Este generador crea patrones únicos basados en los
+  números de tu nombre y fecha.</p>
+  <form id="mandala-form" autocomplete="off">
+    <div class="form-grid">
+      <div class="form-field full">
+        <label for="nombre">Nombre</label>
+        <input type="text" id="nombre" required>
+      </div>
+      <div class="form-field full">
+        <label for="fecha">Fecha</label>
+        <input type="date" id="fecha" required>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1.2rem">
+      <button type="submit" class="btn">✦ Generar Mandala ✦</button>
+    </div>
+  </form>
+</section>
+
+<div id="results" style="display:none"></div>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Mandala</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const PYT = {a:1,b:2,c:3,d:4,e:5,f:6,g:7,h:8,i:9,j:1,k:2,l:3,m:4,n:5,o:6,
+  p:7,q:8,r:9,s:1,t:2,u:3,v:4,w:5,x:6,y:7,z:8};
+
+function clean(s){
+  return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z]/g,'');
+}
+function sumName(name){
+  let t = 0;
+  for(const ch of clean(name)) if(PYT[ch]) t += PYT[ch];
+  return t;
+}
+function reducir(n){
+  while(n > 9){
+    if([11,22,33].includes(n)) return n;
+    n = String(n).split('').reduce((a,b) => a + +b, 0);
+  }
+  return n;
+}
+
+document.getElementById('mandala-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const nombre = document.getElementById('nombre').value.trim();
+  const f = document.getElementById('fecha').value;
+  if(!nombre || !f) return;
+  const d = new Date(f + 'T12:00:00');
+  const camino = reducir(d.getDate() + d.getMonth() + 1 + d.getFullYear());
+  const expresion = reducir(sumName(nombre));
+  const semilla = camino * 100 + expresion;
+
+  // Generador pseudoaleatorio determinista
+  function rng(seed){
+    let s = seed;
+    return function(){
+      s = (s * 9301 + 49297) % 233280;
+      return s / 233280;
+    };
+  }
+  const rand = rng(semilla);
+
+  // Generar elementos
+  const capas = 5 + Math.floor(rand() * 4);
+  const petalosPorCapa = [];
+  for(let i = 0; i < capas; i++){
+    petalosPorCapa.push(6 + Math.floor(rand() * 18));
+  }
+
+  const circulos = [];
+  const petalos = [];
+
+  // Círculos concéntricos
+  for(let i = 0; i < capas; i++){
+    const r = 50 + i * 35;
+    circulos.push(`<circle cx="250" cy="250" r="${r}" fill="none"
+      stroke="rgba(212,175,55,${0.3 + rand() * 0.4})" stroke-width="${1 + rand()}" />`);
+  }
+
+  // Pétalos
+  for(let c = 0; c < capas; c++){
+    const numPet = petalosPorCapa[c];
+    const rIn = 40 + c * 35;
+    const rOut = rIn + 30 + rand() * 20;
+    for(let i = 0; i < numPet; i++){
+      const a = (Math.PI * 2 / numPet) * i + rand() * 0.3;
+      const x1 = 250 + Math.cos(a) * rIn;
+      const y1 = 250 + Math.sin(a) * rIn;
+      const x2 = 250 + Math.cos(a) * rOut;
+      const y2 = 250 + Math.sin(a) * rOut;
+      const color = rand() > 0.5 ? 'rgba(212,175,55,.5)' :
+        rand() > 0.5 ? 'rgba(108,92,
