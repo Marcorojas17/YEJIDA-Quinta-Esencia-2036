@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Guematria avanzada: Misparim, Atbash, Albam, Katan">
+<title>✦ Guematria Avanzada — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">גימטריה מתקדמת</div>
+  <h1>✦ Guematria Avanzada ✦</h1>
+  <p>Misparim · Atbash · Albam · Katan</p>
+  <span class="page-number">Herramienta · Guematria</span>
+</header>
+
+<section>
+  <h2>📖 Cálculo avanzado</h2>
+  <p>Existen <strong>múltiples sistemas</strong> de cálculo numérico en la Kabaláh.
+  Cada uno revela una dimensión distinta del texto sagrado.</p>
+  <form id="gem-form" autocomplete="off">
+    <div class="form-grid">
+      <div class="form-field full">
+        <label for="texto">Texto hebreo</label>
+        <input type="text" id="texto" placeholder="Ej: שלום" required>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1.2rem">
+      <button type="submit" class="btn">✦ Calcular Todos los Sistemas ✦</button>
+    </div>
+  </form>
+</section>
+
+<div id="results" style="display:none"></div>
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Guematria Avanzada</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const HEB = ['א','ב','ג','ד','ה','ו','ז','ח','ט','י','כ','ל','מ','נ','ס','ע','פ','צ','ק','ר','ש','ת'];
+const VALOR_STD = {'א':1,'ב':2,'ג':3,'ד':4,'ה':5,'ו':6,'ז':7,'ח':8,'ט':9,
+  'י':10,'כ':20,'ל':30,'מ':40,'נ':50,'ס':60,'ע':70,'פ':80,'צ':90,
+  'ק':100,'ר':200,'ש':300,'ת':400};
+const SOFIT = {'ך':'כ','ם':'מ','ן':'נ','ף':'פ','ץ':'צ'};
+
+function normalizar(txt){
+  let out = '';
+  for(const ch of txt){
+    if(SOFIT[ch]) out += SOFIT[ch];
+    else if(HEB.includes(ch)) out += ch;
+  }
+  return out;
+}
+
+function misparHejraj(txt){
+  // Guematria estándar
+  let total = 0;
+  for(const ch of txt) if(VALOR_STD[ch]) total += VALOR_STD[ch];
+  return total;
+}
+
+function misparKatan(txt){
+  // Reduce cada letra a su valor 1-9
+  let total = 0;
+  for(const ch of txt){
+    if(VALOR_STD[ch]){
+      let v = VALOR_STD[ch];
+      while(v > 9) v = String(v).split('').reduce((a,b) => a + +b, 0);
+      total += v;
+    }
+  }
+  return total;
+}
+
+function misparGadol(txt){
+  // Suma con valor completo (incluye valor posicional)
+  let total = 0;
+  for(let i = 0; i < txt.length; i++){
+    if(VALOR_STD[txt[i]]) total += VALOR_STD[txt[i]] * (i + 1);
+  }
+  return total;
+}
+
+function atbash(txt){
+  // Intercambio: Alef↔Tav, Bet↔Shin, etc.
+  const ATBASH = {};
+  for(let i = 0; i < 22; i++) ATBASH[HEB[i]] = HEB[21 - i];
+  let nueva = '', total = 0;
+  for(const ch of txt){
+    const n = ATBASH[ch] || ch;
+    nueva += n;
+    if(VALOR_STD[n]) total += VALOR_STD[n];
+  }
+  return { palabra: nueva, valor: total };
+}
+
+function albam(txt){
+  // Intercambio partiendo en 2: Alef↔Lamed, Bet↔Mem, etc.
+  const ALBAM = {};
+  for(let i = 0; i < 11; i++){
+    ALBAM[HEB[i]] = HEB[i + 11];
+    ALBAM[HEB[i + 11]] = HEB[i];
+  }
+  let nueva = '', total = 0;
+  for(const ch of txt){
+    const n = ALBAM[ch] || ch;
+    nueva += n;
+    if(VALOR_STD[n]) total += VALOR_STD[n];
+  }
+  return { palabra: nueva, valor: total };
+}
+
+function misparSiduri(txt){
+  // Valor posicional simple (1, 2, 3...)
+  let total = 0;
+  for(let i = 0; i < txt.length; i++) total += (i + 1);
+  return total;
+}
+
+document.getElementById('gem-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const texto = document.getElementById('texto').value.trim();
+  if(!texto) return alert('Ingresa un texto en hebreo.');
+
+  const norm = normalizar(texto);
+  if(!norm) return alert('No se detectaron letras hebreas.');
+
+  const std = misparHejraj(norm);
+  const katan = misparKatan(norm);
+  const gadol = misparGadol(norm);
+  const atb = atbash(norm);
+  const alb = albam(norm);
+  const sid = misparSiduri(norm);
+
+  const results = document.getElementById('results');
+  results.style.display = 'block';
+  results.innerHTML = `
+    <section>
+      <h2>📊 Todos los Sistemas</h2>
+      <div class="result-grid">
+        <div class="result-card">
+          <div class="label">Mispar Hejrají</div>
+          <div class="value">${std}</div>
+          <div class="desc">Guematria estándar (1-400).</div>
+        </div>
+        <div class="result-card">
+          <div class="label">Mispar Katan</div>
+          <div class="value">${katan}</div>
+          <div class="desc">Cada letra reducida a 1-9.</div>
+        </div>
+        <div class="result-card">
+          <div class="label">Mispar Gadol</div>
+          <div class="value">${gadol}</div>
+          <div class="desc">Valor × posición.</div>
+        </div>
+        <div class="result-card">
+          <div class="label">Mispar Sidurí</div>
+          <div class="value">${sid}</div>
+          <div class="desc">Suma posicional (1+2+3...).</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>🔄 Sistemas de Permutación</h2>
+      <div class="equation">
+        <div class="big">Atbash</div>
+        <div class="heb" style="font-size:1.6rem;letter-spacing:.5rem;">${atb.palabra}</div>
+        <div style="color:var(--gold2);margin-top:.5rem;">Valor: ${atb.valor}</div>
+      </div>
+      <div class="equation">
+        <div class="big">Albam</div>
+        <div class="heb" style="font-size:1.6rem;letter-spacing:.5rem;">${alb.palabra}</div>
+        <div style="color:var(--gold2);margin-top:.5rem;">Valor: ${alb.valor}</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>📖 Explicación de los Sistemas</h2>
+      <table>
+        <thead><tr><th>Sistema</th><th>Descripción</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Mispar Hejrají</strong></td><td>El estándar. Alef=1, Tav=400.</td></tr>
+          <tr><td><strong>Mispar Katan</strong></td><td>Reduce cada letra a 1-9 para análisis numerológico.</td></tr>
+          <tr><td><strong>Mispar Gadol</strong></td><td>Multiplica por posición, revelando el "peso" del texto.</td></tr>
+          <tr><td><strong>Mispar Sidurí</strong></td><td>Valor ordinal (posición en el alfabeto).</td></tr>
+          <tr><td><strong>Atbash</strong></td><td>Intercambio espejo: Alef↔Tav, Bet↔Shin.</td></tr>
+          <tr><td><strong>Albam</strong></td><td>Intercambio mitad-mitad: Alef↔Lamed, Bet↔Mem.</td></tr>
+        </tbody>
+      </table>
+    </section>
+  `;
+  results.scrollIntoView({ behavior:'smooth' });
+});
+</script>
+</body>
+</html>
