@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Foro de la comunidad Yejidá: debates, preguntas y respuestas sobre Kabaláh">
+<title>✦ Foro de Kabaláh — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.hilo{display:flex;gap:1rem;padding:1.2rem;background:rgba(10,12,30,.6);
+  border:1px solid var(--line);border-radius:12px;margin-bottom:.8rem;
+  text-decoration:none;color:var(--text);transition:all .4s;}
+.hilo:hover{border-color:var(--gold);transform:translateX(4px);
+  background:rgba(212,175,55,.06);}
+.hilo .avatar{flex-shrink:0;width:48px;height:48px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gold),var(--violet));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-heb);font-size:1.4rem;color:var(--bg);
+  font-weight:700;}
+.hilo .contenido{flex:1;}
+.hilo h3{color:var(--gold2);font-size:1rem;margin-bottom:.3rem;}
+.hilo .meta{color:var(--muted);font-size:.78rem;letter-spacing:.05em;}
+.hilo .meta span{margin-right:1rem;}
+.hilo .tag{display:inline-block;background:rgba(108,92,231,.2);
+  color:var(--violet2);padding:.15rem .6rem;border-radius:20px;
+  font-size:.7rem;margin-right:.4rem;}
+.categorias{display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0;}
+.cat-btn{padding:.5rem 1rem;background:rgba(10,12,30,.6);
+  border:1px solid var(--line);border-radius:30px;color:var(--text);
+  font-family:inherit;font-size:.8rem;cursor:pointer;transition:all .3s;}
+.cat-btn:hover{border-color:var(--gold);color:var(--gold2);}
+.cat-btn.active{background:rgba(212,175,55,.15);border-color:var(--gold);
+  color:var(--gold2);}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">פורום</div>
+  <h1>✦ Foro de Kabaláh ✦</h1>
+  <p>Comunidad de estudio y diálogo</p>
+  <span class="page-number">Comunidad · Foro</span>
+</header>
+
+<section>
+  <h2>💬 Discusiones Recientes</h2>
+  <p style="color:var(--muted);font-size:.9rem;">
+    Espacio abierto para preguntas, reflexiones y debates respetuosos sobre
+    Kabaláh. Se publica contenido moderado por la comunidad.
+  </p>
+
+  <div class="categorias" id="categorias">
+    <button class="cat-btn active" data-cat="todas">Todas</button>
+    <button class="cat-btn" data-cat="principiantes">Principiantes</button>
+    <button class="cat-btn" data-cat="sefirot">Sefirot</button>
+    <button class="cat-btn" data-cat="meditacion">Meditación</button>
+    <button class="cat-btn" data-cat="textos">Textos</button>
+    <button class="cat-btn" data-cat="practica">Práctica</button>
+  </div>
+
+  <div id="hilos"></div>
+</section>
+
+<section>
+  <h2>✍️ Crear Nuevo Hilo</h2>
+  <div class="notice" style="border-left-color:var(--cyan);background:rgba(79,209,197,.08);">
+    <strong>Nota:</strong> Los hilos se guardan localmente en tu navegador
+    como demostración. Para un foro real se requiere un backend (Discourse,
+    Disqus, o Supabase).
+  </div>
+  <form id="nuevo-hilo">
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="autor">Tu nombre</label>
+        <input type="text" id="autor" placeholder="Ej: Ana" required maxlength="40">
+      </div>
+      <div class="form-field">
+        <label for="categoria">Categoría</label>
+        <select id="categoria">
+          <option value="principiantes">Principiantes</option>
+          <option value="sefirot">Sefirot</option>
+          <option value="meditacion">Meditación</option>
+          <option value="textos">Textos</option>
+          <option value="practica">Práctica</option>
+        </select>
+      </div>
+      <div class="form-field full">
+        <label for="titulo">Título del hilo</label>
+        <input type="text" id="titulo" placeholder="Ej: ¿Cómo meditar con Kéter?" required maxlength="120">
+      </div>
+      <div class="form-field full">
+        <label for="contenido">Mensaje</label>
+        <textarea id="contenido" rows="4" placeholder="Escribe tu pregunta o reflexión..." required></textarea>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1rem;">
+      <button type="submit" class="btn">✦ Publicar Hilo ✦</button>
+    </div>
+  </form>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Foro</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const KEY = 'yejida_foro';
+const HILOS_EJEMPLO = [
+  { id:'1', autor:'Rivka', categoria:'principiantes', titulo:'¿Por dónde empiezo a estudiar Kabaláh?', contenido:'Soy nueva en esto y no sé qué libro leer primero.', fecha: Date.now() - 86400000*3 },
+  { id:'2', autor:'David', categoria:'sefirot', titulo:'Diferencia entre Tiféret y Yesod', contenido:'Me confundo entre estas dos Sefirot. ¿Alguien puede explicar?', fecha: Date.now() - 86400000*2 },
+  { id:'3', autor:'Miriam', categoria:'meditacion', titulo:'Hitbodedut: ¿cuánto tiempo al día?', contenido:'Rabí Najman dice una hora, pero ¿es obligatorio?', fecha: Date.now() - 86400000 },
+  { id:'4', autor:'Yosef', categoria:'textos', titulo:'¿Qué traducción del Zohar recomiendan?', contenido:'Vi el Pritzker y el de Soncino. ¿Cuál es mejor para empezar?', fecha: Date.now() - 3600000*5 },
+  { id:'5', autor:'Lea', categoria:'practica', titulo:'Encendido de velas en Shabat', contenido:'¿18 minutos antes es siempre? ¿Depende de la ciudad?', fecha: Date.now() - 3600000 }
+];
+
+function cargar(){
+  try{
+    const guardados = JSON.parse(localStorage.getItem(KEY) || '[]');
+    return [...guardados, ...HILOS_EJEMPLO];
+  } catch(e){ return HILOS_EJEMPLO; }
+}
+function guardar(hilos){
+  localStorage.setItem(KEY, JSON.stringify(hilos));
+}
+
+let filtroCat = 'todas';
+
+function render(){
+  const hilos = cargar()
+    .filter(h => filtroCat === 'todas' || h.categoria === filtroCat)
+    .sort((a, b) => b.fecha - a.fecha);
+
+  const cont = document.getElementById('hilos');
+  if(!hilos.length){
+    cont.innerHTML = '<p style="text-align:center;color:var(--muted);padding:2rem;">No hay hilos en esta categoría.</p>';
+    return;
+  }
+  cont.innerHTML = hilos.map(h => `
+    <a href="#" class="hilo" data-id="${h.id}">
+      <div class="avatar">${h.autor[0].toUpperCase()}</div>
+      <div class="contenido">
+        <h3>${esc(h.titulo)}</h3>
+        <div class="meta">
+          <span class="tag">${h.categoria}</span>
+          <span>✍️ ${esc(h.autor)}</span>
+          <span>🕐 ${hace(h.fecha)}</span>
+        </div>
+      </div>
+    </a>
+  `).join('');
+}
+
+function esc(str){
+  return String(str).replace(/[&<>"']/g, c =>
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function hace(ts){
+  const min = Math.floor((Date.now() - ts) / 60000);
+  if(min < 60) return `hace ${min} min`;
+  const h = Math.floor(min / 60);
+  if(h < 24) return `hace ${h}h`;
+  const d = Math.floor(h / 24);
+  return `hace ${d}d`;
+}
+
+document.getElementById('categorias').addEventListener('click', (e) => {
+  if(!e.target.classList.contains('cat-btn')) return;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  filtroCat = e.target.dataset.cat;
+  render();
+});
+
+document.getElementById('nuevo-hilo').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const nuevo = {
+    id: Date.now().toString(),
+    autor: document.getElementById('autor').value.trim(),
+    categoria: document.getElementById('categoria').value,
+    titulo: document.getElementById('titulo').value.trim(),
+    contenido: document.getElementById('contenido').value.trim(),
+    fecha: Date.now()
+  };
+  if(!nuevo.autor || !nuevo.titulo || !nuevo.contenido) return;
+  const guardados = JSON.parse(localStorage.getItem(KEY) || '[]');
+  guardados.push(nuevo);
+  guardar(guardados);
+  e.target.reset();
+  filtroCat = 'todas';
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.cat-btn').classList.add('active');
+  render();
+  alert('✓ Hilo publicado');
+});
+
+render();
+</script>
+</body>
+</html>
