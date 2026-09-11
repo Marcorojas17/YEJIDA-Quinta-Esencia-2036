@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Curso de Kabaláh para principiantes: 8 lecciones progresivas">
+<title>✦ Curso Principiantes — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.leccion{display:flex;gap:1rem;align-items:start;padding:1.2rem;
+  background:rgba(10,12,30,.6);border:1px solid var(--line);
+  border-radius:12px;margin-bottom:.8rem;transition:all .4s;cursor:pointer;}
+.leccion:hover{border-color:var(--gold);background:rgba(212,175,55,.06);
+  transform:translateX(4px);}
+.leccion.completada{border-color:var(--success);background:rgba(74,222,128,.06);}
+.leccion .num{flex-shrink:0;width:40px;height:40px;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:var(--bg);border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-weight:700;font-size:1rem;}
+.leccion.completada .num{background:linear-gradient(135deg,var(--success),#22c55e);}
+.leccion .info{flex:1;}
+.leccion .info h3{color:var(--gold2);font-size:1rem;margin-bottom:.3rem;}
+.leccion .info p{color:var(--muted);font-size:.85rem;margin:0;}
+.progreso{text-align:center;padding:1rem;background:rgba(5,6,15,.5);
+  border:1px solid var(--line);border-radius:12px;margin:1rem 0;}
+.progreso .barra{height:8px;background:rgba(212,175,55,.1);
+  border-radius:4px;overflow:hidden;margin-top:.5rem;}
+.progreso .barra > div{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));
+  width:0%;transition:width .6s;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">מתחילים</div>
+  <h1>✦ Curso para Principiantes ✦</h1>
+  <p>8 lecciones · De cero a la Kabaláh básica</p>
+  <span class="page-number">Aprender · Curso I</span>
+</header>
+
+<section>
+  <h2>📖 Bienvenida</h2>
+  <p>Este curso te lleva de la mano por los fundamentos de la Kabaláh.
+  No necesitas conocimiento previo de hebreo ni de Torá. Solo <strong>curiosidad
+  y humildad</strong>.</p>
+  <blockquote>"El principio de la sabiduría es el temor del Eterno." — Proverbios 9:10</blockquote>
+</section>
+
+<section>
+  <h2>📊 Tu Progreso</h2>
+  <div class="progreso">
+    <div style="color:var(--gold2);font-size:1.1rem;">
+      <span id="progreso-txt">0 / 8 lecciones</span>
+    </div>
+    <div class="barra"><div id="progreso-barra"></div></div>
+  </div>
+</section>
+
+<section>
+  <h2>📚 Las 8 Lecciones</h2>
+  <div id="lecciones"></div>
+</section>
+
+<section>
+  <h2>💡 Cómo Estudiar</h2>
+  <ul>
+    <li><strong>Una lección por día</strong> — No te apures.</li>
+    <li><strong>Con un cuaderno</strong> — Escribe tus reflexiones.</li>
+    <li><strong>Sin distracciones</strong> — Silencia el teléfono.</li>
+    <li><strong>Con constancia</strong> — La Kabaláh se revela poco a poco.</li>
+  </ul>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Curso Principiantes</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const LECCIONES = [
+  { n:'¿Qué es la Kabaláh?', d:'Definición, historia y propósito del estudio cabalístico.' },
+  { n:'Los 5 niveles del alma', d:'Nefesh, Ruaj, Neshamá, Jaiá, Yejidá.' },
+  { n:'Las 10 Sefirot', d:'El Árbol de la Vida y sus emanaciones divinas.' },
+  { n:'Los 4 Mundos', d:'Atzilut, Briá, Yetzirá, Asiá.' },
+  { n:'El Nombre YHVH', d:'El Tetragrámaton y su estructura.' },
+  { n:'Las 22 letras hebreas', d:'Los canales de energía divina.' },
+  { n:'Tzimtzum y creación', d:'Cómo Dios hizo espacio para el mundo.' },
+  { n:'Práctica diaria', d:'Cómo vivir la Kabaláh cada día.' }
+];
+
+const KEY = 'yejida_curso_princ';
+
+function cargar(){
+  try{ return JSON.parse(localStorage.getItem(KEY) || '[]'); }
+  catch(e){ return []; }
+}
+
+function render(){
+  const completadas = cargar();
+  const cont = document.getElementById('lecciones');
+  cont.innerHTML = LECCIONES.map((l, i) => `
+    <div class="leccion ${completadas.includes(i) ? 'completada' : ''}" data-i="${i}">
+      <div class="num">${completadas.includes(i) ? '✓' : i + 1}</div>
+      <div class="info">
+        <h3>${l.n}</h3>
+        <p>${l.d}</p>
+      </div>
+    </div>
+  `).join('');
+  cont.querySelectorAll('.leccion').forEach(el => {
+    el.addEventListener('click', () => toggle(parseInt(el.dataset.i)));
+  });
+  document.getElementById('progreso-txt').textContent =
+    `${completadas.length} / ${LECCIONES.length} lecciones`;
+  document.getElementById('progreso-barra').style.width =
+    (completadas.length / LECCIONES.length * 100) + '%';
+}
+
+function toggle(i){
+  let c = cargar();
+  if(c.includes(i)) c = c.filter(x => x !== i);
+  else c.push(i);
+  localStorage.setItem(KEY, JSON.stringify(c));
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
