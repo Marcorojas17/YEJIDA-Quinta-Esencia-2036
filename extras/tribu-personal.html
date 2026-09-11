@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Tu tribu de Israel según fecha de nacimiento y correspondencia cabalística">
+<title>✦ Tu Tribu de Israel — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.tribu-card{border:2px solid var(--gold);border-radius:20px;padding:2rem 1.5rem;
+  text-align:center;background:radial-gradient(circle at 50% 30%,
+    rgba(108,92,231,.15), transparent 70%), rgba(5,6,15,.7);
+  margin:1.5rem 0;box-shadow:0 0 50px rgba(108,92,231,.3);}
+.tribu-heb{font-size:3rem;color:var(--gold2);font-family:var(--font-heb);
+  direction:rtl;text-shadow:0 0 30px rgba(212,175,55,.9);line-height:1.2;}
+.tribu-name{font-size:1.6rem;color:var(--gold2);letter-spacing:.15em;
+  margin:.6rem 0;font-weight:600;}
+.tribu-simbolo{font-size:3rem;margin:.6rem 0;}
+.tribu-meta{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-top:1rem;}
+.tribu-meta span{padding:.3rem .9rem;background:rgba(212,175,55,.12);
+  border:1px solid var(--line);border-radius:30px;font-size:.75rem;
+  color:var(--gold);letter-spacing:.08em;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">שבטים</div>
+  <h1>✦ Tu Tribu de Israel ✦</h1>
+  <p>Las 12 Tribus · Piedra · Color · Bendición</p>
+  <span class="page-number">Extra · Tribus</span>
+</header>
+
+<section>
+  <h2>🜁 Fecha de Nacimiento</h2>
+  <p>Cada una de las <strong>12 Tribus de Israel</strong> corresponde a un
+  <strong>signo del zodiaco</strong>, a un <strong>mes hebreo</strong>, a una
+  <strong>piedra del Hoshen</strong> (pectoral del Sumo Sacerdote) y a una
+  <strong>bendición de Jacob</strong>.</p>
+  <form id="tribu-form" autocomplete="off">
+    <div class="form-grid">
+      <div class="form-field full">
+        <label for="fecha">Fecha de nacimiento</label>
+        <input type="date" id="fecha" required>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1.2rem">
+      <button type="submit" class="btn">✦ Revelar mi Tribu ✦</button>
+    </div>
+  </form>
+</section>
+
+<div id="results" style="display:none"></div>
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Tribus</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const TRIBUS = [
+  { tribu:'Yehudá',      heb:'יהודה',   signo:'Aries',       mes:'Nisán',      piedra:'Rubí',           color:'Rojo',        simbolo:'🦁', virtud:'Liderazgo, realeza, alabanza' },
+  { tribu:'Isajar',      heb:'יששכר',   signo:'Tauro',       mes:'Iyar',       piedra:'Topacio',        color:'Verde',       simbolo:'🐂', virtud:'Estudio, sabiduría, esfuerzo' },
+  { tribu:'Zevulún',     heb:'זבולון',  signo:'Géminis',     mes:'Siván',      piedra:'Esmeralda',      color:'Verde claro', simbolo:'⛵', virtud:'Comercio, comunicación, sostén' },
+  { tribu:'Reubén',      heb:'ראובן',   signo:'Cáncer',      mes:'Tamuz',      piedra:'Carbunclo',      color:'Rojo oscuro', simbolo:'🌊', virtud:'Visión, compasión, primer hijo' },
+  { tribu:'Shimón',      heb:'שמעון',   signo:'Leo',         mes:'Av',         piedra:'Zafiro',         color:'Azul',        simbolo:'⚔️', virtud:'Coraje, celo, fuerza' },
+  { tribu:'Gad',         heb:'גד',      signo:'Virgo',       mes:'Elul',       piedra:'Ágata',          color:'Gris',        simbolo:'⛺', virtud:'Orden, fidelidad, retorno' },
+  { tribu:'Efraim',      heb:'אפרים',   signo:'Libra',       mes:'Tishrei',    piedra:'Amatista',       color:'Violeta',     simbolo:'🌾', virtud:'Fertilidad, diplomacia, bendición' },
+  { tribu:'Menashé',     heb:'מנשה',    signo:'Escorpio',    mes:'Jeshván',    piedra:'Ónice',          color:'Negro',       simbolo:'🏹', virtud:'Transformación, memoria, poder' },
+  { tribu:'Biniamín',    heb:'בנימין',  signo:'Sagitario',   mes:'Kislev',     piedra:'Jaspe',          color:'Multicolor',  simbolo:'🐺', virtud:'Intuición, valentía, luz' },
+  { tribu:'Dan',         heb:'דן',      signo:'Capricornio', mes:'Tevet',      piedra:'Crisólito',      color:'Amarillo',    simbolo:'⚖️', virtud:'Justicia, juicio, pragmatismo' },
+  { tribu:'Asher',       heb:'אשר',     signo:'Acuario',     mes:'Shevat',     piedra:'Berilo',         color:'Azul claro',  simbolo:'🌿', virtud:'Prosperidad, alegría, abundancia' },
+  { tribu:'Naftalí',     heb:'נפתלי',   signo:'Piscis',      mes:'Adar',       piedra:'Ámbar',          color:'Naranja',     simbolo:'🦌', virtud:'Libertad, poesía, velocidad' }
+];
+
+const SIGNOS_RANGOS = [
+  // signo -> [mesInicio, diaInicio, mesFin, diaFin]
+  { i:'Aries',       r:[[3,21],[4,19]] },
+  { i:'Tauro',       r:[[4,20],[5,20]] },
+  { i:'Géminis',     r:[[5,21],[6,20]] },
+  { i:'Cáncer',      r:[[6,21],[7,22]] },
+  { i:'Leo',         r:[[7,23],[8,22]] },
+  { i:'Virgo',       r:[[8,23],[9,22]] },
+  { i:'Libra',       r:[[9,23],[10,22]] },
+  { i:'Escorpio',    r:[[10,23],[11,21]] },
+  { i:'Sagitario',   r:[[11,22],[12,21]] },
+  { i:'Capricornio', r:[[12,22],[1,19]] },
+  { i:'Acuario',     r:[[1,20],[2,18]] },
+  { i:'Piscis',      r:[[2,19],[3,20]] }
+];
+
+function signoDe(fecha){
+  const d = new Date(fecha + 'T12:00:00');
+  const m = d.getMonth() + 1, day = d.getDate();
+  for(const s of SIGNOS_RANGOS){
+    const [fm, fd] = s.r[0], [tm, td] = s.r[1];
+    if(fm <= tm){
+      if((m === fm && day >= fd) || (m === tm && day <= td) ||
+        (m > fm && m < tm)) return s.i;
+    } else {
+      if((m === fm && day >= fd) || (m === tm && day <= td)) return s.i;
+    }
+  }
+  return 'Aries';
+}
+
+// Bendiciones de Jacob (Génesis 49)
+const BENDICIONES = {
+  'Yehudá':      '"No se apartará el cetro de Yehudá... lavará en vino sus vestiduras." (Gen 49:8-12)',
+  'Isajar':      '"Isajar, asno fuerte recostado entre apriscos." (Gen 49:14-15)',
+  'Zevulún':     '"Zevulún habitará en puertos de mar, será puerto para naves." (Gen 49:13)',
+  'Reubén':      '"Reubén, mi primogénito, tú eres mi fuerza y el principio de mi vigor." (Gen 49:3-4)',
+  'Shimón':      '"Instrumentos de violencia son sus armas... los dividiré en Jacob." (Gen 49:5-7)',
+  'Gad':         '"Gad, ejército lo acometerá, mas él acometerá al final." (Gen 49:19)',
+  'Efraim':      '"Efraim será como un toro joven... su descendencia será multitud de naciones." (Deut 33:17)',
+  'Menashé':     '"Menashé también será pueblo, y también él será grande." (Gen 48:19)',
+  'Biniamín':    '"Biniamín es lobo arrebatador; a la mañana comerá la presa." (Gen 49:27)',
+  'Dan':         '"Dan juzgará a su pueblo como una de las tribus de Israel." (Gen 49:16)',
+  'Asher':       '"El pan de Asher será rico, y él dará delicias reales." (Gen 49:20)',
+  'Naftalí':     '"Naftalí es cierva suelta; hablará palabras hermosas." (Gen 49:21)'
+};
+
+document.getElementById('tribu-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const fechaStr = document.getElementById('fecha').value;
+  if(!fechaStr) return alert('Ingresa tu fecha de nacimiento.');
+
+  const signo = signoDe(fechaStr);
+  const tribu = TRIBUS.find(t => t.signo === signo) || TRIBUS[0];
+
+  const results = document.getElementById('results');
+  results.style.display = 'block';
+  results.innerHTML = `
+    <section>
+      <h2>✦ Tu Tribu ✦</h2>
+      <div class="tribu-card">
+        <div class="tribu-simbolo">${tribu.simbolo}</div>
+        <div class="tribu-heb">${tribu.heb}</div>
+        <div class="tribu-name">${tribu.tribu}</div>
+        <div class="tribu-meta">
+          <span>${tribu.signo}</span>
+          <span>${tribu.mes}</span>
+          <span>${tribu.piedra}</span>
+          <span>${tribu.color}</span>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>📖 Detalles de tu Tribu</h2>
+      <table>
+        <tbody>
+          <tr><td><strong>Tribu</strong></td><td>${tribu.tribu} (${tribu.heb})</td></tr>
+          <tr><td><strong>Signo solar</strong></td><td>${tribu.signo}</td></tr>
+          <tr><td><strong>Mes hebreo</strong></td><td>${tribu.mes}</td></tr>
+          <tr><td><strong>Piedra del Hoshen</strong></td><td>${tribu.piedra}</td></tr>
+          <tr><td><strong>Color sagrado</strong></td><td>${tribu.color}</td></tr>
+          <tr><td><strong>Símbolo / animal</strong></td><td>${tribu.simbolo}</td></tr>
+          <tr><td><strong>Virtud principal</strong></td><td>${tribu.virtud}</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>✨ Bendición de Jacob</h2>
+      <blockquote>${BENDICIONES[tribu.tribu] || ''}</blockquote>
+    </section>
+
+    <section>
+      <h2>🔯 El Hoshen (Pectoral)</h2>
+      <p>Cada una de las 12 tribus estaba representada por una piedra
+      en el <strong>Hoshen HaMishpat</strong>, el pectoral del Sumo Sacerdote
+      (Éxodo 28:15-30). Las piedras estaban engarzadas en cuatro filas de tres.</p>
+      <p>La piedra de tu tribu, <strong>${tribu.piedra}</strong>, representa
+      <em>${tribu.virtud.toLowerCase()}</em>.</p>
+    </section>
+
+    <section>
+      <h2>🎯 Meditación</h2>
+      <div class="equation">
+        <div class="big">${tribu.tribu} · ${tribu.piedra}</div>
+        <div class="heb">${tribu.heb}</div>
+      </div>
+      <p style="text-align:center;color:var(--muted)">
+        Contempla la piedra ${tribu.piedra} (${tribu.color}) y cultiva
+        <strong>${tribu.virtud.toLowerCase()}</strong>.
+      </p>
+    </section>
+  `;
+  results.scrollIntoView({ behavior:'smooth' });
+});
+</script>
+</body>
+</html>
