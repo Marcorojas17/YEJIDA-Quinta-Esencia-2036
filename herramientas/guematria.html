@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>🧮 Calculadora de Guematria — Yejidá</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+  <header class="page-header">
+    <div class="hebrew-title">גימטריה</div>
+    <h1>🧮 Calculadora de Guematria</h1>
+    <p>Valor numérico de palabras hebreas</p>
+  </header>
+  <section>
+    <h2>✍️ Ingresa una palabra o frase</h2>
+    <div class="form-grid">
+      <div class="form-field full">
+        <label for="input-heb">Texto en hebreo o transliteración</label>
+        <input type="text" id="input-heb" placeholder="Ej: שלום o shalom" style="font-size:1.4rem;text-align:center;">
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1rem">
+      <button id="calc-btn" class="btn">Calcular Guematria</button>
+    </div>
+  </section>
+  <div id="results" style="display:none"></div>
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Herramienta de Guematria</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+// Valores de las 22 letras hebreas (Guematria estándar)
+const GEMATRIA = {
+  'א':1,'ב':2,'ג':3,'ד':4,'ה':5,'ו':6,'ז':7,'ח':8,'ט':9,
+  'י':10,'כ':20,'ל':30,'מ':40,'נ':50,'ס':60,'ע':70,'פ':80,'צ':90,
+  'ק':100,'ר':200,'ש':300,'ת':400,
+  'ך':20,'ם':40,'ן':50,'ף':80,'ץ':90
+};
+// Transliteración simple
+const TRANS = {
+  a:'א', b:'ב', g:'ג', d:'ד', h:'ה', v:'ו', z:'ז', j:'ח', t:'ט',
+  y:'י', i:'י', k:'כ', l:'ל', m:'מ', n:'נ', s:'ס', o:'ע', p:'פ',
+  f:'פ', ts:'צ', q:'ק', r:'ר', sh:'ש'
+};
+const SEFIROT_BY_NUM = {
+  1:'Kéter',2:'Jojmá',3:'Biná',4:'Jesed',5:'Guevurá',
+  6:'Tiféret',7:'Netzaj',8:'Hod',9:'Yesod',10:'Maljut'
+};
+
+function calcGuematria(text){
+  const clean = text.trim();
+  if(!clean) return null;
+  let hebrew = '';
+  // Si contiene caracteres hebreos, usarlos directamente
+  if(/[\u0590-\u05FF]/.test(clean)){
+    hebrew = clean.replace(/[^\u0590-\u05FF]/g, '');
+  } else {
+    // Transliterar
+    hebrew = clean.toLowerCase()
+      .replace(/sh/g, 'ש').replace(/ts/g, 'צ')
+      .split('').map(c => TRANS[c] || '').join('');
+  }
+  if(!hebrew) return null;
+  let total = 0;
+  const desglose = [];
+  for(const ch of hebrew){
+    if(GEMATRIA[ch]){
+      total += GEMATRIA[ch];
+      desglose.push(`${ch} (${GEMATRIA[ch]})`);
+    }
+  }
+  const reducido = reducir(total);
+  return { hebrew, desglose, total, reducido };
+}
+
+function reducir(n){
+  while(n > 10){
+    n = String(n).split('').reduce((a,b) => a + +b, 0);
+  }
+  return n;
+}
+
+document.getElementById('calc-btn').addEventListener('click', () => {
+  const r = calcGuematria(document.getElementById('input-heb').value);
+  const out = document.getElementById('results');
+  if(!r){
+    out.style.display = 'block';
+    out.innerHTML = '<section><p>Introduce un texto válido.</p></section>';
+    return;
+  }
+  const sefira = SEFIROT_BY_NUM[r.reducido] || '—';
+  out.style.display = 'block';
+  out.innerHTML = `
+    <section>
+      <h2>📊 Resultado</h2>
+      <div style="text-align:center;font-size:3rem;color:var(--gold2);
+        font-family:var(--font-heb);direction:rtl;
+        text-shadow:0 0 30px rgba(212,175,55,.8);margin:1rem 0;">
+        ${r.hebrew}
+      </div>
+      <div class="result-grid">
+        <div class="result-card">
+          <div class="label">Guematria total</div>
+          <div class="value">${r.total}</div>
+        </div>
+        <div class="result-card">
+          <div class="label">Reducido</div>
+          <div class="value">${r.reducido}</div>
+        </div>
+        <div class="result-card">
+          <div class="label">Sefirá</div>
+          <div class="value" style="font-size:1.2rem">${sefira}</div>
+        </div>
+      </div>
+      <h3>Desglose letra por letra</h3>
+      <p style="font-family:var(--font-mono);color:var(--muted);
+        font-size:.85rem;">${r.desglose.join(' · ')}</p>
+    </section>
+  `;
+  out.scrollIntoView({ behavior:'smooth' });
+});
+document.getElementById('input-heb').addEventListener('keypress', (e) => {
+  if(e.key === 'Enter') document.getElementById('calc-btn').click();
+});
+</script>
+</body>
+</html>
