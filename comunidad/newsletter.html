@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Newsletter semanal: una letra, una Sefirá, una meditación">
+<title>✦ Newsletter — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.boletin{border:2px solid var(--gold);border-radius:16px;padding:2rem;
+  margin:1.5rem 0;background:radial-gradient(circle at 50% 30%,
+    rgba(212,175,55,.12), transparent 70%), rgba(5,6,15,.7);
+  box-shadow:0 0 50px rgba(212,175,55,.25);text-align:center;}
+.boletin .titulo{font-size:1.4rem;color:var(--gold2);font-family:var(--font-heb);
+  letter-spacing:.15em;text-shadow:0 0 20px rgba(212,175,55,.6);}
+.boletin .subtitulo{color:var(--muted);font-size:.85rem;letter-spacing:.2em;
+  text-transform:uppercase;margin:.5rem 0 1.5rem;}
+.boletin .preview{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;
+  margin-top:1rem;}
+@media(max-width:600px){.boletin .preview{grid-template-columns:1fr;}}
+.preview-item{padding:1rem;background:rgba(10,12,30,.6);
+  border:1px solid var(--line);border-radius:10px;font-size:.85rem;}
+.preview-item .icono{font-size:1.8rem;margin-bottom:.5rem;}
+.preview-item strong{color:var(--gold2);display:block;margin-bottom:.3rem;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">עלון</div>
+  <h1>✦ Newsletter Semanal ✦</h1>
+  <p>Una letra · Una Sefirá · Una meditación</p>
+  <span class="page-number">Comunidad · Newsletter</span>
+</header>
+
+<section>
+  <div class="boletin">
+    <div class="titulo">✦ Yejidá Semanal ✦</div>
+    <div class="subtitulo">Cada domingo en tu correo</div>
+    <p style="color:var(--text);font-size:.95rem;line-height:1.7;">
+      Recibe cada semana un correo con:
+    </p>
+    <div class="preview">
+      <div class="preview-item">
+        <div class="icono">🔤</div>
+        <strong>Una Letra</strong>
+        El valor, la forma y el significado de una letra hebrea.
+      </div>
+      <div class="preview-item">
+        <div class="icono">🌳</div>
+        <strong>Una Sefirá</strong>
+        Estudio profundo de una de las 10 Sefirot del Árbol.
+      </div>
+      <div class="preview-item">
+        <div class="icono">🧘</div>
+        <strong>Una Meditación</strong>
+        Práctica guiada para aplicar el estudio.
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>✉️ Suscríbete</h2>
+  <form id="sub-form">
+    <div class="form-grid">
+      <div class="form-field full">
+        <label for="email">Correo electrónico</label>
+        <input type="email" id="email" placeholder="tu@email.com" required>
+      </div>
+      <div class="form-field full">
+        <label for="nombre">Nombre (opcional)</label>
+        <input type="text" id="nombre" placeholder="¿Cómo te llamamos?">
+      </div>
+      <div class="form-field full">
+        <label style="display:flex;gap:.7rem;align-items:center;cursor:pointer;
+          text-transform:none;letter-spacing:normal;color:var(--text);font-size:.85rem;">
+          <input type="checkbox" id="privacidad" required style="width:auto;">
+          Acepto la <a href="../docs/privacidad.html" style="color:var(--gold2);">política de privacidad</a>
+        </label>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1.5rem;">
+      <button type="submit" class="btn">✦ Suscribirme ✦</button>
+    </div>
+  </form>
+  <div id="confirm" style="display:none;margin-top:1.5rem;">
+    <div class="notice" style="border-left-color:var(--success);
+      background:rgba(74,222,128,.08);color:var(--success);">
+      ✓ ¡Gracias! Te has suscrito al newsletter de Yejidá.
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>📚 Ediciones Anteriores</h2>
+  <table>
+    <thead><tr><th>Fecha</th><th>Tema</th><th>Letra</th><th>Sefirá</th></tr></thead>
+    <tbody>
+      <tr><td>Semana 1</td><td>El Alef silencioso</td><td class="hebrew-inline">א</td><td>Kéter</td></tr>
+      <tr><td>Semana 2</td><td>La casa del Bet</td><td class="hebrew-inline">ב</td><td>Jojmá</td></tr>
+      <tr><td>Semana 3</td><td>El movimiento del Guimel</td><td class="hebrew-inline">ג</td><td>Biná</td></tr>
+      <tr><td>Semana 4</td><td>La puerta del Dalet</td><td class="hebrew-inline">ד</td><td>Jesed</td></tr>
+    </tbody>
+  </table>
+  <p style="color:var(--muted);font-size:.85rem;text-align:center;margin-top:1rem;">
+    Próximamente estarán disponibles en el archivo público.
+  </p>
+</section>
+
+<section>
+  <h2>💡 ¿Por qué suscribirse?</h2>
+  <ul>
+    <li><strong>Sin spam</strong> — Solo un correo semanal.</li>
+    <li><strong>Contenido original</strong> — Escrito por el equipo Yejidá.</li>
+    <li><strong>Cancelación fácil</strong> — Un clic y listo.</li>
+    <li><strong>Gratis para siempre</strong> — El proyecto es y será gratuito.</li>
+    <li><strong>Privacidad total</strong> — No compartimos tu correo.</li>
+  </ul>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Newsletter</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+document.getElementById('sub-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const email = document.getElementById('email').value.trim();
+  const nombre = document.getElementById('nombre').value.trim();
+  if(!email) return;
+  // Guardar localmente (demo)
+  const subs = JSON.parse(localStorage.getItem('yejida_newsletter') || '[]');
+  subs.push({ email, nombre, fecha: new Date().toISOString() });
+  localStorage.setItem('yejida_newsletter', JSON.stringify(subs));
+  document.getElementById('sub-form').style.display = 'none';
+  document.getElementById('confirm').style.display = 'block';
+});
+</script>
+</body>
+</html>
