@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Tu animal tótem según la tradición cabalística">
+<title>✦ Tu Animal Tótem — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.totem-card{text-align:center;padding:2.5rem 1.5rem;
+  background:radial-gradient(circle, rgba(212,175,55,.15), transparent 70%),
+  rgba(5,6,15,.7);border:2px solid var(--gold);border-radius:20px;
+  margin:1.5rem 0;box-shadow:0 0 60px rgba(212,175,55,.3);}
+.totem-card .emoji{font-size:6rem;line-height:1;}
+.totem-card .nombre{color:var(--gold2);font-size:1.6rem;
+  letter-spacing:.15em;margin:.5rem 0;}
+.totem-card .heb{color:var(--gold);font-family:var(--font-heb);
+  font-size:1.3rem;direction:rtl;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">טוטם</div>
+  <h1>✦ Tu Animal Tótem ✦</h1>
+  <p>El espíritu animal que te acompaña</p>
+  <span class="page-number">Extras · Tótem</span>
+</header>
+
+<section>
+  <h2>🦁 ¿Qué es un Animal Tótem?</h2>
+  <p>En la Kabaláh, la Torá menciona animales que representan tribus, cualidades
+  divinas y aspectos del alma. Tu <strong>tótem</strong> es el animal cuya
+  energía vibra con la tuya.</p>
+  <form id="totem-form" autocomplete="off">
+    <div class="form-grid">
+      <div class="form-field full">
+        <label for="fecha">Fecha de nacimiento</label>
+        <input type="date" id="fecha" required>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1.2rem">
+      <button type="submit" class="btn">✦ Revelar mi Tótem ✦</button>
+    </div>
+  </form>
+</section>
+
+<div id="results" style="display:none"></div>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Tótem</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const TOTEMS = [
+  { e:'🦁', n:'León',      heb:'אריה',   tribu:'Yehudá',    cualidad:'Realeza, coraje, liderazgo' },
+  { e:'🐂', n:'Buey',      heb:'שור',    tribu:'Isajar',    cualidad:'Fuerza, trabajo, servicio' },
+  { e:'⛵', n:'Barco/Pez',  heb:'ספינה',  tribu:'Zevulún',   cualidad:'Comercio, viaje, sustento' },
+  { e:'🌊', n:'Ola/Agua',  heb:'מים',    tribu:'Reubén',    cualidad:'Visión, fluidez, emoción' },
+  { e:'⚔️', n:'Espada',    heb:'חרב',    tribu:'Shimón',    cualidad:'Defensa, celo, protección' },
+  { e:'🐺', n:'Lobo',      heb:'זאב',    tribu:'Biniamín',  cualidad:'Instinto, astucia, familia' },
+  { e:'🦌', n:'Cierva',    heb:'אילה',   tribu:'Naftalí',   cualidad:'Velocidad, libertad, gracia' },
+  { e:'⚖️', n:'Balanza',   heb:'מאזנים', tribu:'Dan',       cualidad:'Justicia, equilibrio, juicio' },
+  { e:'🐍', n:'Serpiente', heb:'נחש',    tribu:'Dan',       cualidad:'Sabiduría, transformación' },
+  { e:'🕊️', n:'Paloma',    heb:'יונה',   tribu:'Efraim',    cualidad:'Paz, mensajero, pureza' },
+  { e:'🦅', n:'Águila',    heb:'נשר',    tribu:'Menashé',   cualidad:'Visión, altura, libertad' },
+  { e:'🐑', n:'Oveja',     heb:'כבש',    tribu:'Asher',     cualidad:'Docilidad, abundancia, comunidad' }
+];
+
+const RANGOS = [
+  { i:0, f:[3,21], t:[4,19] }, { i:1, f:[4,20], t:[5,20] },
+  { i:2, f:[5,21], t:[6,20] }, { i:3, f:[6,21], t:[7,22] },
+  { i:4, f:[7,23], t:[8,22] }, { i:5, f:[8,23], t:[9,22] },
+  { i:6, f:[9,23], t:[10,22] }, { i:7, f:[10,23], t:[11,21] },
+  { i:8, f:[11,22], t:[12,21] }, { i:9, f:[12,22], t:[1,19] },
+  { i:10, f:[1,20], t:[2,18] }, { i:11, f:[2,19], t:[3,20] }
+];
+
+function signoIdx(fecha){
+  const d = new Date(fecha + 'T12:00:00');
+  const m = d.getMonth() + 1, day = d.getDate();
+  for(const r of RANGOS){
+    const [fm, fd] = r.f, [tm, td] = r.t;
+    if(fm <= tm){
+      if((m === fm && day >= fd) || (m === tm && day <= td) ||
+        (m > fm && m < tm)) return r.i;
+    } else {
+      if((m === fm && day >= fd) || (m === tm && day <= td)) return r.i;
+    }
+  }
+  return 0;
+}
+
+document.getElementById('totem-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const f = document.getElementById('fecha').value;
+  if(!f) return;
+  const idx = signoIdx(f);
+  const t = TOTEMS[idx];
+
+  const results = document.getElementById('results');
+  results.style.display = 'block';
+  results.innerHTML = `
+    <section>
+      <div class="totem-card">
+        <div class="emoji">${t.e}</div>
+        <div class="nombre">${t.n}</div>
+        <div class="heb">${t.heb}</div>
+      </div>
+    </section>
+    <section>
+      <h2>🦁 Tu Tótem</h2>
+      <table>
+        <tbody>
+          <tr><td><strong>Animal</strong></td><td>${t.e} ${t.n}</td></tr>
+          <tr><td><strong>Hebreo</strong></td><td class="hebrew-inline">${t.heb}</td></tr>
+          <tr><td><strong>Tribu</strong></td><td>${t.tribu}</td></tr>
+          <tr><td><strong>Cualidad</strong></td><td>${t.cualidad}</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <section>
+      <h2>💡 Cómo Invocar tu Tótem</h2>
+      <ol>
+        <li><strong>Contempla</strong> su imagen antes de dormir.</li>
+        <li><strong>Visualízalo</strong> caminando a tu lado.</li>
+        <li><strong>Pídele</strong> su cualidad cuando la necesites.</li>
+        <li><strong>Observa</strong> si aparece en sueños o en la vida real.</li>
+        <li><strong>Agradece</strong> su compañía cada noche.</li>
+      </ol>
+      <div class="equation">
+        <div class="big">Tu tótem: ${t.n}</div>
+        <div class="heb">${t.heb}</div>
+      </div>
+    </section>
+  `;
+  results.scrollIntoView({ behavior:'smooth' });
+});
+</script>
+</body>
+</html>
