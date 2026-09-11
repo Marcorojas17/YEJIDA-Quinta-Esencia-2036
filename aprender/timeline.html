@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Línea de tiempo: historia de la Kabaláh desde la antigüedad hasta hoy">
+<title>✦ Línea de Tiempo — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.timeline{position:relative;padding:1rem 0 1rem 3rem;}
+.timeline::before{content:"";position:absolute;left:1rem;top:0;bottom:0;
+  width:2px;background:linear-gradient(180deg,var(--gold),var(--violet),
+  var(--cyan));}
+.hito{position:relative;margin-bottom:1.5rem;padding:1rem 1.2rem;
+  background:rgba(10,12,30,.6);border:1px solid var(--line);
+  border-radius:12px;transition:all .4s;}
+.hito:hover{border-color:var(--gold);transform:translateX(6px);}
+.hito::before{content:"";position:absolute;left:-2.35rem;top:1.2rem;
+  width:14px;height:14px;border-radius:50%;
+  background:var(--gold);box-shadow:0 0 15px var(--gold);}
+.hito .fecha{color:var(--gold);font-family:var(--font-mono);
+  font-size:.82rem;letter-spacing:.1em;margin-bottom:.3rem;}
+.hito .titulo{color:var(--gold2);font-weight:600;font-size:1.05rem;
+  margin-bottom:.3rem;}
+.hito .desc{color:var(--text);font-size:.9rem;line-height:1.6;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">היסטוריה</div>
+  <h1>✦ Línea de Tiempo ✦</h1>
+  <p>Historia de la Kabaláh · 2000 años</p>
+  <span class="page-number">Aprender · Historia</span>
+</header>
+
+<section>
+  <h2>📜 Los Grandes Hitos</h2>
+  <div class="timeline" id="timeline"></div>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Línea de Tiempo</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const HITOS = [
+  { f:'Siglo II', t:'Rabí Shimón Bar Yojái', d:'Tradición atribuye a él la redacción del Zohar. Su círculo místico en Galilea dio forma a la Kabaláh temprana.' },
+  { f:'Siglo II-IV', t:'Sefer Yetzirá', d:'El libro más antiguo de la Kabaláh. Describe la creación mediante 32 caminos: 10 Sefirot y 22 letras.' },
+  { f:'Siglo XII', t:'Sefer HaBahir', d:'Aparece en Provenza. Introduce el concepto de reencarnación y la Shejiná como presencia femenina de Dios.' },
+  { f:'Siglo XIII', t:'Sefer HaZohar', d:'Moisés de León publica el Zohar en España. Se convierte en el texto central de la Kabaláh.' },
+  { f:'Siglo XIII', t:'Kabaláh en Gerona', d:'Najmánides y sus discípulos desarrollan la Kabaláh en Cataluña. Primeros círculos sistemáticos.' },
+  { f:'Siglo XIV-XV', t:'Kabaláh en Safed', d:'Se forma el centro cabalístico de Safed en Galilea. Aquí surgirá el Arizal.' },
+  { f:'Siglo XVI', t:'Isaac Luria (Arizal)', d:'El mayor reformador de la Kabaláh. Introduce Tzimtzum, Shevirat HaKelim y Tikkun Olam.' },
+  { f:'Siglo XVI', t:'Jaim Vital', d:'Discípulo del Arizal. Escribe el Etz Jaim, sistematizando las enseñanzas lurianas.' },
+  { f:'Siglo XVII', t:'Shabetai Tzvi', d:'Falso mesías que genera una crisis. La Kabaláh se reinterpreta ante el fracaso mesiánico.' },
+  { f:'Siglo XVIII', t:'Baal Shem Tov', d:'Fundador del jasidismo. Populariza la Kabaláh, la alegría y la devoción simple.' },
+  { f:'Siglo XVIII', t:'Rabí Najman de Breslov', d:'Bisnieto del Baal Shem Tov. Enseña hitbodedut, alegría y fe simple.' },
+  { f:'Siglo XVIII', t:'Rabí Shneur Zalman', d:'Fundador del Jabad. Escribe el Tanya, sistematizando la Kabaláh jasídica.' },
+  { f:'Siglo XIX', t:'Kabaláh en Europa del Este', d:'El jasidismo se expande. Nuevas dinastías y escuelas.' },
+  { f:'Siglo XX', t:'Gershom Scholem', d:'Historiador que estudia académicamente la Kabaláh. Famoso por "Kabaláh y su simbolismo".' },
+  { f:'Siglo XX', t:'Abraham Isaac Kook', d:'Primer Gran Rabino de Israel. Kabaláh y redención nacional.' },
+  { f:'Siglo XX', t:'Adin Steinsaltz', d:'Traduce el Talmud y divulga la Kabaláh. Famoso por "Los Trece Pétalos de la Rosa".' },
+  { f:'Siglo XXI', t:'Kabaláh global', d:'Centros en Los Ángeles, Israel y el mundo. Popularizada por Madonna, Berg y otros.' },
+  { f:'Siglo XXI', t:'Kabaláh y ciencia', d:'Diálogos entre la Kabaláh y la física cuántica, los fractales, la teoría de cuerdas.' }
+];
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('timeline').innerHTML = HITOS.map(h => `
+    <div class="hito">
+      <div class="fecha">${h.f}</div>
+      <div class="titulo">${h.t}</div>
+      <div class="desc">${h.d}</div>
+    </div>
+  `).join('');
+});
+</script>
+</body>
+</html>
