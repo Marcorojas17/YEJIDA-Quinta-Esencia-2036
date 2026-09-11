@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="La Cuenta del Omer: 49 días de ascenso espiritual">
+<title>✦ La Cuenta del Omer — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.omer-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:.5rem;margin:1rem 0;}
+.dia{aspect-ratio:1;border:1px solid var(--line);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-mono);font-size:.85rem;color:var(--muted);
+  background:rgba(10,12,30,.6);cursor:pointer;transition:all .3s;}
+.dia:hover{border-color:var(--gold);color:var(--gold2);}
+.dia.completado{background:linear-gradient(135deg, var(--gold), var(--gold2));
+  color:var(--bg);font-weight:700;border-color:var(--gold);}
+.dia.hoy{border-color:var(--cyan);box-shadow:0 0 15px var(--cyan);
+  color:var(--cyan);font-weight:700;}
+.semana-titulo{grid-column:1/-1;color:var(--gold);font-size:.8rem;
+  letter-spacing:.15em;text-transform:uppercase;margin-top:.8rem;
+  padding-top:.5rem;border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">ספירת העומר</div>
+  <h1>✦ Cuenta del Omer ✦</h1>
+  <p>49 días de ascenso espiritual</p>
+  <span class="page-number">Práctica · Ciclo</span>
+</header>
+
+<section>
+  <h2>🌾 ¿Qué es el Omer?</h2>
+  <p>Entre <strong>Pésaj</strong> y <strong>Shavuot</strong> hay
+  <strong>49 días</strong> (7 semanas de 7 días). Durante este período se cuenta
+  el Omer cada noche, ascendiendo por las <strong>7 emociones inferiores</strong>
+  multiplicadas por sí mismas.</p>
+  <p>Cada día corresponde a una combinación de dos Sefirot.</p>
+</section>
+
+<section>
+  <h2>📊 Las 7 Sefirot del Omer</h2>
+  <table>
+    <thead><tr><th>Semana</th><th>Sefirá</th><th>Tema</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Jesed</td><td>Amor incondicional</td></tr>
+      <tr><td>2</td><td>Guevurá</td><td>Disciplina, rigor</td></tr>
+      <tr><td>3</td><td>Tiféret</td><td>Armonía, belleza</td></tr>
+      <tr><td>4</td><td>Netzaj</td><td>Perseverancia, victoria</td></tr>
+      <tr><td>5</td><td>Hod</td><td>Gratitud, humildad</td></tr>
+      <tr><td>6</td><td>Yesod</td><td>Conexión, fundamento</td></tr>
+      <tr><td>7</td><td>Maljut</td><td>Reino, manifestación</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>🗓️ Tu Cuenta del Omer</h2>
+  <p style="text-align:center;color:var(--muted);font-size:.9rem;">
+    Marca cada día al completar la meditación. Progreso guardado localmente.
+  </p>
+  <div style="text-align:center;margin:1rem 0;">
+    <button id="marcar-hoy" class="btn">✦ Marcar hoy ✦</button>
+    <button id="reset" class="btn btn-danger">🗑️ Reiniciar</button>
+  </div>
+  <div id="progreso" style="text-align:center;color:var(--gold2);
+    font-size:1.1rem;margin:1rem 0;">0 / 49 días</div>
+  <div class="omer-grid" id="grid"></div>
+</section>
+
+<section>
+  <h2>💡 Práctica Diaria</h2>
+  <ol>
+    <li>Al anochecer, antes de dormir.</li>
+    <li>Di en voz alta: "Hoy es el día X del Omer".</li>
+    <li>Medita en las dos Sefirot del día.</li>
+    <li>Trabaja el atributo correspondiente durante el día siguiente.</li>
+    <li>Marca el día en la app.</li>
+  </ol>
+  <div class="equation">
+    <div class="big">49 días → 7 × 7 → Perfección</div>
+    <div class="heb">מ"ט ימים → ז"פ ז"פ → שלמות</div>
+  </div>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Cuenta del Omer</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const SEFIROT_OMER = ['Jesed','Guevurá','Tiféret','Netzaj','Hod','Yesod','Maljut'];
+const KEY = 'yejida_omer_dias';
+
+function cargar(){
+  try{ return JSON.parse(localStorage.getItem(KEY) || '[]'); }
+  catch(e){ return []; }
+}
+function guardar(dias){
+  localStorage.setItem(KEY, JSON.stringify(dias));
+}
+
+function render(){
+  const dias = cargar();
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  for(let s = 0; s < 7; s++){
+    const t = document.createElement('div');
+    t.className = 'semana-titulo';
+    t.textContent = `Semana ${s+1} · ${SEFIROT_OMER[s]}`;
+    grid.appendChild(t);
+    for(let d = 0; d < 7; d++){
+      const num = s * 7 + d + 1;
+      const el = document.createElement('div');
+      el.className = 'dia';
+      el.textContent = num;
+      if(dias.includes(num)) el.classList.add('completado');
+      el.addEventListener('click', () => toggle(num));
+      grid.appendChild(el);
+    }
+  }
+  document.getElementById('progreso').textContent =
+    `${dias.length} / 49 días · ${Math.round(dias.length/49*100)}%`;
+}
+
+function toggle(num){
+  let dias = cargar();
+  if(dias.includes(num)) dias = dias.filter(d => d !== num);
+  else dias.push(num);
+  dias.sort((a, b) => a - b);
+  guardar(dias);
+  render();
+}
+
+function marcarHoy(){
+  const dias = cargar();
+  const siguiente = dias.length ? Math.max(...dias) + 1 : 1;
+  if(siguiente > 49) return alert('¡Completaste el Omer!');
+  toggle(siguiente);
+}
+
+document.getElementById('marcar-hoy').addEventListener('click', marcarHoy);
+document.getElementById('reset').addEventListener('click', () => {
+  if(confirm('¿Reiniciar la cuenta del Omer?')){
+    guardar([]); render();
+  }
+});
+
+render();
+</script>
+</body>
+</html>
