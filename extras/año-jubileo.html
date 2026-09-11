@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Tu año de Jubileo personal según la tradición cabalística">
+<title>✦ Tu Año de Jubileo — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">יובל</div>
+  <h1>✦ Año de Jubileo ✦</h1>
+  <p>Tu ciclo personal de 50 años</p>
+  <span class="page-number">Extras · Jubileo</span>
+</header>
+
+<section>
+  <h2>🎺 ¿Qué es el Jubileo?</h2>
+  <p>El <strong>Yovel (יובל)</strong> — "Jubileo" — es un ciclo de 50 años
+  descrito en Levítico 25. Cada 50 años se liberaban los esclavos, se
+  perdonaban las deudas y la tierra volvía a sus dueños originales.</p>
+  <p>En la Kabaláh, el Jubileo también es un ciclo <strong>personal</strong>:
+  cada 50 años el alma regresa a su punto de origen para renovarse.</p>
+  <form id="jubileo-form" autocomplete="off">
+    <div class="form-grid">
+      <div class="form-field full">
+        <label for="fecha">Fecha de nacimiento</label>
+        <input type="date" id="fecha" required>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1.2rem">
+      <button type="submit" class="btn">✦ Revelar mi Jubileo ✦</button>
+    </div>
+  </form>
+</section>
+
+<div id="results" style="display:none"></div>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Año de Jubileo</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+document.getElementById('jubileo-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const f = document.getElementById('fecha').value;
+  if(!f) return;
+  const nac = new Date(f + 'T12:00:00');
+  const hoy = new Date();
+  const edad = Math.floor((hoy - nac) / (1000*60*60*24*365.25));
+  const cicloActual = Math.floor(edad / 50);
+  const añoEnCiclo = edad % 50;
+  const añosParaJubileo = 50 - añoEnCiclo;
+  const añoJubileo = hoy.getFullYear() + añosParaJubileo;
+
+  // Significado según fase del ciclo
+  let fase, desc;
+  if(añoEnCiclo < 10){
+    fase = 'El Inicio'; desc = 'Fase de siembra. Construye las bases del nuevo ciclo.';
+  } else if(añoEnCiclo < 20){
+    fase = 'La Expansión'; desc = 'Fase de crecimiento. Desarrolla tus dones.';
+  } else if(añoEnCiclo < 30){
+    fase = 'La Crisis'; desc = 'Fase de prueba. Los patrones viejos deben morir.';
+  } else if(añoEnCiclo < 40){
+    fase = 'La Reconstrucción'; desc = 'Fase de renovación. Reconstruye desde lo esencial.';
+  } else {
+    fase = 'La Cosecha'; desc = 'Fase de recolección. Integra y prepara el retorno.';
+  }
+
+  const results = document.getElementById('results');
+  results.style.display = 'block';
+  results.innerHTML = `
+    <section>
+      <h2>🎺 Tu Jubileo</h2>
+      <div class="equation">
+        <div class="big">${fase}</div>
+        <div class="heb">יובל</div>
+      </div>
+      <p style="text-align:center;color:var(--text);font-size:.95rem;">
+        ${desc}
+      </p>
+    </section>
+    <section>
+      <h2>📊 Tu Ciclo</h2>
+      <div class="result-grid">
+        <div class="result-card">
+          <div class="label">Edad actual</div>
+          <div class="value">${edad}</div>
+        </div>
+        <div class="result-card">
+          <div class="label">Año en el ciclo</div>
+          <div class="value">${añoEnCiclo}/50</div>
+        </div>
+        <div class="result-card">
+          <div class="label">Ciclos completados</div>
+          <div class="value">${cicloActual}</div>
+        </div>
+        <div class="result-card">
+          <div class="label">Próximo Jubileo</div>
+          <div class="value">${añoJubileo}</div>
+          <div class="desc" style="font-size:.8rem;">En ${añosParaJubileo} años</div>
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2>💡 El Jubileo Bíblico</h2>
+      <p>En Levítico 25, Dios ordena:</p>
+      <blockquote>
+        "Santificaréis el año cincuenta, y proclamaréis libertad en la tierra
+        a todos sus moradores; será para vosotros Jubileo."
+      </blockquote>
+      <p>Esto significa:</p>
+      <ul>
+        <li><strong>Libertad</strong> — Todos los esclavos salían libres.</li>
+        <li><strong>Restauración</strong> — Las tierras volvían a sus dueños.</li>
+        <li><strong>Perdón</strong> — Las deudas se cancelaban.</li>
+        <li><strong>Descanso</strong> — La tierra no se trabajaba.</li>
+      </ul>
+    </section>
+    <section>
+      <h2>🎯 Tu Práctica de Jubileo</h2>
+      <p>Aprovecha tu próximo Jubileo personal para:</p>
+      <ol>
+        <li><strong>Liberar</strong> — Suelta lo que ya no te sirve.</li>
+        <li><strong>Restaurar</strong> — Recupera lo que perdiste.</li>
+        <li><strong>Perdonar</strong> — Cancela deudas emocionales.</li>
+        <li><strong>Descansar</strong> — Tómate un tiempo sagrado.</li>
+        <li><strong>Renovar</strong> — Comienza de nuevo con conciencia.</li>
+      </ol>
+    </section>
+  `;
+  results.scrollIntoView({ behavior:'smooth' });
+});
+</script>
+</body>
+</html>
