@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Rueda de las 22 letras hebreas con sus valores y significados">
+<title>✦ Rueda de las 22 Letras — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.rueda-letras{width:100%;max-width:640px;margin:2rem auto;display:block;
+  filter:drop-shadow(0 0 30px rgba(212,175,55,.4));}
+.rueda-letras .sector{fill:none;stroke:rgba(212,175,55,.25);stroke-width:1;
+  cursor:pointer;transition:all .4s;}
+.rueda-letras .sector:hover{fill:rgba(212,175,55,.1);stroke:var(--gold);stroke-width:2;}
+.rueda-letras .letra{fill:var(--gold2);font-size:22px;
+  font-family:var(--font-heb);text-anchor:middle;dominant-baseline:middle;
+  pointer-events:none;filter:drop-shadow(0 0 8px rgba(212,175,55,.7));}
+.rueda-letras .val{fill:var(--muted);font-size:9px;text-anchor:middle;
+  font-family:monospace;pointer-events:none;}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">כ"ב אותיות</div>
+  <h1>✦ Rueda de las 22 Letras ✦</h1>
+  <p>Canales de energía divina</p>
+  <span class="page-number">Visualización · Ruedas</span>
+</header>
+
+<section>
+  <h2>🔤 Las 22 Letras Sagradas</h2>
+  <p>Haz clic en cada letra para ver su valor numérico, nombre y significado.</p>
+
+  <svg class="rueda-letras" id="rueda-svg" viewBox="0 0 500 500" role="img"
+    aria-label="Rueda de las 22 letras hebreas">
+    <g id="rueda-g" transform="translate(250,250)"></g>
+  </svg>
+
+  <div id="info-letra" style="margin-top:1.5rem;padding:1.5rem;
+    background:rgba(5,6,15,.5);border:1px solid var(--line);border-radius:12px;
+    text-align:center;min-height:100px;">
+    <p style="color:var(--muted);">Selecciona una letra.</p>
+  </div>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Rueda de las 22 Letras</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const LETRAS = [
+  { l:'א', n:'Alef',  v:1,   s:'Aliento, unidad primordial' },
+  { l:'ב', n:'Bet',   v:2,   s:'Casa, dualidad, comienzo' },
+  { l:'ג', n:'Guimel',v:3,   s:'Camello, dar, movimiento' },
+  { l:'ד', n:'Dalet', v:4,   s:'Puerta, pobreza, apertura' },
+  { l:'ה', n:'He',    v:5,   s:'Ventana, revelación, aliento' },
+  { l:'ו', n:'Vav',   v:6,   s:'Clavo, conexión, unión' },
+  { l:'ז', n:'Zayin', v:7,   s:'Espada, discernimiento' },
+  { l:'ח', n:'Jet',   v:8,   s:'Cerca, vida, protección' },
+  { l:'ט', n:'Tet',   v:9,   s:'Serpiente, bondad oculta' },
+  { l:'י', n:'Yud',   v:10,  s:'Mano, punto, potencial' },
+  { l:'כ', n:'Kaf',   v:20,  s:'Palma, corona, canal' },
+  { l:'ל', n:'Lamed', v:30,  s:'Bastón, corazón, estudio' },
+  { l:'מ', n:'Mem',   v:40,  s:'Agua, sabiduría, gestación' },
+  { l:'נ', n:'Nun',   v:50,  s:'Pez, fidelidad, descendencia' },
+  { l:'ס', n:'Samej', v:60,  s:'Apoyo, círculo, confianza' },
+  { l:'ע', n:'Ayin',  v:70,  s:'Ojo, visión, percepción' },
+  { l:'פ', n:'Pe',    v:80,  s:'Boca, expresión, palabra' },
+  { l:'צ', n:'Tzadi', v:90,  s:'Anzuelo, justicia, humildad' },
+  { l:'ק', n:'Kuf',   v:100, s:'Aguja, santidad, ciclos' },
+  { l:'ר', n:'Resh',  v:200, s:'Cabeza, liderazgo, principio' },
+  { l:'ש', n:'Shin',  v:300, s:'Diente, fuego, transformación' },
+  { l:'ת', n:'Tav',   v:400, s:'Sello, verdad, completitud' }
+];
+
+document.addEventListener('DOMContentLoaded', () => {
+  const g = document.getElementById('rueda-g');
+  const R1 = 80, R2 = 200;
+  const info = document.getElementById('info-letra');
+
+  LETRAS.forEach((letra, i) => {
+    const a1 = (Math.PI * 2 / 22) * i - Math.PI / 2;
+    const a2 = (Math.PI * 2 / 22) * (i + 1) - Math.PI / 2;
+    const am = (a1 + a2) / 2;
+
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    const x1 = Math.cos(a1) * R2, y1 = Math.sin(a1) * R2;
+    const x2 = Math.cos(a2) * R2, y2 = Math.sin(a2) * R2;
+    const x3 = Math.cos(a2) * R1, y3 = Math.sin(a2) * R1;
+    const x4 = Math.cos(a1) * R1, y4 = Math.sin(a1) * R1;
+    const d = `M ${x1} ${y1} A ${R2} ${R2} 0 0 1 ${x2} ${y2} L ${x3} ${y3} A ${R1} ${R1} 0 0 0 ${x4} ${y4} Z`;
+    path.setAttribute('d', d);
+    path.setAttribute('class', 'sector');
+    path.setAttribute('tabindex', '0');
+    path.setAttribute('role', 'button');
+    path.setAttribute('aria-label', letra.n);
+    path.addEventListener('click', () => show(letra));
+    path.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); show(letra); }
+    });
+    g.appendChild(path);
+
+    const lt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    lt.setAttribute('x', Math.cos(am) * (R2 - 25));
+    lt.setAttribute('y', Math.sin(am) * (R2 - 25));
+    lt.setAttribute('class', 'letra');
+    lt.textContent = letra.l;
+    g.appendChild(lt);
+
+    const val = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    val.setAttribute('x', Math.cos(am) * (R2 - 45));
+    val.setAttribute('y', Math.sin(am) * (R2 - 45));
+    val.setAttribute('class', 'val');
+    val.textContent = letra.v;
+    g.appendChild(val);
+  });
+
+  [R1, R2].forEach(r => {
+    const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    c.setAttribute('r', r);
+    c.setAttribute('fill', 'none');
+    c.setAttribute('stroke', 'rgba(212,175,55,.3)');
+    c.setAttribute('stroke-width', '1');
+    g.appendChild(c);
+  });
+
+  function show(letra){
+    info.innerHTML = `
+      <div style="font-size:4rem;color:var(--gold2);
+        font-family:var(--font-heb);direction:rtl;
+        text-shadow:0 0 30px rgba(212,175,55,.8);line-height:1;">
+        ${letra.l}
+      </div>
+      <h3 style="color:var(--gold2);margin:.8rem 0 .3rem;letter-spacing:.15em;">
+        ${letra.n}
+      </h3>
+      <p style="color:var(--cyan);font-family:monospace;">
+        Valor: <strong>${letra.v}</strong>
+      </p>
+      <p style="color:var(--text);margin-top:.5rem;">${letra.s}</p>
+    `;
+  }
+});
+</script>
+</body>
+</html>
