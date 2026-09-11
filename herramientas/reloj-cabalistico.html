@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Reloj cabalístico: las 12 horas planetarias y las Sefirot">
+<title>✦ Reloj Cabalístico — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.reloj{width:100%;max-width:400px;margin:1.5rem auto;display:block;
+  filter:drop-shadow(0 0 30px rgba(212,175,55,.4));}
+.reloj .hour-tick{stroke:rgba(212,175,55,.3);stroke-width:1;}
+.reloj .hour-major{stroke:var(--gold);stroke-width:2;}
+.reloj .hour-label{fill:var(--muted);font-size:9px;font-family:monospace;
+  text-anchor:middle;}
+.reloj .sefira-dot{fill:var(--gold);filter:drop-shadow(0 0 6px var(--gold));}
+.reloj .hand{stroke:var(--gold2);stroke-width:2.5;stroke-linecap:round;
+  filter:drop-shadow(0 0 8px var(--gold));}
+.reloj .center{fill:var(--gold2);filter:drop-shadow(0 0 10px var(--gold));}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">שעון</div>
+  <h1>✦ Reloj Cabalístico ✦</h1>
+  <p>Las 12 horas planetarias · Las Sefirot</p>
+  <span class="page-number">Herramienta · Reloj</span>
+</header>
+
+<section>
+  <h2>🕐 El Reloj Sagrado</h2>
+  <p>En la tradición cabalística, cada <strong>hora del día</strong> tiene un
+  <strong>planeta regente</strong> y una <strong>Sefirá correspondiente</strong>.
+  Conocer esta correspondencia permite alinear tus acciones con la energía
+  del momento.</p>
+
+  <svg class="reloj" viewBox="0 0 300 300" role="img"
+    aria-label="Reloj cabalístico con las 12 horas">
+    <circle cx="150" cy="150" r="130" fill="none" stroke="rgba(212,175,55,.2)" stroke-width="1"/>
+    <g id="horas-g"></g>
+    <line class="hand" id="manecilla" x1="150" y1="150" x2="150" y2="50"/>
+    <circle class="center" cx="150" cy="150" r="5"/>
+  </svg>
+  <p style="text-align:center;color:var(--gold2);font-size:1.2rem;margin-top:.5rem;"
+    id="hora-actual">—</p>
+</section>
+
+<section>
+  <h2>📊 Las 12 Horas Planetarias</h2>
+  <table>
+    <thead><tr><th>Hora</th><th>Planeta</th><th>Sefirá</th><th>Energía</th></tr></thead>
+    <tbody id="tabla-horas"></tbody>
+  </table>
+</section>
+
+<section>
+  <h2>💡 Cómo Usarlo</h2>
+  <ul>
+    <li><strong>Hora 1 (amanecer)</strong> — Inicia con kavaná. Kéter.</li>
+    <li><strong>Hora 6 (mediodía)</strong> — Máxima luz. Tiféret.</li>
+    <li><strong>Hora 9 (atardecer)</strong> — Reflexión. Yesod.</li>
+    <li><strong>Hora 12 (medianoche)</strong> — Trabajo interior. Maljut.</li>
+  </ul>
+  <div class="equation">
+    <div class="big">Cada hora es una puerta · Cada Sefirá un estado del alma</div>
+    <div class="heb">שעה = שער · ספירה = מדרגה</div>
+  </div>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Reloj Cabalístico</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const HORAS = [
+  { h:1,  p:'Saturno',   sym:'♄', sefira:'Kéter',   energia:'Voluntad, inicio, protección' },
+  { h:2,  p:'Júpiter',   sym:'♃', sefira:'Jojmá',   energia:'Sabiduría, expansión' },
+  { h:3,  p:'Marte',     sym:'♂', sefira:'Biná',    energia:'Entendimiento, análisis' },
+  { h:4,  p:'Sol',       sym:'☉', sefira:'Jesed',   energia:'Amor, misericordia' },
+  { h:5,  p:'Venus',     sym:'♀', sefira:'Guevurá', energia:'Rigor, justicia' },
+  { h:6,  p:'Mercurio',  sym:'☿', sefira:'Tiféret', energia:'Belleza, armonía, luz' },
+  { h:7,  p:'Luna',      sym:'☾', sefira:'Netzaj',  energia:'Victoria, eternidad' },
+  { h:8,  p:'Saturno',   sym:'♄', sefira:'Hod',     energia:'Esplendor, gratitud' },
+  { h:9,  p:'Júpiter',   sym:'♃', sefira:'Yesod',   energia:'Fundamento, conexión' },
+  { h:10, p:'Marte',     sym:'♂', sefira:'Maljut',  energia:'Reino, manifestación' },
+  { h:11, p:'Sol',       sym:'☉', sefira:'Kéter',   energia:'Retorno a la fuente' },
+  { h:12, p:'Venus',     sym:'♀', sefira:'Maljut',  energia:'Cierre, descanso' }
+];
+
+document.addEventListener('DOMContentLoaded', () => {
+  const g = document.getElementById('horas-g');
+  HORAS.forEach((h, i) => {
+    const angle = (Math.PI * 2 / 12) * i - Math.PI / 2;
+    const x1 = 150 + Math.cos(angle) * 110;
+    const y1 = 150 + Math.sin(angle) * 110;
+    const x2 = 150 + Math.cos(angle) * 125;
+    const y2 = 150 + Math.sin(angle) * 125;
+    const lx = 150 + Math.cos(angle) * 95;
+    const ly = 150 + Math.sin(angle) * 95;
+
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', x1); line.setAttribute('y1', y1);
+    line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+    line.setAttribute('class', i % 3 === 0 ? 'hour-major' : 'hour-tick');
+    g.appendChild(line);
+
+    const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    label.setAttribute('x', lx); label.setAttribute('y', ly + 3);
+    label.setAttribute('class', 'hour-label');
+    label.textContent = h.h;
+    g.appendChild(label);
+  });
+
+  const tbody = document.getElementById('tabla-horas');
+  HORAS.forEach(h => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${h.h}</td><td>${h.sym} ${h.p}</td>
+      <td>${h.sefira}</td><td>${h.energia}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  // Actualizar manecilla
+  function tick(){
+    const ahora = new Date();
+    const hora = ahora.getHours();
+    const idx = hora % 12;
+    const angle = (Math.PI * 2 / 12) * idx - Math.PI / 2;
+    const x = 150 + Math.cos(angle) * 100;
+    const y = 150 + Math.sin(angle) * 100;
+    document.getElementById('manecilla').setAttribute('x2', x);
+    document.getElementById('manecilla').setAttribute('y2', y);
+    const horaData = HORAS[idx];
+    document.getElementById('hora-actual').textContent =
+      `${horaData.sym} ${horaData.p} · ${horaData.sefira} · ${horaData.energia}`;
+  }
+  tick();
+  setInterval(tick, 60000);
+});
+</script>
+</body>
+</html>
