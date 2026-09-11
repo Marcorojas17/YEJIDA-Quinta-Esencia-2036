@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Biografías de los grandes maestros de la Kabaláh">
+<title>✦ Biografías — Yejidá ✦</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.maestro{border:1px solid var(--line);border-radius:14px;padding:1.5rem;
+  margin-bottom:1rem;background:rgba(10,12,30,.6);transition:all .4s;
+  cursor:pointer;}
+.maestro:hover{border-color:var(--gold);transform:translateY(-3px);
+  box-shadow:0 0 25px rgba(212,175,55,.25);}
+.maestro .head{display:flex;justify-content:space-between;align-items:baseline;
+  flex-wrap:wrap;gap:.5rem;margin-bottom:.6rem;}
+.maestro h3{color:var(--gold2);font-size:1.15rem;margin:0;}
+.maestro .epoca{color:var(--cyan);font-size:.8rem;letter-spacing:.1em;}
+.maestro .heb{color:var(--gold);font-family:var(--font-heb);font-size:1.2rem;
+  direction:rtl;}
+.maestro p{color:var(--text);font-size:.92rem;line-height:1.7;margin:.5rem 0;}
+.maestro .obra{color:var(--muted);font-size:.85rem;margin-top:.5rem;
+  padding-top:.5rem;border-top:1px solid var(--line);}
+.maestro .obra strong{color:var(--gold);}
+</style>
+</head>
+<body>
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+<main id="main" class="container" role="main">
+
+<header class="page-header">
+  <div class="hebrew-title">גדולים</div>
+  <h1>✦ Biografías ✦</h1>
+  <p>Los grandes maestros de la Kabaláh</p>
+  <span class="page-number">Aprender · Biografías</span>
+</header>
+
+<section>
+  <h2>👤 Los Maestros</h2>
+  <div id="maestros"></div>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <p>Proyecto Yejidá Kabaláh · Biografías</p>
+</footer>
+<script src="../shared.js"></script>
+<script>
+const MAESTROS = [
+  { n:'Rabí Shimón Bar Yojái', h:'רשב"י', e:'Siglo II', d:'Sabio tannaíta, discípulo de Rabí Akivá. La tradición le atribuye la autoría del Zohar. Pasó 13 años en una cueva estudiando Torá con su hijo Elazar. Su yahrzeit (Lag BaOmer) es celebrado con fuegos en Merón.', o:'Zohar (atribuido)' },
+  { n:'Najmánides (Rambán)', h:'רמב"ן', e:'1194-1270', d:'Moisés ben Najmán, rabino de Gerona. Comentarista de la Torá y líder de la Kabaláh catalana. Participó en la disputa de Barcelona (1263). Emigró a Israel en sus últimos años.', o:'Comentario de la Torá' },
+  { n:'Isaac Luria (Arizal)', h:'האר"י', e:'1534-1572', d:'El mayor reformador de la Kabaláh. Nacido en Jerusalén, vivió en Safed. Introdujo los conceptos de Tzimtzum, Shevirat HaKelim y Tikkun. Murió a los 38 años.', o:'Etz Jaim (compilado por Vital)' },
+  { n:'Jaim Vital', h:'חיים ויטאל', e:'1542-1620', d:'Discípulo principal del Arizal. Transcribió y sistematizó sus enseñanzas. Ocho volúmenes de las enseñanzas lurianas.', o:'Etz Jaim, Shmoneh Shearim' },
+  { n:'Baal Shem Tov', h:'בעל שם טוב', e:'1698-1760', d:'Israel ben Eliezer, fundador del jasidismo. Enseñó que Dios está en todo, la alegría es clave, y la devoción simple vale más que la erudición. Cambió el rostro del judaísmo europeo.', o:'Enseñanzas orales' },
+  { n:'Rabí Najman de Breslov', h:'ר\' נחמן', e:'1772-1810', d:'Bisnieto del Baal Shem Tov. Enseñó hitbodedut, alegría radical y fe simple. Su lema: "Nunca te rindas".', o:'Likutei Moharán' },
+  { n:'Rabí Shneur Zalman', h:'אדמו"ר הזקן', e:'1745-1812', d:'Fundador del Jabad (Jojmá, Biná, Daat). Sistematizó la Kabaláh jasídica en el Tanya. Enseñó que el intelecto debe guiar las emociones.', o:'Tanya, Shulján Aruj HaRav' },
+  { n:'Rabí Abraham Isaac Kook', h:'הראי"ה קוק', e:'1865-1935', d:'Primer Gran Rabino Ashkenazí de Israel. Vio el sionismo como parte del proceso mesiánico. Escribió profunda Kabaláh y filosofía.', o:'Orot HaKodesh' },
+  { n:'Gershom Scholem', h:'גרשום שלום', e:'1897-1982', d:'Historiador judío-alemán. Fundador del estudio académico de la Kabaláh. Revolucionó el campo con rigor histórico.', o:'Kabaláh y su simbolismo' },
+  { n:'Adin Steinsaltz', h:'עדין שטיינזלץ', e:'1937-2020', d:'Rabino israelí, traductor del Talmud al hebreo moderno. Divulgador de la Kabaláh. Fundador del Instituto Steinsaltz.', o:'Los Trece Pétalos de la Rosa' }
+];
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('maestros').innerHTML = MAESTROS.map(m => `
+    <article class="maestro">
+      <div class="head">
+        <div>
+          <h3>${m.n}</h3>
+          <div class="epoca">${m.e}</div>
+        </div>
+        <div class="heb">${m.h}</div>
+      </div>
+      <p>${m.d}</p>
+      <div class="obra"><strong>Obra principal:</strong> ${m.o}</div>
+    </article>
+  `).join('');
+});
+</script>
+</body>
+</html>
