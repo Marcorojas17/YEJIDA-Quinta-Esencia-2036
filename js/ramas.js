@@ -1,371 +1,237 @@
-/* ═══════════════════════════════════════════════════════════
-   RAMAS DEL SISTEMA INFALSIFICABLE · A-Z
-   ═══════════════════════════════════════════════════════════ */
-
 const RAMAS = {
-  A: {
-    titulo: 'Criptografía',
-    heb: 'הצפנה',
-    icono: '🔐',
-    color: '#ff6b6b',
-    desc: 'Base técnica del sistema. Sin criptografía no hay verdad verificable.',
+  A: { titulo:'Criptografía', heb:'הצפנה', icono:'🔐', color:'#ff6b6b', desc:'Base técnica del sistema. Sin criptografía no hay verdad verificable.',
     sub: {
-      A1: { n: 'Funciones Hash', items: ['SHA-3 (Keccak-256, 512)', 'BLAKE3 (ultrarrápido, paralelo)', 'SHA-256 (estándar)', 'Argon2id (resistente a GPU/ASIC)', 'Post-cuánticos (SPHINCS+, Dilithium)', 'Hash-based (Lamport, Merkle)'] },
-      A2: { n: 'Firmas Digitales', items: ['Ed25519', 'ECDSA (SECP256k1)', 'Schnorr (agregables)', 'BLS (agregación)', 'Ring signatures'] },
-      A3: { n: 'Pruebas de Conocimiento Cero', items: ['zk-SNARKs', 'zk-STARKs', 'Bulletproofs', 'PLONK / Halo2', 'Integridad sin revelar datos'] },
-      A4: { n: 'Computación Multi-Parte', items: ['Shamir Secret Sharing', 'Threshold signatures', 'Garbled circuits', 'Verifiable Secret Sharing', 'Distributed key generation'] },
-      A5: { n: 'Cifrado Avanzado', items: ['AES-256-GCM', 'ChaCha20-Poly1305', 'Homomorphic encryption', 'Functional encryption', 'Attribute-based encryption'] },
-      A6: { n: 'Post-Cuántica', items: ['Kyber (KEM lattice)', 'Dilithium (firmas)', 'Falcon (compactas)', 'SPHINCS+ (hash-based)', 'NTRU / NTRU Prime'] }
+      A1:{n:'Funciones Hash',items:['SHA-3 (Keccak)','BLAKE3','SHA-256','Argon2id','SPHINCS+','Lamport']},
+      A2:{n:'Firmas Digitales',items:['Ed25519','ECDSA SECP256k1','Schnorr','BLS','Ring signatures']},
+      A3:{n:'Conocimiento Cero',items:['zk-SNARKs','zk-STARKs','Bulletproofs','PLONK/Halo2','Integridad sin revelar']},
+      A4:{n:'Multi-Parte',items:['Shamir','Threshold','Garbled circuits','VSS','DKG']},
+      A5:{n:'Cifrado Avanzado',items:['AES-256-GCM','ChaCha20-Poly1305','Homomorphic','Functional','Attribute-based']},
+      A6:{n:'Post-Cuántica',items:['Kyber','Dilithium','Falcon','SPHINCS+','NTRU']}
     }
   },
-  B: {
-    titulo: 'Anclaje Temporal',
-    heb: 'עיגון זמן',
-    icono: '⏱️',
-    color: '#4fd1c5',
-    desc: 'Que el tiempo no pueda mentir.',
+  B: { titulo:'Anclaje Temporal', heb:'עיגון זמן', icono:'⏱️', color:'#4fd1c5', desc:'Que el tiempo no pueda mentir.',
     sub: {
-      B1: { n: 'Blockchain', items: ['Bitcoin', 'Ethereum', 'Solana', 'Cardano', 'Arweave'] },
-      B2: { n: 'Estructuras Merkle', items: ['Merkle trees', 'Merkle Patricia Trie', 'Verkle trees', 'Sparse Merkle Trees'] },
-      B3: { n: 'Timestamping', items: ['RFC 3161', 'OpenTimestamps', 'Guardtime', 'FreeTSA'] },
-      B4: { n: 'Almacenamiento Permanente', items: ['IPFS', 'Arweave', 'Filecoin', 'Storj', 'Sia'] },
-      B5: { n: 'Ledgers Distribuidos', items: ['Hyperledger Fabric', 'Corda', 'Quorum', 'Hashgraph'] }
+      B1:{n:'Blockchain',items:['Bitcoin','Ethereum','Solana','Cardano','Arweave']},
+      B2:{n:'Merkle',items:['Merkle trees','Patricia Trie','Verkle trees','Sparse Merkle']},
+      B3:{n:'Timestamping',items:['RFC 3161','OpenTimestamps','Guardtime','FreeTSA']},
+      B4:{n:'Almacenamiento',items:['IPFS','Arweave','Filecoin','Storj','Sia']},
+      B5:{n:'Ledgers',items:['Hyperledger Fabric','Corda','Quorum','Hashgraph']}
     }
   },
-  C: {
-    titulo: 'Identidad y Autenticación',
-    heb: 'זהות',
-    icono: '🪪',
-    color: '#f7e08a',
-    desc: 'Quién eres y cómo lo pruebas.',
+  C: { titulo:'Identidad', heb:'זהות', icono:'🪪', color:'#f7e08a', desc:'Quién eres y cómo lo pruebas.',
     sub: {
-      C1: { n: 'Biometría', items: ['Huella dactilar', 'Reconocimiento facial 3D', 'Iris', 'Voz con anti-spoofing', 'ADN', 'Ritmo cardíaco (ECG)'] },
-      C2: { n: 'Hardware', items: ['TPM 2.0', 'HSM', 'Secure Enclave', 'YubiKey', 'Ledger/Trezor'] },
-      C3: { n: 'Protocolos', items: ['WebAuthn / FIDO2', 'Passkeys', 'OAuth 2.0 + PKCE', 'OpenID Connect', 'DID'] },
-      C4: { n: 'Multi-Factor', items: ['MFA', '2FA TOTP', 'Push notifications', 'Hardware keys'] },
-      C5: { n: 'Identidad Descentralizada', items: ['Sovrin', 'uPort', 'Microsoft ION', 'Verifiable Credentials', 'SSI'] }
+      C1:{n:'Biometría',items:['Huella','Rostro 3D','Iris','Voz','ADN','ECG']},
+      C2:{n:'Hardware',items:['TPM 2.0','HSM','Secure Enclave','YubiKey','Ledger/Trezor']},
+      C3:{n:'Protocolos',items:['WebAuthn/FIDO2','Passkeys','OAuth 2.0+PKCE','OpenID Connect','DID']},
+      C4:{n:'Multi-Factor',items:['MFA','2FA TOTP','Push','Hardware keys']},
+      C5:{n:'Descentralizada',items:['Sovrin','uPort','Microsoft ION','Verifiable Credentials','SSI']}
     }
   },
-  D: {
-    titulo: 'Trazabilidad e Inmutabilidad',
-    heb: 'עקיבות',
-    icono: '📜',
-    color: '#a29bfe',
-    desc: 'Nada puede borrarse ni alterarse.',
+  D: { titulo:'Trazabilidad', heb:'עקיבות', icono:'📜', color:'#a29bfe', desc:'Nada puede borrarse ni alterarse.',
     sub: {
-      D1: { n: 'Logs Append-Only', items: ['Certificate Transparency', 'Trillian', 'Sigstore', 'Rekor', 'Immudb'] },
-      D2: { n: 'Cadena de Custodia', items: ['Firma por acción', 'Timestamp por evento', 'Hash encadenado', 'Testigos independientes', 'Notarización cruzada'] },
-      D3: { n: 'Versionado Firmado', items: ['Git con commits GPG', 'Sigstore cosign', 'SLSA', 'Reproducible builds', 'SBOM'] },
-      D4: { n: 'Auditoría Continua', items: ['Logs cifrados inmutables', 'Monitoreo en tiempo real', 'Alertas automáticas', 'Forense post-incidente'] },
-      D5: { n: 'Anti-Tampering', items: ['Honeypots', 'Canary tokens', 'Watermarking', 'Steganografía', 'Self-destruct'] }
+      D1:{n:'Logs Append-Only',items:['Certificate Transparency','Trillian','Sigstore','Rekor','Immudb']},
+      D2:{n:'Cadena de Custodia',items:['Firma por acción','Timestamp','Hash encadenado','Testigos','Notarización']},
+      D3:{n:'Versionado Firmado',items:['Git GPG','Sigstore cosign','SLSA','Reproducible builds','SBOM']},
+      D4:{n:'Auditoría',items:['Logs inmutables','Tiempo real','Alertas','Forense']},
+      D5:{n:'Anti-Tampering',items:['Honeypots','Canary tokens','Watermarking','Steganografía','Self-destruct']}
     }
   },
-  E: {
-    titulo: 'Verificación Independiente',
-    heb: 'אימות',
-    icono: '✅',
-    color: '#4ade80',
-    desc: 'Cualquiera puede verificarlo sin permiso.',
+  E: { titulo:'Verificación', heb:'אימות', icono:'✅', color:'#4ade80', desc:'Cualquiera puede verificarlo sin permiso.',
     sub: {
-      E1: { n: 'Código Abierto', items: ['Repositorio público', 'Licencia libre', 'Auditoría comunitaria', 'Fork y revisión por pares', 'Bounties'] },
-      E2: { n: 'Build Reproducible', items: ['Determinismo bit a bit', 'Mismo hash desde distintas máquinas', 'Bazel, Nix', 'Docker con hashes fijos'] },
-      E3: { n: 'Verificación Multi-Parte', items: ['Nodos independientes', 'Consenso por mayoría', 'Testigos externos', 'Redundancia geográfica'] },
-      E4: { n: 'Pruebas Públicas', items: ['Test suites abiertos', 'Fuzzing continuo', 'Property-based testing', 'Formal verification'] },
-      E5: { n: 'Transparencia Radical', items: ['Código público', 'Logs públicos', 'Firmas públicas', 'Métricas públicas', 'Incidentes públicos'] }
+      E1:{n:'Código Abierto',items:['Repo público','Licencia libre','Auditoría','Fork','Bounties']},
+      E2:{n:'Build Reproducible',items:['Determinismo','Mismo hash','Bazel, Nix','Docker fijo']},
+      E3:{n:'Multi-Parte',items:['Nodos','Consenso','Testigos','Redundancia']},
+      E4:{n:'Pruebas',items:['Test suites','Fuzzing','Property-based','Formal']},
+      E5:{n:'Transparencia',items:['Código','Logs','Firmas','Métricas','Incidentes']}
     }
   },
-  F: {
-    titulo: 'Resistencia Física',
-    heb: 'עמידות פיזית',
-    icono: '🛡️',
-    color: '#e67e22',
-    desc: 'Protección contra manipulación física.',
+  F: { titulo:'Resistencia Física', heb:'עמידות', icono:'🛡️', color:'#e67e22', desc:'Protección contra manipulación física.',
     sub: {
-      F1: { n: 'PUF', items: ['SRAM PUF', 'Óptica (scattering)', 'Magnética', 'ADN', 'Imposibles de clonar'] },
-      F2: { n: 'Sellos Anti-Manipulación', items: ['Holográficos', 'Microtexto', 'Termosensibles', 'UV', 'Auto-destructivos'] },
-      F3: { n: 'Hardware Seguro', items: ['HSM FIPS 140-3', 'TPM 2.0 attestation', 'SGX, SEV', 'TrustZone ARM', 'Anti-side-channel'] },
-      F4: { n: 'Distribución Geográfica', items: ['Servidores en 5+ países', 'Replicación continental', 'Backups en bóvedas', 'Custodia multi-parte'] },
-      F5: { n: 'Anclaje Físico-Químico', items: ['Isótopos radiactivos', 'ADN sintético', 'Nanopartículas', 'Diamantes', 'Metales únicos'] }
+      F1:{n:'PUF',items:['SRAM PUF','Óptica','Magnética','ADN','No clonables']},
+      F2:{n:'Sellos',items:['Holográficos','Microtexto','Termosensibles','UV','Auto-destructivos']},
+      F3:{n:'Hardware Seguro',items:['HSM FIPS 140-3','TPM attestation','SGX, SEV','TrustZone','Anti-side-channel']},
+      F4:{n:'Distribución',items:['5+ países','Replicación','Bóvedas','Multi-parte']},
+      F5:{n:'Físico-Químico',items:['Isótopos','ADN sintético','Nanopartículas','Diamantes','Metales']}
     }
   },
-  G: {
-    titulo: 'Defensa contra Ataques',
-    heb: 'הגנה',
-    icono: '⚔️',
-    color: '#ff6b9d',
-    desc: 'Preparación ante todo tipo de ataque.',
+  G: { titulo:'Defensa', heb:'הגנה', icono:'⚔️', color:'#ff6b9d', desc:'Preparación ante todo tipo de ataque.',
     sub: {
-      G1: { n: 'Ataques Cuánticos', items: ['PQC', 'Lattice-based', 'Hash-based', 'Code-based', 'Multivariate'] },
-      G2: { n: 'Canal Lateral', items: ['Constant-time', 'Blindaje EM', 'Aislamiento', 'Masking', 'Ruido artificial'] },
-      G3: { n: 'Ingeniería Social', items: ['Educación', 'Verificación out-of-band', 'Códigos de seguridad', 'Frases de recuperación', 'Zero-trust'] },
-      G4: { n: 'Amenazas Internas', items: ['Rotación de claves', 'M-of-N approvals', 'Separation of duties', 'Audit trails', 'Watermarking'] },
-      G5: { n: 'IA Generativa', items: ['Detección de deepfakes', 'C2PA', 'Provenance chains', 'Watermarking invisible', 'Firmas de contenido'] }
+      G1:{n:'Cuánticos',items:['PQC','Lattice','Hash-based','Code-based','Multivariate']},
+      G2:{n:'Canal Lateral',items:['Constant-time','Blindaje EM','Aislamiento','Masking','Ruido']},
+      G3:{n:'Ingeniería Social',items:['Educación','Out-of-band','Códigos','Frases','Zero-trust']},
+      G4:{n:'Internas',items:['Rotación','M-of-N','Separation','Audit','Watermarking']},
+      G5:{n:'IA Generativa',items:['Deepfakes','C2PA','Provenance','Watermarking','Firmas']}
     }
   },
-  H: {
-    titulo: 'Filosofía de la Infalsificabilidad',
-    heb: 'פילוסופיה',
-    icono: '🧠',
-    color: '#9b59b6',
-    desc: 'Los fundamentos conceptuales.',
+  H: { titulo:'Filosofía', heb:'פילוסופיה', icono:'🧠', color:'#9b59b6', desc:'Los fundamentos conceptuales.',
     sub: {
-      H1: { n: 'Popper', items: ['Falsabilidad científica', 'Matemáticas infalsificables', 'Criptografía por diseño'] },
-      H2: { n: 'Verdad Matemática', items: ['2+2=4', 'Teoremas de Gödel', 'Pruebas formales', 'Verificación mecánica'] },
-      H3: { n: 'Verdad Cabalística', items: ['Emet (אמת)', 'El Nombre YHVH', 'Torá como código', 'Yejidá como chispa'] },
-      H4: { n: 'Consenso Social', items: ['Habermas', 'Verdad por consenso', 'Quórum de testigos', 'Reputación'] },
-      H5: { n: 'Metafísica', items: ['Parménides', 'Ser inmutable', 'Memoria cósmica', 'Akasha', 'Libro de la Vida'] }
+      H1:{n:'Popper',items:['Falsabilidad','Matemáticas','Criptografía']},
+      H2:{n:'Verdad Matemática',items:['2+2=4','Gödel','Pruebas formales','Verificación']},
+      H3:{n:'Verdad Cabalística',items:['Emet אמת','YHVH','Torá código','Yejidá']},
+      H4:{n:'Consenso Social',items:['Habermas','Consenso','Quórum','Reputación']},
+      H5:{n:'Metafísica',items:['Parménides','Ser inmutable','Akasha','Libro de la Vida']}
     }
   },
-  I: {
-    titulo: 'Aplicaciones Kabalísticas YEJIDÁ',
-    heb: 'יישומים קבליים',
-    icono: '✡️',
-    color: '#d4af37',
-    desc: 'La integración con la tradición cabalística.',
+  I: { titulo:'Aplicaciones YEJIDÁ', heb:'יישומים', icono:'✡️', color:'#d4af37', desc:'Integración con la tradición cabalística.',
     sub: {
-      I1: { n: 'Certificados YEJIDÁ', items: ['Firma con 72 Nombres', 'Timestamp en Shabat', 'Guematria como checksum', 'Sigilo como firma', 'Nombre hebreo como ID'] },
-      I2: { n: 'Sellos Sagrados', items: ['72 combinaciones', 'Atbash reversible', 'Notarikon', 'Temurá', 'Nombre divino como firma'] },
-      I3: { n: 'Testigos Celestiales', items: ['72 ángeles', '12 tribus como nodos', '7 cielos como capas', '4 mundos jerárquicos', 'Sefirot como validadores'] },
-      I4: { n: 'Verificación por Guematria', items: ['Suma como checksum', 'Reducciones', 'Pares de palabras', 'Yijud como unificación'] },
-      I5: { n: 'Rituales de Autenticación', items: ['Shemá', 'Modeh Aní', 'Hitbodedut', 'Mikvé', 'Teshuvá'] }
+      I1:{n:'Certificados',items:['72 Nombres','Shabat','Guematria','Sigilo','Nombre hebreo']},
+      I2:{n:'Sellos',items:['72 combinaciones','Atbash','Notarikon','Temurá','Nombre divino']},
+      I3:{n:'Testigos',items:['72 ángeles','12 tribus','7 cielos','4 mundos','Sefirot']},
+      I4:{n:'Verificación',items:['Suma checksum','Reducciones','Pares','Yijud']},
+      I5:{n:'Rituales',items:['Shemá','Modeh Aní','Hitbodedut','Mikvé','Teshuvá']}
     }
   },
-  J: {
-    titulo: 'Gobernanza y Consenso',
-    heb: 'ממשל',
-    icono: '⚖️',
-    color: '#6c5ce7',
-    desc: 'Cómo se toman las decisiones.',
+  J: { titulo:'Gobernanza', heb:'ממשל', icono:'⚖️', color:'#6c5ce7', desc:'Cómo se toman las decisiones.',
     sub: {
-      J1: { n: 'Descentralización', items: ['DAO', 'Multisig M-de-N', 'Votación cuadrática', 'Delegación líquida', 'Conviction voting'] },
-      J2: { n: 'Reputación', items: ['Web of Trust', 'EigenTrust', 'PageRank', 'Staking', 'Slashing'] },
-      J3: { n: 'Disputas', items: ['Kleros', 'Aragon Court', 'Jurado por sorteo', 'Apelaciones', 'Precedentes'] },
-      J4: { n: 'Conflictos', items: ['Mediación algorítmica', 'Arbitraje', 'Consenso por fork', 'Hard fork'] },
-      J5: { n: 'Incentivos', items: ['Proof of Stake', 'Proof of Work', 'Proof of Space', 'Proof of History', 'Bonding curves'] }
+      J1:{n:'Descentralización',items:['DAO','Multisig','Cuadrática','Líquida','Conviction']},
+      J2:{n:'Reputación',items:['Web of Trust','EigenTrust','PageRank','Staking','Slashing']},
+      J3:{n:'Disputas',items:['Kleros','Aragon','Jurado','Apelaciones','Precedentes']},
+      J4:{n:'Conflictos',items:['Mediación','Arbitraje','Fork','Hard fork']},
+      J5:{n:'Incentivos',items:['PoS','PoW','PoSpace','PoHistory','Bonding']}
     }
   },
-  K: {
-    titulo: 'Verificación Humana',
-    heb: 'אימות אנושי',
-    icono: '👥',
-    color: '#00b894',
-    desc: 'Los humanos como parte del sistema.',
+  K: { titulo:'Verificación Humana', heb:'אימות אנושי', icono:'👥', color:'#00b894', desc:'Los humanos como parte del sistema.',
     sub: {
-      K1: { n: 'Testigos Humanos', items: ['Notarios', 'Escribanos', 'Testigos de boda', 'Testigos de contrato', 'Beit Din'] },
-      K2: { n: 'Documentos Físicos', items: ['Ketubá', 'Guet', 'Tefilín escritos a mano', 'Mezuzá', 'Sifrei Torá'] },
-      K3: { n: 'Cadenas de Tradición', items: ['Semijá', 'Linaje de maestros', 'Transmisión oral', 'Pirkei Avot'] },
-      K4: { n: 'Rituales', items: ['Juramento', 'Firma con sangre', 'Apuesta de vida', 'Maldición por falsedad'] },
-      K5: { n: 'Verificación Espiritual', items: ['Ruaj HaKodesh', 'Urim veTumim', 'Bat Kol', 'Sueños proféticos', 'Milagros'] }
+      K1:{n:'Testigos',items:['Notarios','Escribanos','Boda','Contratos','Beit Din']},
+      K2:{n:'Documentos',items:['Ketubá','Guet','Tefilín','Mezuzá','Torá']},
+      K3:{n:'Tradición',items:['Semijá','Linaje','Oral','Pirkei Avot']},
+      K4:{n:'Rituales',items:['Juramento','Sangre','Apuesta','Maldición']},
+      K5:{n:'Espiritual',items:['Ruaj HaKodesh','Urim veTumim','Bat Kol','Sueños','Milagros']}
     }
   },
-  L: {
-    titulo: 'Arquitectura del Sistema',
-    heb: 'ארכיטקטורה',
-    icono: '🏗️',
-    color: '#0984e3',
-    desc: 'Cómo se ensambla todo.',
+  L: { titulo:'Arquitectura', heb:'ארכיטקטורה', icono:'🏗️', color:'#0984e3', desc:'Cómo se ensambla todo.',
     sub: {
-      L1: { n: 'Capas', items: ['Física', 'Firmware', 'Criptográfica', 'Anclaje temporal', 'Aplicación', 'Usuario', 'Metafísica'] },
-      L2: { n: 'Flujo de Verificación', items: ['Credencial', 'Firma Ed25519', 'Timestamp Bitcoin', 'Merkle proof', 'IPFS hash', 'Gematria checksum', '72 Nombres'] },
-      L3: { n: 'Componentes', items: ['Ledger local', 'Notarización Bitcoin', 'IPFS + Arweave', 'ZKP', 'MPC', 'Blockchain propio'] },
-      L4: { n: 'Resiliencia', items: ['Sin punto único', 'Redundancia continental', 'Recuperación', 'Continuidad', 'Anti-ataques'] },
-      L5: { n: 'Auditoría', items: ['Logs públicos', 'Bug bounty', 'Auditoría anual', 'Red/Blue team', 'Transparencia'] }
+      L1:{n:'Capas',items:['Física','Firmware','Cripto','Tiempo','App','Usuario','Metafísica']},
+      L2:{n:'Flujo',items:['Credencial','Firma','Timestamp','Merkle','IPFS','Gematria','72 Nombres']},
+      L3:{n:'Componentes',items:['Ledger','Bitcoin','IPFS','ZKP','MPC','Blockchain']},
+      L4:{n:'Resiliencia',items:['Sin punto único','Redundancia','Recuperación','Continuidad']},
+      L5:{n:'Auditoría',items:['Logs','Bounties','Anual','Red/Blue','Transparencia']}
     }
   },
-  M: {
-    titulo: 'Economía y Tokenomía',
-    heb: 'כלכלה',
-    icono: '💰',
-    color: '#fdcb6e',
-    desc: 'Los incentivos económicos.',
+  M: { titulo:'Economía', heb:'כלכלה', icono:'💰', color:'#fdcb6e', desc:'Los incentivos económicos.',
     sub: {
-      M1: { n: 'Tokens', items: ['ERC-721 por certificado', 'ERC-1155 por lote', 'Soulbound tokens', 'Token de reputación', 'Token de gobernanza'] },
-      M2: { n: 'Incentivos', items: ['Recompensas por verificar', 'Staking como testigo', 'Slashing por falsedad', 'Recompensas por auditoría', 'Bounties'] },
-      M3: { n: 'Mercados', items: ['Marketplace de certificados', 'Subastas de arte sagrado', 'Licencias', 'Regalías automáticas', 'Economía de creadores'] },
-      M4: { n: 'Tesorería', items: ['Multisig M-de-N', 'Gestión DAO', 'Presupuesto transparente', 'Auditoría on-chain', 'Reservas'] },
-      M5: { n: 'Modelos', items: ['Suscripciones', 'Pago por uso', 'Freemium', 'White-label', 'API B2B', 'Donaciones'] }
+      M1:{n:'Tokens',items:['ERC-721','ERC-1155','Soulbound','Reputación','Gobernanza']},
+      M2:{n:'Incentivos',items:['Verificar','Staking','Slashing','Auditoría','Bounties']},
+      M3:{n:'Mercados',items:['Marketplace','Subastas','Licencias','Regalías','Creadores']},
+      M4:{n:'Tesorería',items:['Multisig','DAO','Presupuesto','Auditoría','Reservas']},
+      M5:{n:'Modelos',items:['Suscripción','Pago por uso','Freemium','White-label','API B2B','Donaciones']}
     }
   },
-  N: {
-    titulo: 'Legalidad y Cumplimiento',
-    heb: 'משפט',
-    icono: '⚖️',
-    color: '#dfe6e9',
-    desc: 'El marco legal del sistema.',
+  N: { titulo:'Legal', heb:'משפט', icono:'⚖️', color:'#dfe6e9', desc:'El marco legal del sistema.',
     sub: {
-      N1: { n: 'Marcos Normativos', items: ['GDPR', 'CCPA', 'LGPD', 'LFPDPPP', 'NOM-151-SCFI-2016', 'eIDAS'] },
-      N2: { n: 'Propiedad Intelectual', items: ['Copyright', 'Derechos morales', 'Licencias CC', 'Safe Creative', 'Blockchain como prueba', 'Registro de marca'] },
-      N3: { n: 'Contratos', items: ['Smart contracts', 'Contratos legibles', 'Términos y condiciones', 'Política de privacidad', 'SLA'] },
-      N4: { n: 'Cumplimiento', items: ['KYC / AML', 'Sanctions screening', 'Reporte fiscal', 'Auditoría contable', 'Seguros'] },
-      N5: { n: 'Disputas', items: ['Arbitraje', 'Mediación', 'Tribunales descentralizados', 'Apelaciones', 'Precedentes'] }
+      N1:{n:'Marcos',items:['GDPR','CCPA','LGPD','LFPDPPP','NOM-151','eIDAS']},
+      N2:{n:'Propiedad',items:['Copyright','Morales','CC','Safe Creative','Blockchain','Marca']},
+      N3:{n:'Contratos',items:['Smart','Legibles','Términos','Privacidad','SLA']},
+      N4:{n:'Cumplimiento',items:['KYC/AML','Sanctions','Fiscal','Contable','Seguros']},
+      N5:{n:'Disputas',items:['Arbitraje','Mediación','Tribunales','Apelaciones','Precedentes']}
     }
   },
-  O: {
-    titulo: 'Interfaz y Experiencia',
-    heb: 'ממשק',
-    icono: '🎨',
-    color: '#fd79a8',
-    desc: 'Cómo el usuario experimenta todo.',
+  O: { titulo:'Interfaz', heb:'ממשק', icono:'🎨', color:'#fd79a8', desc:'Cómo el usuario experimenta todo.',
     sub: {
-      O1: { n: 'Diseño', items: ['Fondo WebGL', 'Geometría sagrada animada', 'Modo claro/oscuro', 'WCAG 2.2 AA', 'Responsive'] },
-      O2: { n: 'Interacción', items: ['Onboarding', 'Tutoriales', 'Feedback inmediato', 'Micro-animaciones', 'Sonido binaural'] },
-      O3: { n: 'Personalización', items: ['Temas por tradición', 'Idiomas', 'Husos horarios', 'Calendarios', 'Preferencias'] },
-      O4: { n: 'Accesibilidad', items: ['Lectores de pantalla', 'Contraste alto', 'Navegación por teclado', 'Subtítulos', 'Lengua de signos'] },
-      O5: { n: 'Dispositivos', items: ['Web', 'Móvil', 'Tablet', 'VR/AR', 'Wearables'] }
+      O1:{n:'Diseño',items:['WebGL','Geometría','Claro/oscuro','WCAG','Responsive']},
+      O2:{n:'Interacción',items:['Onboarding','Tutoriales','Feedback','Micro-animaciones','Binaural']},
+      O3:{n:'Personalización',items:['Temas','Idiomas','Husos','Calendarios','Preferencias']},
+      O4:{n:'Accesibilidad',items:['Lectores','Contraste','Teclado','Subtítulos','Signos']},
+      O5:{n:'Dispositivos',items:['Web','Móvil','Tablet','VR/AR','Wearables']}
     }
   },
-  P: {
-    titulo: 'Educación y Divulgación',
-    heb: 'חינוך',
-    icono: '📚',
-    color: '#00cec9',
-    desc: 'Cómo se comparte el conocimiento.',
+  P: { titulo:'Educación', heb:'חינוך', icono:'📚', color:'#00cec9', desc:'Cómo se comparte el conocimiento.',
     sub: {
-      P1: { n: 'Contenido', items: ['Cursos', 'Tutoriales', 'Webinars', 'Podcast', 'Newsletter'] },
-      P2: { n: 'Certificaciones', items: ['Intérprete', 'Maestro', 'Guardián', 'Auditor', 'Formador'] },
-      P3: { n: 'Divulgación', items: ['Blog SEO', 'YouTube', 'TikTok/Reels', 'Twitter/X', 'LinkedIn'] },
-      P4: { n: 'Investigación', items: ['Whitepapers', 'Papers académicos', 'Colaboraciones', 'Datos abiertos', 'Repositorios'] },
-      P5: { n: 'Comunidad Educativa', items: ['Foros', 'Grupos de estudio', 'Mentorías', 'Tutorías', 'Evaluaciones'] }
+      P1:{n:'Contenido',items:['Cursos','Tutoriales','Webinars','Podcast','Newsletter']},
+      P2:{n:'Certificaciones',items:['Intérprete','Maestro','Guardián','Auditor','Formador']},
+      P3:{n:'Divulgación',items:['Blog','YouTube','TikTok','Twitter','LinkedIn']},
+      P4:{n:'Investigación',items:['Whitepapers','Papers','Colaboraciones','Datos abiertos','Repos']},
+      P5:{n:'Comunidad',items:['Foros','Grupos','Mentorías','Tutorías','Evaluaciones']}
     }
   },
-  Q: {
-    titulo: 'Comunidad y Redes',
-    heb: 'קהילה',
-    icono: '🌐',
-    color: '#e17055',
-    desc: 'Cómo se conecta la gente.',
+  Q: { titulo:'Comunidad', heb:'קהילה', icono:'🌐', color:'#e17055', desc:'Cómo se conecta la gente.',
     sub: {
-      Q1: { n: 'Plataformas', items: ['Foro propio', 'Discord', 'Telegram', 'WhatsApp', 'Reddit'] },
-      Q2: { n: 'Gobernanza Comunitaria', items: ['Moderadores', 'Código de conducta', 'Votaciones', 'Propuestas', 'Transparencia'] },
-      Q3: { n: 'Eventos', items: ['Webinars', 'Talleres', 'Retiros', 'Congresos', 'Festivales'] },
-      Q4: { n: 'Embajadores', items: ['Por país', 'Por idioma', 'Por tradición', 'Por nicho', 'Programa de referidos'] },
-      Q5: { n: 'Moderación', items: ['IA + humanos', 'Reportes', 'Sanciones', 'Apelaciones', 'Rehabilitación'] }
+      Q1:{n:'Plataformas',items:['Foro','Discord','Telegram','WhatsApp','Reddit']},
+      Q2:{n:'Gobernanza',items:['Moderadores','Conducta','Votaciones','Propuestas','Transparencia']},
+      Q3:{n:'Eventos',items:['Webinars','Talleres','Retiros','Congresos','Festivales']},
+      Q4:{n:'Embajadores',items:['País','Idioma','Tradición','Nicho','Referidos']},
+      Q5:{n:'Moderación',items:['IA+humanos','Reportes','Sanciones','Apelaciones','Rehabilitación']}
     }
   },
-  R: {
-    titulo: 'Métricas y Analítica',
-    heb: 'מדדים',
-    icono: '📊',
-    color: '#74b9ff',
-    desc: 'Qué se mide y por qué.',
+  R: { titulo:'Métricas', heb:'מדדים', icono:'📊', color:'#74b9ff', desc:'Qué se mide y por qué.',
     sub: {
-      R1: { n: 'Negocio', items: ['MRR', 'CAC', 'LTV', 'Churn', 'Conversión'] },
-      R2: { n: 'Producto', items: ['DAU/MAU', 'Retención', 'Engagement', 'NPS', 'CSAT'] },
-      R3: { n: 'Seguridad', items: ['Intentos de ataque', 'Tiempo de detección', 'Tiempo de respuesta', 'Vulnerabilidades', 'Incidentes'] },
-      R4: { n: 'Comunidad', items: ['Miembros activos', 'Contribuciones', 'Certificaciones', 'Eventos'] },
-      R5: { n: 'Transparencia', items: ['Dashboard público', 'Informes anuales', 'Auditorías', 'Datos abiertos'] }
+      R1:{n:'Negocio',items:['MRR','CAC','LTV','Churn','Conversión']},
+      R2:{n:'Producto',items:['DAU/MAU','Retención','Engagement','NPS','CSAT']},
+      R3:{n:'Seguridad',items:['Ataques','Detección','Respuesta','Vulnerabilidades','Incidentes']},
+      R4:{n:'Comunidad',items:['Miembros','Contribuciones','Certificaciones','Eventos']},
+      R5:{n:'Transparencia',items:['Dashboard','Informes','Auditorías','Datos abiertos']}
     }
   },
-  S: {
-    titulo: 'Escalabilidad y Rendimiento',
-    heb: 'הרחבה',
-    icono: '📈',
-    color: '#55efc4',
-    desc: 'Cómo crece sin romperse.',
+  S: { titulo:'Escalabilidad', heb:'הרחבה', icono:'📈', color:'#55efc4', desc:'Cómo crece sin romperse.',
     sub: {
-      S1: { n: 'Infraestructura', items: ['Kubernetes', 'Serverless', 'Edge computing', 'CDN global', 'Auto-scaling'] },
-      S2: { n: 'Blockchain', items: ['Layer 2 (Rollups)', 'Sidechains', 'Sharding', 'State channels', 'Plasma'] },
-      S3: { n: 'Almacenamiento', items: ['IPFS', 'Arweave', 'Filecoin', 'Storj', 'S3 compatible'] },
-      S4: { n: 'Computación', items: ['GPU clusters', 'TPU', 'Edge AI', 'Federated learning', 'Confidential computing'] },
-      S5: { n: 'Optimización', items: ['Caché', 'Compresión', 'Lazy loading', 'Code splitting', 'Prefetching'] }
+      S1:{n:'Infraestructura',items:['Kubernetes','Serverless','Edge','CDN','Auto-scaling']},
+      S2:{n:'Blockchain',items:['Layer 2','Sidechains','Sharding','State channels','Plasma']},
+      S3:{n:'Almacenamiento',items:['IPFS','Arweave','Filecoin','Storj','S3']},
+      S4:{n:'Computación',items:['GPU','TPU','Edge AI','Federated','Confidential']},
+      S5:{n:'Optimización',items:['Caché','Compresión','Lazy','Splitting','Prefetch']}
     }
   },
-  T: {
-    titulo: 'Interoperabilidad y Estándares',
-    heb: 'תקשורת',
-    icono: '🔗',
-    color: '#ff7675',
-    desc: 'Cómo se conecta con otros sistemas.',
+  T: { titulo:'Interoperabilidad', heb:'תקשורת', icono:'🔗', color:'#ff7675', desc:'Cómo se conecta con otros sistemas.',
     sub: {
-      T1: { n: 'Estándares', items: ['W3C Verifiable Credentials', 'DID', 'C2PA', 'OpenTimestamps', 'RFC 3161'] },
-      T2: { n: 'Protocolos', items: ['IPFS', 'Libp2p', 'GraphQL', 'gRPC', 'REST'] },
-      T3: { n: 'Puentes', items: ['Cross-chain bridges', 'Atomic swaps', 'Wrapped tokens', 'Oracles (Chainlink)', 'Interledger'] },
-      T4: { n: 'APIs', items: ['Públicas', 'Privadas', 'GraphQL', 'Webhooks', 'SDKs'] },
-      T5: { n: 'Datos Abiertos', items: ['JSON-LD', 'Schema.org', 'OpenAPI', 'RDF', 'CSV/Parquet'] }
+      T1:{n:'Estándares',items:['W3C VC','DID','C2PA','OpenTimestamps','RFC 3161']},
+      T2:{n:'Protocolos',items:['IPFS','Libp2p','GraphQL','gRPC','REST']},
+      T3:{n:'Puentes',items:['Cross-chain','Atomic swaps','Wrapped','Oracles','Interledger']},
+      T4:{n:'APIs',items:['Públicas','Privadas','GraphQL','Webhooks','SDKs']},
+      T5:{n:'Datos Abiertos',items:['JSON-LD','Schema.org','OpenAPI','RDF','CSV/Parquet']}
     }
   },
-  U: {
-    titulo: 'Sostenibilidad e Impacto',
-    heb: 'קיימות',
-    icono: '🌱',
-    color: '#00b894',
-    desc: 'Cómo perdura en el tiempo.',
+  U: { titulo:'Sostenibilidad', heb:'קיימות', icono:'🌱', color:'#00b894', desc:'Cómo perdura en el tiempo.',
     sub: {
-      U1: { n: 'Ambiental', items: ['Energía renovable', 'Huella de carbono', 'Compensación', 'Servidores verdes', 'Eficiencia'] },
-      U2: { n: 'Social', items: ['Becas', 'Acceso gratuito', 'Inclusión', 'Diversidad', 'Impacto comunitario'] },
-      U3: { n: 'Gobernanza', items: ['Transparencia', 'Rendición de cuentas', 'Participación', 'Ética', 'Código de conducta'] },
-      U4: { n: 'Economía', items: ['Comercio justo', 'Precios accesibles', 'Regalías justas', 'Reparto equitativo', 'Inversión de impacto'] },
-      U5: { n: 'Reportes', items: ['Informe anual', 'Métricas ESG', 'Auditoría externa', 'Stakeholders', 'Mejora continua'] }
+      U1:{n:'Ambiental',items:['Renovable','Huella','Compensación','Servidores verdes','Eficiencia']},
+      U2:{n:'Social',items:['Becas','Acceso','Inclusión','Diversidad','Impacto']},
+      U3:{n:'Gobernanza',items:['Transparencia','Rendición','Participación','Ética','Conducta']},
+      U4:{n:'Economía',items:['Comercio justo','Precios','Regalías','Reparto','Inversión']},
+      U5:{n:'Reportes',items:['Anual','ESG','Auditoría','Stakeholders','Mejora']}
     }
   },
-  V: {
-    titulo: 'IA y Automatización',
-    heb: 'בינה מלאכותית',
-    icono: '🤖',
-    color: '#a29bfe',
-    desc: 'La inteligencia artificial como aliada.',
+  V: { titulo:'IA y Automatización', heb:'בינה מלאכותית', icono:'🤖', color:'#a29bfe', desc:'La inteligencia artificial como aliada.',
     sub: {
-      V1: { n: 'Modelos', items: ['LLMs (GPT, Claude, Gemini)', 'Difusión', 'Voz (TTS, STT)', 'Video (Sora)', 'Multimodal'] },
-      V2: { n: 'Aplicaciones', items: ['Chatbot', 'Generación de informes', 'Interpretación', 'Traducción', 'Moderación'] },
-      V3: { n: 'Ética IA', items: ['Transparencia', 'Sesgos', 'Privacidad', 'Derechos de autor', 'Límites'] },
-      V4: { n: 'Automatización', items: ['Workflows', 'RPA', 'Orquestación', 'Alertas', 'Auto-scaling'] },
-      V5: { n: 'Seguridad IA', items: ['Detección deepfakes', 'Watermarking', 'Provenance', 'Robustez', 'Adversarial testing'] }
+      V1:{n:'Modelos',items:['LLMs','Difusión','Voz','Video','Multimodal']},
+      V2:{n:'Aplicaciones',items:['Chatbot','Informes','Interpretación','Traducción','Moderación']},
+      V3:{n:'Ética',items:['Transparencia','Sesgos','Privacidad','Derechos','Límites']},
+      V4:{n:'Automatización',items:['Workflows','RPA','Orquestación','Alertas','Auto-scaling']},
+      V5:{n:'Seguridad',items:['Deepfakes','Watermarking','Provenance','Robustez','Adversarial']}
     }
   },
-  W: {
-    titulo: 'Biología y ADN',
-    heb: 'ביולוגיה',
-    icono: '🧬',
-    color: '#ffeaa7',
-    desc: 'La vida como ancla única.',
+  W: { titulo:'Biología y ADN', heb:'ביולוגיה', icono:'🧬', color:'#ffeaa7', desc:'La vida como ancla única.',
     sub: {
-      W1: { n: 'ADN como Ancla', items: ['Secuenciación única', 'ADN sintético', 'Marcas biológicas', 'Códigos en ADN', 'Almacenamiento'] },
-      W2: { n: 'Biometría Avanzada', items: ['Iris', 'Retina', 'Voz', 'ECG', 'Huella', 'Firma dinámica'] },
-      W3: { n: 'Comportamiento', items: ['Tipeo', 'Mouse', 'Gait', 'Sueño', 'Ritmo circadiano'] },
-      W4: { n: 'Salud', items: ['Wearables', 'Datos médicos', 'Consentimiento', 'Privacidad', 'Interoperabilidad'] },
-      W5: { n: 'Bioética', items: ['Consentimiento informado', 'No discriminación', 'Derechos humanos', 'Regulación', 'Transparencia'] }
+      W1:{n:'ADN',items:['Secuenciación','Sintético','Marcas','Códigos','Almacenamiento']},
+      W2:{n:'Biometría',items:['Iris','Retina','Voz','ECG','Huella','Firma']},
+      W3:{n:'Comportamiento',items:['Tipeo','Mouse','Gait','Sueño','Circadiano']},
+      W4:{n:'Salud',items:['Wearables','Médicos','Consentimiento','Privacidad','Interop']},
+      W5:{n:'Bioética',items:['Informado','No discriminación','Derechos','Regulación','Transparencia']}
     }
   },
-  X: {
-    titulo: 'Física y Cuántica',
-    heb: 'פיזיקה',
-    icono: '⚛️',
-    color: '#81ecec',
-    desc: 'Las leyes fundamentales como aliadas.',
+  X: { titulo:'Física y Cuántica', heb:'פיזיקה', icono:'⚛️', color:'#81ecec', desc:'Las leyes fundamentales como aliadas.',
     sub: {
-      X1: { n: 'Cuántica', items: ['QKD', 'Entrelazamiento', 'Superposición', 'Decoherencia', 'Post-cuántica'] },
-      X2: { n: 'Relatividad', items: ['Tiempo relativo', 'GPS', 'Sincronización', 'Dilatación temporal'] },
-      X3: { n: 'Termodinámica', items: ['Entropía', 'Irreversibilidad', 'Flecha del tiempo', 'Conservación', 'Límites físicos'] },
-      X4: { n: 'Materiales', items: ['PUF', 'Nanopartículas', 'Diamantes', 'Metales', 'Isótopos'] },
-      X5: { n: 'Cosmología', items: ['Memoria cósmica', 'Akasha', 'Registro universal', 'Orden implícito', 'Sincronicidad'] }
+      X1:{n:'Cuántica',items:['QKD','Entrelazamiento','Superposición','Decoherencia','PQC']},
+      X2:{n:'Relatividad',items:['Tiempo','GPS','Sincronización','Dilatación']},
+      X3:{n:'Termodinámica',items:['Entropía','Irreversibilidad','Flecha','Conservación','Límites']},
+      X4:{n:'Materiales',items:['PUF','Nanopartículas','Diamantes','Metales','Isótopos']},
+      X5:{n:'Cosmología',items:['Memoria cósmica','Akasha','Registro','Orden','Sincronicidad']}
     }
   },
-  Y: {
-    titulo: 'Arte y Simbolismo',
-    heb: 'אמנות',
-    icono: '🎨',
-    color: '#fab1a0',
-    desc: 'La belleza como vehículo de verdad.',
+  Y: { titulo:'Arte y Simbolismo', heb:'אמנות', icono:'🎨', color:'#fab1a0', desc:'La belleza como vehículo de verdad.',
     sub: {
-      Y1: { n: 'Arte Sagrado', items: ['Geometría sagrada', 'Mandalas', 'Iconos', 'Caligrafía hebrea', 'Alquimia'] },
-      Y2: { n: 'Generación IA', items: ['Estilos', 'Paletas', 'Semillas', 'Variaciones', 'Animación'] },
-      Y3: { n: 'Música', items: ['Sonidos binaurales', 'Mantras', 'Frecuencias sagradas', '432 Hz / 528 Hz', 'Composición IA'] },
-      Y4: { n: 'Narrativa', items: ['Mitos', 'Parábolas', 'Cuentos', 'Guiones', 'Storytelling'] },
-      Y5: { n: 'Diseño', items: ['Branding', 'Tipografía', 'Color', 'Layout', 'Motion'] }
+      Y1:{n:'Arte Sagrado',items:['Geometría','Mandalas','Iconos','Caligrafía','Alquimia']},
+      Y2:{n:'Generación IA',items:['Estilos','Paletas','Semillas','Variaciones','Animación']},
+      Y3:{n:'Música',items:['Binaural','Mantras','Frecuencias','432/528 Hz','IA']},
+      Y4:{n:'Narrativa',items:['Mitos','Parábolas','Cuentos','Guiones','Storytelling']},
+      Y5:{n:'Diseño',items:['Branding','Tipografía','Color','Layout','Motion']}
     }
   },
-  Z: {
-    titulo: 'Gamificación y Psicología',
-    heb: 'משחוק',
-    icono: '🎮',
-    color: '#ffeaa7',
-    desc: 'Cómo mantener el interés humano.',
+  Z: { titulo:'Gamificación', heb:'משחוק', icono:'🎮', color:'#ffeaa7', desc:'Cómo mantener el interés humano.',
     sub: {
-      Z1: { n: 'Mecánicas', items: ['Puntos', 'Niveles', 'Insignias', 'Rachas', 'Rankings', 'Recompensas'] },
-      Z2: { n: 'Psicología', items: ['Motivación', 'Hábitos', 'Flow', 'Sesgos', 'Neurociencia'] },
-      Z3: { n: 'Retención', items: ['Notificaciones', 'Email', 'Push', 'SMS', 'WhatsApp'] },
-      Z4: { n: 'Comunidad', items: ['Equipos', 'Clanes', 'Competencias', 'Colaboraciones', 'Eventos'] },
-      Z5: { n: 'Misiones', items: ['Diarias', 'Semanales', 'Mensuales', 'Anuales', 'Épicas'] }
+      Z1:{n:'Mecánicas',items:['Puntos','Niveles','Insignias','Rachas','Rankings','Recompensas']},
+      Z2:{n:'Psicología',items:['Motivación','Hábitos','Flow','Sesgos','Neurociencia']},
+      Z3:{n:'Retención',items:['Notificaciones','Email','Push','SMS','WhatsApp']},
+      Z4:{n:'Comunidad',items:['Equipos','Clanes','Competencias','Colaboraciones','Eventos']},
+      Z5:{n:'Misiones',items:['Diarias','Semanales','Mensuales','Anuales','Épicas']}
     }
   }
 };
