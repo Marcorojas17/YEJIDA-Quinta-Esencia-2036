@@ -3,127 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="description" content="Sistema Infalsificable YEJIDÁ — 26 ramas de A a Z">
+<meta name="description" content="Sistema Infalsificable YEJIDÁ — 41 ramas de A a AO">
 <title>✦ Sistema Infalsificable — Yejidá ✦</title>
 <link rel="stylesheet" href="../style.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔐</text></svg>">
 <style>
-.ramas-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1rem;
-  margin: 1.5rem 0;
-}
-.rama-card {
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  padding: 1.2rem;
-  background: rgba(10,12,30,.6);
-  transition: all .4s;
-  cursor: pointer;
-  text-decoration: none;
-  color: var(--text);
-  display: block;
-  position: relative;
-  overflow: hidden;
-}
-.rama-card::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0;
-  width: 4px; height: 100%;
-  background: var(--rama-color, var(--gold));
-  transition: width .3s;
-}
-.rama-card:hover {
-  border-color: var(--rama-color, var(--gold));
-  transform: translateY(-4px);
-  box-shadow: 0 15px 40px -10px var(--rama-color, var(--gold));
-}
-.rama-card:hover::before {
-  width: 100%;
-  opacity: .08;
-}
-.rama-card .icono {
-  font-size: 2rem;
-  margin-bottom: .5rem;
-  display: block;
-}
-.rama-card .letra {
-  position: absolute;
-  top: 1rem; right: 1rem;
-  font-family: var(--font-mono);
-  font-size: .75rem;
-  letter-spacing: .1em;
-  color: var(--rama-color, var(--gold));
-  padding: .2rem .6rem;
-  border: 1px solid var(--rama-color, var(--gold));
-  border-radius: 20px;
-  opacity: .7;
-}
-.rama-card h3 {
-  color: var(--gold2);
-  font-size: 1rem;
-  margin-bottom: .3rem;
-  letter-spacing: .05em;
-}
-.rama-card .heb {
-  color: var(--rama-color, var(--gold));
-  font-family: var(--font-heb);
-  font-size: .9rem;
-  direction: rtl;
-  margin-bottom: .5rem;
-  opacity: .7;
-}
-.rama-card p {
-  color: var(--muted);
-  font-size: .85rem;
-  line-height: 1.6;
-  margin: 0;
-}
-.rama-detalle {
-  display: none;
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--line);
-}
-.rama-detalle.abierto { display: block; }
-.sub-rama {
-  padding: .8rem 1rem;
-  background: rgba(5,6,15,.5);
-  border-radius: 10px;
-  margin-bottom: .5rem;
-}
-.sub-rama .sub-titulo {
-  color: var(--cyan);
-  font-size: .8rem;
-  font-weight: 600;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  margin-bottom: .4rem;
-}
-.sub-rama .items {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .4rem;
-}
-.sub-rama .item {
-  background: rgba(212,175,55,.1);
-  border: 1px solid rgba(212,175,55,.2);
-  padding: .25rem .7rem;
-  border-radius: 20px;
-  font-size: .75rem;
-  color: var(--text);
-}
-.contador-ramas {
-  text-align: center;
-  padding: 1rem;
-  background: rgba(212,175,55,.08);
-  border-radius: 12px;
-  margin: 1rem 0;
-  color: var(--gold2);
-  letter-spacing: .1em;
-}
+.ramas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin:1.5rem 0;}
+.rama-card{border:1px solid var(--line);border-radius:14px;padding:1.2rem;background:rgba(10,12,30,.6);transition:all .4s;cursor:pointer;position:relative;overflow:hidden;}
+.rama-card::before{content:"";position:absolute;top:0;left:0;width:4px;height:100%;background:var(--rama-color,var(--gold));transition:width .3s;}
+.rama-card:hover{border-color:var(--rama-color,var(--gold));transform:translateY(-4px);box-shadow:0 15px 40px -10px var(--rama-color,var(--gold));}
+.rama-card:hover::before{width:100%;opacity:.08;}
+.rama-card .icono{font-size:2rem;margin-bottom:.5rem;display:block;}
+.rama-card .letra{position:absolute;top:1rem;right:1rem;font-family:var(--font-mono);font-size:.75rem;letter-spacing:.1em;color:var(--rama-color,var(--gold));padding:.2rem .6rem;border:1px solid var(--rama-color,var(--gold));border-radius:20px;opacity:.7;}
+.rama-card h3{color:var(--gold2);font-size:1rem;margin-bottom:.3rem;letter-spacing:.05em;}
+.rama-card .heb{color:var(--rama-color,var(--gold));font-family:var(--font-heb);font-size:.9rem;direction:rtl;margin-bottom:.5rem;opacity:.7;}
+.rama-card p{color:var(--muted);font-size:.85rem;line-height:1.6;margin:0;}
+.rama-detalle{display:none;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--line);}
+.rama-detalle.abierto{display:block;}
+.sub-rama{padding:.8rem 1rem;background:rgba(5,6,15,.5);border-radius:10px;margin-bottom:.5rem;}
+.sub-rama .sub-titulo{color:var(--cyan);font-size:.8rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.4rem;}
+.sub-rama .items{display:flex;flex-wrap:wrap;gap:.4rem;}
+.sub-rama .item{background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.2);padding:.25rem .7rem;border-radius:20px;font-size:.75rem;color:var(--text);}
+.contador-ramas{text-align:center;padding:1rem;background:rgba(212,175,55,.08);border-radius:12px;margin:1rem 0;color:var(--gold2);letter-spacing:.1em;}
+.separador{text-align:center;margin:2rem 0;color:var(--gold);font-size:.9rem;letter-spacing:.3em;}
 </style>
 </head>
 <body>
@@ -133,28 +35,29 @@
 
 <main id="main" class="container" role="main">
 
-  <header class="page-header">
-    <div class="hebrew-title">מערכת</div>
-    <h1>✦ Sistema Infalsificable ✦</h1>
-    <p>26 ramas · De la A a la Z · ~660 ideas</p>
-    <span class="page-number">Portal 21 · Técnico</span>
-  </header>
+<header class="page-header">
+  <div class="hebrew-title">מערכת</div>
+  <h1>✦ Sistema Infalsificable ✦</h1>
+  <p>26 ramas A-Z · 15 meta-ramas AA-AO · ~700 ideas</p>
+  <span class="page-number">Portal 21 · Técnico</span>
+</header>
 
-  <section>
-    <h2>🔐 ¿Qué es el Sistema Infalsificable?</h2>
-    <p>Un sistema que <strong>no puede ser falsificado, forjado, corrompido
-    ni desmentido</strong>. Se construye sobre <strong>26 ramas</strong> que
-    combinan criptografía, blockchain, filosofía, cabalá, economía, IA, física
-    cuántica y más.</p>
-    <div class="contador-ramas">
-      ✦ 26 RAMAS · ~660 IDEAS · UN SISTEMA ✦
-    </div>
-  </section>
+<section>
+  <h2>🔐 ¿Qué es el Sistema Infalsificable?</h2>
+  <p>Un sistema que <strong>no puede ser falsificado, forjado, corrompido ni desmentido</strong>. Se construye sobre <strong>41 ramas</strong> que combinan criptografía, blockchain, filosofía, cabalá, economía, IA, física cuántica y más.</p>
+  <div class="contador-ramas">✦ 41 RAMAS · ~700 IDEAS · UN SISTEMA ✦</div>
+</section>
 
-  <section>
-    <h2>🌳 Las 26 Ramas</h2>
-    <div class="ramas-grid" id="ramas-grid"></div>
-  </section>
+<section>
+  <h2>🌳 Las 26 Ramas Principales (A-Z)</h2>
+  <div class="ramas-grid" id="ramas-grid"></div>
+</section>
+
+<section>
+  <div class="separador">✦ ✦ ✦</div>
+  <h2>🌟 Las 15 Meta-Ramas (AA-AO)</h2>
+  <div class="ramas-grid" id="ramas-meta-grid"></div>
+</section>
 
 </main>
 
@@ -165,41 +68,50 @@
 
 <script src="../shared.js"></script>
 <script src="../js/ramas.js"></script>
+<script src="../js/ramas-meta.js"></script>
 <script>
+function renderRama(letra, rama, containerId) {
+  const grid = document.getElementById(containerId);
+  if (!grid) return;
+
+  const card = document.createElement('div');
+  card.className = 'rama-card';
+  card.style.setProperty('--rama-color', rama.color);
+
+  const subHTML = Object.entries(rama.sub).map(([key, s]) => `
+    <div class="sub-rama">
+      <div class="sub-titulo">${key} · ${s.n}</div>
+      <div class="items">
+        ${s.items.map(i => `<span class="item">${i}</span>`).join('')}
+      </div>
+    </div>
+  `).join('');
+
+  card.innerHTML = `
+    <span class="letra">${letra}</span>
+    <div class="icono">${rama.icono}</div>
+    <h3>${rama.titulo}</h3>
+    <div class="heb">${rama.heb}</div>
+    <p>${rama.desc}</p>
+    <div class="rama-detalle">${subHTML}</div>
+  `;
+
+  card.addEventListener('click', () => {
+    card.querySelector('.rama-detalle').classList.toggle('abierto');
+  });
+
+  grid.appendChild(card);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-  const grid = document.getElementById('ramas-grid');
+  // Renderizar las 26 ramas principales
   Object.keys(RAMAS).forEach(letra => {
-    const rama = RAMAS[letra];
-    const card = document.createElement('div');
-    card.className = 'rama-card';
-    card.style.setProperty('--rama-color', rama.color);
+    renderRama(letra, RAMAS[letra], 'ramas-grid');
+  });
 
-    const subHTML = Object.entries(rama.sub).map(([key, s]) => `
-      <div class="sub-rama">
-        <div class="sub-titulo">${key} · ${s.n}</div>
-        <div class="items">
-          ${s.items.map(i => `<span class="item">${i}</span>`).join('')}
-        </div>
-      </div>
-    `).join('');
-
-    card.innerHTML = `
-      <span class="letra">${letra}</span>
-      <div class="icono">${rama.icono}</div>
-      <h3>${rama.titulo}</h3>
-      <div class="heb">${rama.heb}</div>
-      <p>${rama.desc}</p>
-      <div class="rama-detalle">
-        ${subHTML}
-      </div>
-    `;
-
-    card.addEventListener('click', () => {
-      const detalle = card.querySelector('.rama-detalle');
-      detalle.classList.toggle('abierto');
-    });
-
-    grid.appendChild(card);
+  // Renderizar las 15 meta-ramas
+  Object.keys(RAMAS_META).forEach(letra => {
+    renderRama(letra, RAMAS_META[letra], 'ramas-meta-grid');
   });
 });
 </script>
