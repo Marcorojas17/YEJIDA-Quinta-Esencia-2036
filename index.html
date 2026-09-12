@@ -3,11 +3,77 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="description" content="Proyecto Yejidá Kabaláh · 20 portales · Kabaláh, numerología, astrología, geometría sagrada">
+<meta name="description" content="Yejidá Kabaláh — La Quinta Esencia del Alma. Proyecto que alimenta gatitos callejeros.">
 <meta name="theme-color" content="#05060f">
-<title>✦ Yejidá Kabaláh — La Quinta Esencia del Alma ✦</title>
+<title>✦ Yejidá Kabaláh — Quinta Esencia 2036 ✦</title>
 <link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✡</text></svg>">
+<style>
+.banner-gatitos{
+  display:block;
+  background:linear-gradient(135deg,rgba(255,107,157,.15),rgba(212,175,55,.15));
+  border:2px solid #ff6b9d;
+  border-radius:20px;
+  padding:1.5rem;
+  margin:1.5rem 0;
+  text-decoration:none;
+  color:var(--text);
+  transition:all .4s;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.banner-gatitos:hover{
+  transform:translateY(-4px);
+  box-shadow:0 15px 40px -10px rgba(255,107,157,.5);
+  border-color:#f7e08a;
+}
+.banner-gatitos::before{
+  content:"🐱";
+  position:absolute;
+  top:-20px;left:-20px;
+  font-size:6rem;
+  opacity:.08;
+  transform:rotate(-15deg);
+}
+.banner-gatitos::after{
+  content:"🐾";
+  position:absolute;
+  bottom:-20px;right:-20px;
+  font-size:6rem;
+  opacity:.08;
+  transform:rotate(15deg);
+}
+.banner-gatitos .icono{
+  font-size:2.5rem;
+  line-height:1;
+  margin-bottom:.5rem;
+  display:block;
+}
+.banner-gatitos h3{
+  color:#f7e08a;
+  font-size:1.2rem;
+  letter-spacing:.1em;
+  margin-bottom:.3rem;
+}
+.banner-gatitos p{
+  color:var(--muted);
+  font-size:.9rem;
+  margin:0;
+}
+.banner-gatitos .cta{
+  display:inline-block;
+  margin-top:1rem;
+  padding:.6rem 1.5rem;
+  background:linear-gradient(135deg,#d4af37,#ff6b9d);
+  color:#05060f;
+  border-radius:50px;
+  font-weight:700;
+  letter-spacing:.1em;
+  font-size:.85rem;
+}
+</style>
 </head>
 <body>
 
@@ -23,57 +89,90 @@
     <div class="sigil" aria-hidden="true">✡</div>
   </header>
 
+  <!-- 🐱 BANNER DE GATITOS - EL MÁS DESTACADO -->
+  <a href="gatitos.html" class="banner-gatitos">
+    <span class="icono">🐱</span>
+    <h3>Este Proyecto Alimenta Gatitos</h3>
+    <p>Todo lo recaudado va directo a comida para gatos callejeros. Un acto de Tikkun Olam en acción.</p>
+    <span class="cta">💚 Conocer a los gatitos →</span>
+  </a>
+
   <section>
     <h2>📖 Bienvenida</h2>
-    <p>Bienvenido al <strong>Proyecto Yejidá</strong>, un recorrido completo por la
-    <strong>Kabaláh hebrea</strong> desde sus fundamentos hasta sus aplicaciones
-    prácticas. Explora los <strong>20 portales</strong>, usa las
-    <strong>15 herramientas</strong>, visualiza la <strong>geometría sagrada</strong>
-    y calcula tu <strong>mapa numerológico y astral</strong>.</p>
+    <p>Bienvenido al <strong>Proyecto Yejidá</strong>, un recorrido completo
+    por la <strong>Kabaláh hebrea</strong> desde sus fundamentos hasta sus
+    aplicaciones prácticas. Explora 20 portales, 15 herramientas interactivas,
+    12 visualizaciones sagradas, 12 prácticas espirituales, 10 cursos, 10 juegos
+    y 20 extras personalizados.</p>
+    <p>Todo el proyecto es <strong>gratuito</strong>, <strong>sin tracking</strong>,
+    y funciona <strong>100% local</strong> en tu navegador. Y cada donación
+    voluntaria va directo a <a href="gatitos.html" style="color:var(--gold2);">alimentar gatitos 🐱</a>.</p>
   </section>
 
   <section>
     <h2>🗺️ Mapa del Proyecto</h2>
     <div class="card-grid">
-      <a class="card" href="portales/02-niveles.html">
-        <span class="card-icon" aria-hidden="true">🔯</span>
+      <a class="card" href="portales/01-introduccion.html">
+        <span class="card-icon">📖</span>
         <h3>20 Portales</h3>
-        <p>De los Cinco Niveles del Alma hasta el Oráculo personal.</p>
+        <p>Kabaláh, Sefirot, mundos, letras, YHVH...</p>
       </a>
-      <a class="card" href="herramientas/guematria.html">
-        <span class="card-icon" aria-hidden="true">🧮</span>
+      <a class="card" href="herramientas/astral.html">
+        <span class="card-icon">🧮</span>
         <h3>15 Herramientas</h3>
-        <p>Guematria, numerología, astrología, sinastría, ciclos.</p>
+        <p>Astral, numerología, guematria, sinastría...</p>
       </a>
       <a class="card" href="visual/arbol-2d.html">
-        <span class="card-icon" aria-hidden="true">🌳</span>
-        <h3>12 Visualizaciones</h3>
-        <p>Árbol de la Vida, Flor de la Vida, Merkavá, ruedas sagradas.</p>
+        <span class="card-icon">🌳</span>
+        <h3>12 Visuales</h3>
+        <p>Árbol, Flor, Metatrón, Merkavá...</p>
       </a>
       <a class="card" href="practica/respiracion.html">
-        <span class="card-icon" aria-hidden="true">🧘</span>
+        <span class="card-icon">🧘</span>
         <h3>12 Prácticas</h3>
-        <p>Respiración, hitbodedut, Shemá, Omer, Shabat.</p>
+        <p>Respiración, hitbodedut, Shemá, Omer...</p>
       </a>
       <a class="card" href="aprender/curso-principiantes.html">
-        <span class="card-icon" aria-hidden="true">📚</span>
+        <span class="card-icon">📚</span>
         <h3>10 Cursos</h3>
-        <p>Principiantes, intermedio, avanzado, hebreo, guematria.</p>
+        <p>Principiantes, intermedio, avanzado...</p>
       </a>
-      <a class="card" href="comunidad/foro.html">
-        <span class="card-icon" aria-hidden="true">👥</span>
-        <h3>Comunidad</h3>
-        <p>Foro, wiki, traducciones, API pública, podcast.</p>
-      </a>
-      <a class="card" href="juegos/sefirot.html">
-        <span class="card-icon" aria-hidden="true">🎮</span>
+      <a class="card" href="juegos/aventura.html">
+        <span class="card-icon">🎮</span>
         <h3>10 Juegos</h3>
-        <p>Aventuras cabalísticas, quiz, memoria, lógica.</p>
+        <p>Aventura, memoria, quiz, lógica...</p>
       </a>
-      <a class="card" href="extras/angel-regente.html">
-        <span class="card-icon" aria-hidden="true">✨</span>
+      <a class="card" href="extras/mandala.html">
+        <span class="card-icon">✨</span>
         <h3>20 Extras</h3>
-        <p>Ángel regente, tribu, piedra, color, mantra, misión.</p>
+        <p>Ángel, piedra, mandala, mantra...</p>
+      </a>
+      <a class="card" href="portales/21-criptografia.html">
+        <span class="card-icon">🔐</span>
+        <h3>Sistema Infalsificable</h3>
+        <p>41 ramas · ~700 ideas · A-Z</p>
+      </a>
+    </div>
+  </section>
+
+  <!-- 🐱 SEGUNDO BANNER DE GATITOS -->
+  <section style="background:linear-gradient(180deg,rgba(255,107,157,.08),transparent);
+    border:1px solid #ff6b9d;border-radius:16px;padding:2rem 1.5rem;text-align:center;">
+    <div style="font-size:3rem;margin-bottom:.5rem;">🐱</div>
+    <h2 style="color:#f7e08a;letter-spacing:.15em;">Cada Visita Ayuda</h2>
+    <p style="color:var(--muted);font-size:.95rem;max-width:600px;margin:1rem auto;">
+      Con $20 MXN ya compras un sobre de comida para un gatito.
+      Con $200 MXN alimentas a uno por una semana.
+      <strong style="color:#ff6b9d;">Cada peso importa.</strong>
+    </p>
+    <div style="margin-top:1.5rem;">
+      <a href="gatitos.html" class="btn" style="background:linear-gradient(135deg,#d4af37,#ff6b9d);
+        color:#05060f;font-weight:700;border:none;">
+        💚 Ver los Gatitos
+      </a>
+      <a href="https://link.mercadopago.com.mx/kronosprorocol" target="_blank" rel="noopener" class="btn"
+        style="margin-left:.5rem;">
+        💛 Donar Ahora
       </a>
     </div>
   </section>
@@ -91,9 +190,8 @@
         <tr><td>Seguridad web</td><td>OWASP ASVS L2</td><td>✅</td></tr>
         <tr><td>Calidad de código</td><td>ISO/IEC 25010</td><td>✅</td></tr>
         <tr><td>Accesibilidad</td><td>WCAG 2.2 AA</td><td>✅</td></tr>
-        <tr><td>Privacidad</td><td>ISO/IEC 29100</td><td>✅</td></tr>
         <tr><td>Cifrado</td><td>AES-256-GCM</td><td>✅</td></tr>
-        <tr><td>Protección datos México</td><td>LFPDPPP + NOM-151</td><td>✅</td></tr>
+        <tr><td>Protección datos</td><td>LFPDPPP + NOM-151</td><td>✅</td></tr>
       </tbody>
     </table>
   </section>
@@ -101,30 +199,38 @@
 </main>
 
 <footer class="footer">
-  <div class="sigil-row" aria-hidden="true">✡ ✦ ☰ ✦ ✡</div>
+  <div class="sigil-row" aria-hidden="true">🐱 ✦ ☰ ✦ 🐱</div>
   <div class="footer-badges">
+    <a href="gatitos.html" class="badge" style="text-decoration:none;">🐱 Alimenta Gatitos</a>
     <span class="badge">🔒 HTTPS</span>
-    <span class="badge">🛡️ OWASP ASVS</span>
     <span class="badge">💎 ISO 25010</span>
-    <span class="badge">🇲🇽 NOM-151</span>
     <span class="badge">♿ WCAG 2.2</span>
-    <span class="badge">✡️ 20 portales</span>
   </div>
-  <p>Proyecto Yejidá Kabaláh · v1.0.0 · MIT + CC BY-SA</p>
+  <p style="margin-top:1rem;">
+    Proyecto Yejidá · v1.0.0 · MIT + CC BY-SA
+  </p>
+  <p style="margin-top:.5rem;font-size:.9rem;">
+    💚 Cada visita ayuda a alimentar gatitos callejeros
+    <a href="gatitos.html" style="color:#ff6b9d;margin-left:.5rem;">→ Ver más</a>
+  </p>
 </footer>
 
 <script src="shared.js"></script>
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    // Construir TOC de portales
-    const toc = document.getElementById('portales-toc');
+document.addEventListener('DOMContentLoaded', () => {
+  const toc = document.getElementById('portales-toc');
+  if (toc && window.Yejida) {
     Yejida.PORTALES.forEach(p => {
       const a = document.createElement('a');
       a.href = p.path;
       a.innerHTML = `<span class="toc-num">${String(p.id).padStart(2,'0')}</span>${p.icon} ${p.title}`;
       toc.appendChild(a);
     });
-  });
+  }
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js').catch(() => {});
+  }
+});
 </script>
 </body>
 </html>
