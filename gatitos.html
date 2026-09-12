@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Yejidá alimenta gatitos: todo lo recaudado va a comida para gatos callejeros">
+<title>🐱 Yejidá Alimenta Gatitos</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐱</text></svg>">
+<style>
+.hero-gatos{text-align:center;padding:3rem 1.5rem 2.5rem;
+  border:2px solid var(--gold,#d4af37);border-radius:24px;
+  background:radial-gradient(circle at 50% 0%,rgba(212,175,55,.15),transparent 60%),
+    rgba(10,12,30,.75);
+  box-shadow:0 0 80px rgba(212,175,55,.25);margin-bottom:2rem;position:relative;}
+.hero-gatos .emoji-grande{font-size:5rem;line-height:1;animation:pulse 4s ease-in-out infinite;}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+.hero-gatos h1{font-size:clamp(1.4rem,4vw,2.2rem);color:#f7e08a;
+  letter-spacing:.15em;margin:.8rem 0 .5rem;text-transform:uppercase;}
+.hero-gatos p{color:#8d93ad;font-size:1rem;max-width:600px;margin:0 auto;}
+.hero-gatos .contador-gatos{display:inline-block;margin-top:1.5rem;
+  padding:.6rem 1.5rem;
+  background:linear-gradient(135deg,rgba(212,175,55,.2),rgba(255,107,157,.2));
+  border:1px solid #d4af37;border-radius:50px;color:#f7e08a;
+  font-family:monospace;letter-spacing:.1em;font-size:.9rem;}
+.gatos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:1rem;margin:1.5rem 0;}
+.gato-card{border:1px solid rgba(212,175,55,.28);border-radius:16px;
+  padding:1.2rem;text-align:center;
+  background:linear-gradient(180deg,rgba(212,175,55,.06),rgba(10,12,30,.6));
+  transition:all .4s;position:relative;}
+.gato-card:hover{transform:translateY(-4px);border-color:#d4af37;
+  box-shadow:0 15px 40px -10px rgba(212,175,55,.4);}
+.gato-card .foto{width:100%;aspect-ratio:1;border-radius:12px;
+  background:linear-gradient(135deg,#2a2a4a,#1a1a2e);
+  display:flex;align-items:center;justify-content:center;
+  font-size:4rem;margin-bottom:.8rem;}
+.gato-card .nombre{color:#f7e08a;font-size:1.1rem;font-weight:600;
+  letter-spacing:.08em;margin-bottom:.3rem;}
+.gato-card .personalidad{color:#8d93ad;font-size:.85rem;
+  margin-bottom:.6rem;font-style:italic;}
+.gato-card .stats{display:flex;justify-content:space-around;font-size:.75rem;
+  color:#4fd1c5;border-top:1px solid rgba(212,175,55,.28);
+  padding-top:.6rem;margin-top:.6rem;}
+.gato-card .stats span{display:flex;flex-direction:column;align-items:center;}
+.gato-card .stats strong{color:#f7e08a;font-size:.9rem;}
+.gato-card .estado{position:absolute;top:8px;right:8px;
+  font-size:.65rem;padding:.2rem .5rem;border-radius:20px;
+  background:rgba(74,222,128,.2);color:#4ade80;
+  border:1px solid rgba(74,222,128,.4);}
+.gato-card .estado.urgente{background:rgba(255,107,107,.2);
+  color:#ff6b6b;border-color:rgba(255,107,107,.4);}
+.calc-box{background:radial-gradient(circle at 50% 50%,rgba(212,175,55,.1),transparent 70%),
+  rgba(10,12,30,.7);border:2px solid #d4af37;border-radius:20px;
+  padding:2rem 1.5rem;text-align:center;margin:1.5rem 0;
+  box-shadow:0 0 40px rgba(212,175,55,.2);}
+.calc-box .slider{width:100%;max-width:400px;margin:1.5rem auto;
+  -webkit-appearance:none;appearance:none;height:8px;
+  background:linear-gradient(90deg,#d4af37,#ff6b9d);
+  border-radius:4px;outline:none;display:block;}
+.calc-box .slider::-webkit-slider-thumb{-webkit-appearance:none;
+  width:28px;height:28px;border-radius:50%;background:#f7e08a;
+  cursor:pointer;box-shadow:0 0 20px #d4af37;border:3px solid #05060f;}
+.calc-box .monto{font-size:3rem;color:#f7e08a;font-family:monospace;
+  text-shadow:0 0 25px rgba(212,175,55,.7);line-height:1;margin:.5rem 0;}
+.calc-box .resultado{margin-top:1.5rem;padding:1.2rem;
+  background:rgba(5,6,15,.6);border:1px solid rgba(212,175,55,.28);
+  border-radius:12px;font-size:1.1rem;color:#eceaf5;}
+.calc-box .resultado strong{color:#f7e08a;font-size:1.5rem;}
+.calc-box .resultado .iconos{font-size:1.5rem;margin:.5rem 0;}
+.donacion-botones{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:.8rem;margin:1.5rem 0;}
+.btn-donar{display:flex;align-items:center;justify-content:center;gap:.5rem;
+  padding:1.2rem 1rem;border:1px solid #d4af37;border-radius:14px;
+  background:linear-gradient(135deg,rgba(212,175,55,.15),rgba(108,92,231,.1));
+  color:#f7e08a;text-decoration:none;font-size:.85rem;letter-spacing:.08em;
+  text-transform:uppercase;transition:all .3s;text-align:center;}
+.btn-donar:hover{transform:translateY(-3px);
+  box-shadow:0 10px 30px -5px rgba(212,175,55,.5);color:#fff;}
+.btn-donar .icono{font-size:1.5rem;}
+.historia{background:linear-gradient(180deg,rgba(255,107,157,.05),transparent);
+  border-left:3px solid #ff6b9d;padding:1.2rem 1.5rem;
+  border-radius:0 12px 12px 0;margin:1.5rem 0;
+  font-style:italic;color:#eceaf5;line-height:1.8;}
+.tabla-transparencia{width:100%;border-collapse:collapse;
+  font-size:.85rem;margin:1rem 0;}
+.tabla-transparencia th,.tabla-transparencia td{padding:.6rem .8rem;
+  border:1px solid rgba(212,175,55,.28);text-align:left;}
+.tabla-transparencia th{background:rgba(212,175,55,.1);
+  color:#f7e08a;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;}
+.tabla-transparencia .ingreso{color:#4ade80;}
+.tabla-transparencia .gasto{color:#ff6b6b;}
+.barra-meta{background:rgba(212,175,55,.1);height:24px;border-radius:12px;
+  overflow:hidden;margin:1rem 0;border:1px solid rgba(212,175,55,.28);}
+.barra-meta > div{height:100%;
+  background:linear-gradient(90deg,#d4af37,#ff6b9d);width:0%;
+  transition:width 1.5s cubic-bezier(.4,0,.2,1);
+  display:flex;align-items:center;justify-content:flex-end;
+  padding-right:.8rem;color:#05060f;font-weight:700;font-size:.75rem;}
+.paso-donar{display:flex;gap:1rem;align-items:start;padding:1rem;
+  background:rgba(10,12,30,.5);border:1px solid rgba(212,175,55,.28);
+  border-radius:12px;margin-bottom:.6rem;}
+.paso-donar .num{flex-shrink:0;width:32px;height:32px;
+  background:linear-gradient(135deg,#d4af37,#f7e08a);
+  color:#05060f;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-weight:700;font-size:.9rem;}
+.paso-donar .texto{flex:1;font-size:.92rem;line-height:1.6;}
+.paso-donar .texto strong{color:#f7e08a;display:block;margin-bottom:.2rem;}
+</style>
+</head>
+<body>
+
+<div id="sacred-bg"><canvas id="geo-canvas"></canvas></div>
+<div class="floating-letters" id="floaters" aria-hidden="true"></div>
+
+<main class="container" role="main" style="position:relative;z-index:2;max-width:1000px;margin:0 auto;padding:2rem 1.2rem 4rem;">
+
+  <!-- HERO -->
+  <div class="hero-gatos">
+    <div class="emoji-grande">🐱</div>
+    <h1>✦ Yejidá Alimenta Gatitos ✦</h1>
+    <p>Todo lo recaudado por este proyecto va directo a comida para gatos
+    callejeros y rescatados. Cada donación, cada informe, cada venta
+    — un plato lleno.</p>
+    <div class="contador-gatos" id="contador-gatos">🐾 Cargando...</div>
+  </div>
+
+  <!-- HISTORIA -->
+  <section style="background:rgba(10,12,30,.55);border:1px solid rgba(212,175,55,.28);
+    border-radius:14px;padding:1.6rem;margin-bottom:1.5rem;">
+    <h2 style="color:#f7e08a;letter-spacing:.1em;margin-bottom:1rem;">💚 Por qué hacemos esto</h2>
+    <div class="historia">
+      "La Kabaláh enseña que alimentar a los animales es un acto de
+      <strong>Tikkun Olam</strong> — reparación del mundo. Cada criatura
+      que alimentamos libera una chispa divina atrapada. Los gatos
+      callejeros son parte de esa reparación. Este proyecto no es solo
+      código: es compasión convertida en acción."
+      <div style="margin-top:1rem;color:#d4af37;text-align:right;">— Proyecto Yejidá</div>
+    </div>
+  </section>
+
+  <!-- GATITOS -->
+  <section style="background:rgba(10,12,30,.55);border:1px solid rgba(212,175,55,.28);
+    border-radius:14px;padding:1.6rem;margin-bottom:1.5rem;">
+    <h2 style="color:#f7e08a;letter-spacing:.1em;margin-bottom:1rem;">🐱 Los Gatitos que Alimentamos</h2>
+    <div class="gatos-grid" id="gatos-grid"></div>
+  </section>
+
+  <!-- CALCULADORA -->
+  <section style="background:rgba(10,12,30,.55);border:1px solid rgba(212,175,55,.28);
+    border-radius:14px;padding:1.6rem;margin-bottom:1.5rem;">
+    <h2 style="color:#f7e08a;letter-spacing:.1em;margin-bottom:1rem;">🧮 ¿Cuántos gatitos puedes alimentar?</h2>
+    <div class="calc-box">
+      <div style="color:#8d93ad;font-size:.85rem;letter-spacing:.15em;text-transform:uppercase;">
+        Tu donación
+      </div>
+      <div class="monto" id="monto">$200</div>
+      <input type="range" min="20" max="2000" value="200" step="10" class="slider" id="slider">
+      <div class="resultado" id="resultado">
+        <div class="iconos">🍽️ 🐱 🍽️</div>
+        Con <strong>$200</strong> alimentas a <strong>1 gatito</strong> por <strong>1 semana</strong>
+      </div>
+    </div>
+  </section>
+
+  <!-- DONAR -->
+  <section style="background:rgba(10,12,30,.55);border:1px solid rgba(212,175,55,.28);
+    border-radius:14px;padding:1.6rem;margin-bottom:1.5rem;">
+    <h2 style="color:#f7e08a;letter-spacing:.1em;margin-bottom:1rem;">💝 Cómo Donar</h2>
+    <p style="color:#8d93ad;font-size:.9rem;margin-bottom:1rem;">
+      Elige tu método preferido. Cada peso va directo a comida para los gatitos.
+    </p>
+    <div class="donacion-botones">
+      <a href="https://link.mercadopago.com.mx/kronosprorocol" target="_blank" rel="noopener" class="btn-donar">
+        <span class="icono">💛</span> Mercado Pago
+      </a>
+      <a href="https://paypal.me/TU-USUARIO" target="_blank" rel="noopener" class="btn-donar">
+        <span class="icono">💙</span> PayPal
+      </a>
+      <a href="https://ko-fi.com/TU-USUARIO" target="_blank" rel="noopener" class="btn-donar">
+        <span class="icono">☕</span> Ko-fi
+      </a>
+      <a href="https://buymeacoffee.com/TU-USUARIO" target="_blank" rel="noopener" class="btn-donar">
+        <span class="icono">🧋</span> Buy Me a Coffee
+      </a>
+    </div>
+
+    <h3 style="color:#f7e08a;margin-top:2rem;letter-spacing:.1em;">¿Prefieres comprar?</h3>
+    <div class="paso-donar">
+      <div class="num">1</div>
+      <div class="texto">
+        <strong>📄 Informe PDF Personalizado</strong>
+        Tu carta astral + numerología. $99 MXN.
+        <div style="color:#4fd1c5;font-size:.8rem;">🐱 = 3 días de comida</div>
+      </div>
+    </div>
+    <div class="paso-donar">
+      <div class="num">2</div>
+      <div class="texto">
+        <strong>🎨 Mandala Personalizado</strong>
+        Tu mandala único. $49 MXN.
+        <div style="color:#4fd1c5;font-size:.8rem;">🐱 = 1.5 días de comida</div>
+      </div>
+    </div>
+    <div class="paso-donar">
+      <div class="num">3</div>
+      <div class="texto">
+        <strong>🎓 Curso Completo de Kabaláh</strong>
+        Acceso de por vida. $299 MXN.
+        <div style="color:#4fd1c5;font-size:.8rem;">🐱 = 2 semanas de comida</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- META -->
+  <section style="background:rgba(10,12,30,.55);border:1px solid rgba(212,175,55,.28);
+    border-radius:14px;padding:1.6rem;margin-bottom:1.5rem;">
+    <h2 style="color:#f7e08a;letter-spacing:.1em;margin-bottom:1rem;">🎯 Meta del Mes</h2>
+    <div class="barra-meta"><div id="barra-progreso">0%</div></div>
+    <div style="display:flex;justify-content:space-between;font-size:.85rem;color:#8d93ad;">
+      <span id="meta-actual">$0 MXN</span>
+      <span>Meta: $3,000 MXN</span>
+    </div>
+  </section>
+
+  <!-- TRANSPARENCIA -->
+  <section style="background:rgba(10,12,30,.55);border:1px solid rgba(212,175,55,.28);
+    border-radius:14px;padding:1.6rem;margin-bottom:1.5rem;">
+    <h2 style="color:#f7e08a;letter-spacing:.1em;margin-bottom:1rem;">📊 Transparencia Total</h2>
+    <table class="tabla-transparencia">
+      <thead><tr><th>Fecha</th><th>Concepto</th><th>Tipo</th><th>Monto</th></tr></thead>
+      <tbody id="tabla-movimientos"></tbody>
+    </table>
+    <div style="display:flex;justify-content:space-between;padding:1rem;
+      background:rgba(5,6,15,.5);border-radius:12px;margin-top:1rem;">
+      <div>
+        <div style="color:#8d93ad;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;">Ingresos</div>
+        <div style="color:#4ade80;font-size:1.3rem;font-family:monospace;" id="total-ingresos">$0</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="color:#8d93ad;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;">Gastos</div>
+        <div style="color:#ff6b6b;font-size:1.3rem;font-family:monospace;" id="total-gastos">$0</div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1rem;padding:1rem;
+      background:linear-gradient(135deg,rgba(212,175,55,.1),rgba(255,107,157,.1));
+      border:1px solid #d4af37;border-radius:12px;">
+      <div style="color:#8d93ad;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;">Saldo actual</div>
+      <div style="color:#f7e08a;font-size:2rem;font-family:monospace;font-weight:700;" id="saldo">$0</div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section style="text-align:center;background:linear-gradient(180deg,rgba(255,107,157,.08),transparent);
+    border:1px solid rgba(212,175,55,.28);border-radius:14px;padding:2rem 1.5rem;">
+    <h2 style="color:#f7e08a;letter-spacing:.1em;">💚 Cada Donación Cuenta</h2>
+    <p style="color:#8d93ad;font-size:.9rem;max-width:600px;margin:1rem auto;">
+      Con $20 MXN ya compras un sobre de comida húmeda.
+      Con $200 MXN alimentas a uno por una semana.
+      Cada peso importa.
+    </p>
+    <div class="donacion-botones" style="margin-top:2rem;">
+      <a href="https://link.mercadopago.com.mx/kronosprorocol" target="_blank" rel="noopener" class="btn-donar">
+        <span class="icono">💛</span> Donar $50
+      </a>
+      <a href="https://link.mercadopago.com.mx/kronosprorocol" target="_blank" rel="noopener" class="btn-donar">
+        <span class="icono">💛</span> Donar $200
+      </a>
+      <a href="https://link.mercadopago.com.mx/kronosprorocol" target="_blank" rel="noopener" class="btn-donar">
+        <span class="icono">💛</span> Donar $500
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<footer style="text-align:center;padding:2rem 1rem;color:#8d93ad;
+  font-size:.82rem;letter-spacing:.08em;border-top:1px solid rgba(212,175,55,.28);">
+  <div style="color:#d4af37;font-size:1.2rem;margin-bottom:.6rem;letter-spacing:.8rem;">
+    🐱 ✦ ☰ ✦ 🐱
+  </div>
+  <p>Yejidá Alimenta Gatitos · Un Tikkun Olam a la vez</p>
+</footer>
+
+<script>
+// ═══ 🐱 GATITOS — EDITA AQUÍ con tus datos reales ═══
+const GATOS = [
+  { nombre:'Moshé',   personalidad:'El sabio del grupo',    emoji:'🐱', estado:'activo',  comidas:'2/día' },
+  { nombre:'Shejiná', personalidad:'La reina del tejado',   emoji:'😺', estado:'activo',  comidas:'2/día' },
+  { nombre:'Yejidá',  personalidad:'La pequeña valiente',   emoji:'😻', estado:'activo',  comidas:'2/día' },
+  { nombre:'Kéter',   personalidad:'El jefe silencioso',    emoji:'🐈', estado:'activo',  comidas:'2/día' },
+  { nombre:'Jojmá',   personalidad:'La curiosa',            emoji:'🐈‍⬛', estado:'activo',  comidas:'2/día' },
+  { nombre:'Biná',    personalidad:'La observadora',        emoji:'🐱', estado:'activo',  comidas:'2/día' },
+  { nombre:'Tiféret', personalidad:'El bello del barrio',   emoji:'😽', estado:'urgente', comidas:'3/día' },
+  { nombre:'Yesod',   personalidad:'El bebé rescatado',     emoji:'🐈', estado:'urgente', comidas:'4/día' }
+];
+
+// ═══ 💰 MOVIMIENTOS — EDITA con tus datos reales ═══
+const MOVIMIENTOS = [
+  { fecha:'2026-01-05', concepto:'Donación anónima PayPal',     tipo:'ingreso', monto:200 },
+  { fecha:'2026-01-06', concepto:'Compra: alimento premium 3kg',tipo:'gasto',   monto:180 },
+  { fecha:'2026-01-10', concepto:'Venta informe PDF #001',      tipo:'ingreso', monto:99 },
+  { fecha:'2026-01-12', concepto:'Compra: 24 sobres húmeda',    tipo:'gasto',   monto:220 },
+  { fecha:'2026-01-15', concepto:'Donación Ko-fi',              tipo:'ingreso', monto:150 },
+  { fecha:'2026-01-18', concepto:'Compra: arena 10kg',          tipo:'gasto',   monto:130 },
+  { fecha:'2026-01-20', concepto:'Donación Mercado Pago',       tipo:'ingreso', monto:300 },
+  { fecha:'2026-01-22', concepto:'Venta mandala',               tipo:'ingreso', monto:49 },
+  { fecha:'2026-01-25', concepto:'Compra: alimento 3kg',        tipo:'gasto',   monto:180 }
+];
+
+const COSTOS = { diaGato:12, semanaGato:84, mesGato:360, sobre:20 };
+
+function renderGatos() {
+  const cont = document.getElementById('gatos-grid');
+  if (!cont) return;
+  cont.innerHTML = GATOS.map(g => `
+    <div class="gato-card">
+      <span class="estado ${g.estado === 'urgente' ? 'urgente' : ''}">
+        ${g.estado === 'urgente' ? '🚨 urgente' : '✓ activo'}
+      </span>
+      <div class="foto">${g.emoji}</div>
+      <div class="nombre">${g.nombre}</div>
+      <div class="personalidad">"${g.personalidad}"</div>
+      <div class="stats">
+        <span><strong>${g.comidas}</strong>comidas</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function initCalculadora() {
+  const slider = document.getElementById('slider');
+  const monto = document.getElementById('monto');
+  const resultado = document.getElementById('resultado');
+  if (!slider) return;
+
+  function actualizar() {
+    const v = parseInt(slider.value);
+    monto.textContent = '$' + v.toLocaleString('es-MX');
+    let texto;
+    if (v < COSTOS.diaGato) {
+      texto = `Con <strong>$${v}</strong> compras <strong>1 sobre</strong> de comida 🍲`;
+    } else if (v < COSTOS.semanaGato) {
+      const d = Math.floor(v / COSTOS.diaGato);
+      texto = `Con <strong>$${v}</strong> alimentas a <strong>1 gatito</strong> por <strong>${d} días</strong>`;
+    } else if (v < COSTOS.mesGato) {
+      const g = Math.floor(v / COSTOS.semanaGato);
+      texto = `Con <strong>$${v}</strong> alimentas a <strong>${g} gatito${g>1?'s':''}</strong> por <strong>1 semana</strong>`;
+    } else if (v < COSTOS.mesGato * 3) {
+      const g = Math.floor(v / COSTOS.mesGato);
+      texto = `Con <strong>$${v}</strong> alimentas a <strong>${g} gatito${g>1?'s':''}</strong> por <strong>1 mes</strong>`;
+    } else {
+      const g = Math.floor(v / COSTOS.mesGato);
+      texto = `Con <strong>$${v}</strong> alimentas a <strong>${g} gatitos</strong> por 1 mes 🎉`;
+    }
+    resultado.innerHTML = `<div class="iconos">${'🐱'.repeat(Math.min(10, Math.max(1, Math.floor(v/100))))}</div>${texto}`;
+  }
+  slider.addEventListener('input', actualizar);
+  actualizar();
+}
+
+function initTransparencia() {
+  const tbody = document.getElementById('tabla-movimientos');
+  if (!tbody) return;
+  const movs = [...MOVIMIENTOS].sort((a,b) => b.fecha.localeCompare(a.fecha));
+  tbody.innerHTML = movs.map(m => `
+    <tr>
+      <td>${new Date(m.fecha+'T12:00:00').toLocaleDateString('es-MX',{day:'2-digit',month:'short'})}</td>
+      <td>${m.concepto}</td>
+      <td class="${m.tipo}">${m.tipo==='ingreso'?'💚 Ingreso':'🍽️ Gasto'}</td>
+      <td class="${m.tipo}">${m.tipo==='ingreso'?'+':'-'}$${m.monto}</td>
+    </tr>
+  `).join('');
+  const ing = MOVIMIENTOS.filter(m=>m.tipo==='ingreso').reduce((s,m)=>s+m.monto,0);
+  const gas = MOVIMIENTOS.filter(m=>m.tipo==='gasto').reduce((s,m)=>s+m.monto,0);
+  document.getElementById('total-ingresos').textContent = '$' + ing.toLocaleString('es-MX');
+  document.getElementById('total-gastos').textContent = '$' + gas.toLocaleString('es-MX');
+  document.getElementById('saldo').textContent = '$' + (ing-gas).toLocaleString('es-MX');
+}
+
+function initMeta() {
+  const ing = MOVIMIENTOS.filter(m=>m.tipo==='ingreso').reduce((s,m)=>s+m.monto,0);
+  const pct = Math.min(100, Math.round(ing/3000*100));
+  const barra = document.getElementById('barra-progreso');
+  if (barra) setTimeout(() => { barra.style.width = pct+'%'; barra.textContent = pct+'%'; }, 300);
+  const metaActual = document.getElementById('meta-actual');
+  if (metaActual) metaActual.textContent = '$' + ing.toLocaleString('es-MX') + ' MXN';
+}
+
+function initContador() {
+  const c = document.getElementById('contador-gatos');
+  if (!c) return;
+  const act = GATOS.filter(g=>g.estado==='activo').length;
+  const urg = GATOS.filter(g=>g.estado==='urgente').length;
+  c.innerHTML = `🐾 ${GATOS.length} gatitos · ${act} activos${urg?` · ${urg} urgentes 🚨`:''}`;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderGatos();
+  initCalculadora();
+  initTransparencia();
+  initMeta();
+  initContador();
+});
+</script>
+
+</body>
+</html>
